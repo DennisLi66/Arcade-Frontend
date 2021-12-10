@@ -1,23 +1,54 @@
-import logo from './logo.svg';
 import './App.css';
+import React from "react";
+import Nav from 'react-bootstrap/Nav'
+import Navbar from 'react-bootstrap/Navbar'
+require('dotenv').config();
 
 function App() {
+
+  const [navBar,changeNavbar] = React.useState(
+    (
+      <Navbar bg='light' expand="lg" className='loggedOutBar'>
+      <Navbar.Brand>QuickiePost</Navbar.Brand>
+      <Navbar.Toggle aria-controls="navbarScroll" />
+      <Navbar.Collapse id="navbarScroll">
+      <Nav
+        className="mr-auto my-2 my-lg-0"
+        style={{ maxHeight: '100px' }}
+        navbarScroll
+      >
+        <Nav.Link onClick={()=>{getHome()}}>Home</Nav.Link>
+        <Nav.Link>Log In</Nav.Link>
+      </Nav>
+      </Navbar.Collapse>
+      </Navbar>
+    )
+  );
+  const [body,changeBody] = React.useState()
+  function changeNavbarToLoggedIn(){
+
+  }
+  function changeNavbarToLoggedOut(){
+
+  }
+  const getHome = React.useCallback(
+    () => {changeBody(
+      (
+        <div>
+          Welcome to Dennis' Arcade!
+        </div>
+      )
+    )
+  },[])
+
+  React.useEffect(() => {
+    getHome();
+  },[getHome])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {navBar}
+      {body}
     </div>
   );
 }
