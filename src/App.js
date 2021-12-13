@@ -50,9 +50,14 @@ function App() {
         )
       }
       //Registration Page
-      function getRegisterPage(){
+      function getRegisterPage(error = ""){
+        var errMsg;
+        if (error !== ""){
+          errMsg = (<div className='errMsg'>{error}</div>)
+        }
         changeBody((
           <div>
+            {errMsg}
             <h1> Welcome to the Registration Page</h1>
             <form onSubmit={(event)=>{handleRegistration(event)}}>
               Enter in these details to register.<br></br>
@@ -61,9 +66,9 @@ function App() {
               <label htmlFor='username'>Username:</label><br></br>
               <input name='username' id='username' autocomplete="off" required></input><br></br>
               <label htmlFor='password'>Password:</label><br></br>
-              <input type='password' name='password' id='password' autocomplete="off" minLength='8'></input><br></br>
+              <input type='password' name='password' id='password' autocomplete="off" minLength='8' required></input><br></br>
               <label htmlFor='confPass'>Confirm Password</label><br></br>
-              <input type='password' name='confPass' id='confPass' autocomplete="off" minLength='8'></input><br></br><br></br>
+              <input type='password' name='confPass' id='confPass' autocomplete="off" minLength='8' required></input><br></br><br></br>
               <Button type='submit'>Submit</Button>
             </form>
             <Button onClick={()=>{getLoginPage()}}>Already Have An Account?</Button>
@@ -72,12 +77,42 @@ function App() {
       }
       function handleRegistration(event){
         event.preventDefault();
-        console.log("Reg")
+        var userPassword = document.getElementById('password').value;
+        var confPassword = document.getElementById('confPass').value;
+        var email = document.getElementById('userEmail').value;
+        var username = document.getElementById('username').value;
+        if (userPassword !== confPassword){
+          getRegisterPage("Your passwords did not match.")
+        }else{
+          const requestSetup = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({email: email, username: username,password:userPassword})
+          };
+          fetch(process.env.REACT_APP_SERVERLOCATION + "/register",requestSetup)
+            .then(response => response.json())
+            .then(data => {
+              if (data.status === -1){
+                getRegisterPage(data.message)
+              }else{
+                getLoginPage("","You have successfully registered!");
+              }
+            })
+        }
       }
       //
-      function getLoginPage(){
+      function getLoginPage(error="",conf=""){
+        var errMsg, confMsg;
+        if (error !== ""){
+          errMsg = (<div className='errMsg'>{error}</div>)
+        }
+        if (conf !== ""){
+          confMsg = (<div className='confMsg'>{conf}</div>)
+        }
         changeBody((
           <div>
+            {errMsg}
+            {confMsg}
             <h1> Welcome to the Login Page </h1>
             Enter in these details to login.
             <form onSubmit={(event)=>{handleLogin(event)}}>
