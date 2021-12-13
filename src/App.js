@@ -59,17 +59,19 @@ function App() {
               <label htmlFor='userEmail'>Email:</label><br></br>
               <input type='email' name='userEmail' id='userEmail' autocomplete="off" required></input><br></br>
               <label htmlFor='username'>Username:</label><br></br>
-              <input type='username' name='username' id='username' autocomplete="off" required></input><br></br>
+              <input name='username' id='username' autocomplete="off" required></input><br></br>
               <label htmlFor='password'>Password:</label><br></br>
               <input type='password' name='password' id='password' autocomplete="off" minLength='8'></input><br></br>
               <label htmlFor='confPass'>Confirm Password</label><br></br>
               <input type='password' name='confPass' id='confPass' autocomplete="off" minLength='8'></input><br></br><br></br>
               <Button type='submit'>Submit</Button>
             </form>
+            <Button onClick={()=>{getLoginPage()}}>Already Have An Account?</Button>
           </div>
         ))
       }
-      function handleRegistration(){
+      function handleRegistration(event){
+        event.preventDefault();
         console.log("Reg")
       }
       //
@@ -77,11 +79,21 @@ function App() {
         changeBody((
           <div>
             <h1> Welcome to the Login Page </h1>
-            <form>
-
+            Enter in these details to login.
+            <form onSubmit={(event)=>{handleLogin(event)}}>
+              <label htmlFor='userEmail'>Email:</label><br></br>
+              <input name='userEmail' id='userEmail' required></input><br></br>
+              <label htmlFor='password'>Password:</label><br></br>
+              <input type='password' name='password' id='password' autocomplete='off' required></input><br></br>
+              <Button type='submit'>Submit</Button>
             </form>
+            <Button onClick={()=>{getRegisterPage()}}>Don't Already Have An Account?</Button>
           </div>
         ))
+      }
+      function handleLogin(event){
+        event.preventDefault();
+        ///change nav to logged in
       }
       function getForgotPasswordPage(){
         changeBody((
@@ -92,11 +104,6 @@ function App() {
             </form>
           </div>
         ))
-      }
-      function logIn(){
-        //Add cookies
-        changeNavbarToLoggedIn();
-        getHome();
       }
       function logOut(){
         //FIX THIS: KILL COOKIES
