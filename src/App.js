@@ -3,7 +3,7 @@ import React from "react";
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import Button from 'react-bootstrap/Button'
-// import Cookies from 'universal-cookie';
+import Cookies from 'universal-cookie';
 require('dotenv').config();
 
 function App() {
@@ -12,9 +12,10 @@ function App() {
 
   );
   const [body,changeBody] = React.useState()
+  const cookies = React.useMemo(() => {return new Cookies()},[])
 
   const getHome = React.useCallback(
-    () => {
+    (confMsg = "") => {
       //Nav Changers
       function changeNavbarToLoggedIn(){
         changeNavbar(
@@ -128,6 +129,27 @@ function App() {
       }
       function handleLogin(event){
         event.preventDefault();
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        const requestSetup = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({email: email, password:password})
+        }
+        fetch(process.env.REACT_APP_SERVERLOCATION + "/login",requestSetup)
+          .then(response => response.data())
+          .then(data => {
+            if (data.status === -1){
+              getLoginPage(data.message,"")
+            }else if (data.status === 0){
+              cookies.set('name',data.username,{path:'/'});
+              cookies.set('id',data.userID,{path:'/'});
+              cookies.set('sessionID',data.sessionID,{path:'/'});
+              //cookies.set('expireTime',rememberMe === 'hour' ? Date.now() + 3600000 : "forever",{path:"/"});
+              changeNavbarToLoggedIn();
+              getHome("You have successfully logged in.")
+            }
+          })
         ///change nav to logged in
       }
       function getForgotPasswordPage(){
@@ -147,13 +169,23 @@ function App() {
       }
 
       //Detect Stuff Here
-      changeNavbarToLoggedOut();
+      if (cookies.get("name")){
+        changeNavbarToLoggedIn()
+      }else{
+        changeNavbarToLoggedOut();  
+      }
+
+      var conf;
+      if (confMsg !== ""){
+        conf = (<div className='confMsg'>{confMsg}</div>)
+      }
       changeBody((
         <div>
+          {conf}
           Welcome to Dennis' Arcade!
         </div>
       ));
-  },[])
+  },[cookies])
 
   React.useEffect(() => {
     getHome();
