@@ -118,7 +118,7 @@ function App() {
             Enter in these details to login.
             <form onSubmit={(event)=>{handleLogin(event)}}>
               <label htmlFor='userEmail'>Email:</label><br></br>
-              <input name='userEmail' id='userEmail' required></input><br></br>
+              <input name='userEmail' id='userEmail' type='email' required></input><br></br>
               <label htmlFor='password'>Password:</label><br></br>
               <input type='password' name='password' id='password' autocomplete='off' required></input><br></br>
               <Button type='submit'>Submit</Button>
@@ -155,13 +155,21 @@ function App() {
       function getForgotPasswordPage(){
         changeBody((
           <div>
-            <h1> Welcome to the Change Password Page </h1>
-            <form>
-
+            <h1> Welcome to the Forgot Password Page </h1>
+            Enter your email below to send a recovery email.
+            <form onSubmit={(event)=>{handleForgotPassword(event)}}>
+              <label htmlFor='userEmail'>Email:</label><br></br>
+              <input name='userEmail' id='userEmail' type='email' required></input><br></br>
+              <Button type='submit'>Submit</Button>
             </form>
           </div>
         ))
       }
+      function handleForgotPassword(event){
+
+      }
+
+
       function logOut(){
         //FIX THIS: KILL COOKIES
         changeNavbarToLoggedOut();
@@ -172,7 +180,7 @@ function App() {
       if (cookies.get("name")){
         changeNavbarToLoggedIn()
       }else{
-        changeNavbarToLoggedOut();  
+        changeNavbarToLoggedOut();
       }
 
       var conf;
