@@ -123,13 +123,14 @@ function App() {
               <input type='password' name='password' id='password' autocomplete='off' required></input><br></br>
               <Button type='submit'>Submit</Button>
             </form>
-            <Button onClick={()=>{getRegisterPage()}}>Don't Already Have An Account?</Button>
+            <Button onClick={()=>{getRegisterPage()}}>Don't Already Have An Account?</Button><br></br>
+            <Button onClick={()=>{getForgotPasswordPage()}}>Forgot Your Password?</Button>
           </div>
         ))
       }
       function handleLogin(event){
         event.preventDefault();
-        var email = document.getElementById("email").value;
+        var email = document.getElementById("userEmail").value;
         var password = document.getElementById("password").value;
         const requestSetup = {
           method: 'POST',
@@ -137,7 +138,7 @@ function App() {
           body: JSON.stringify({email: email, password:password})
         }
         fetch(process.env.REACT_APP_SERVERLOCATION + "/login",requestSetup)
-          .then(response => response.data())
+          .then(response => response.json())
           .then(data => {
             if (data.status === -1){
               getLoginPage(data.message,"")
@@ -152,9 +153,14 @@ function App() {
           })
         ///change nav to logged in
       }
-      function getForgotPasswordPage(){
+      function getForgotPasswordPage(error=""){
+        var errMsg = "";
+        if (error !== ""){
+          errMsg = (<div className='errMsg'>{error}</div>)
+        }
         changeBody((
           <div>
+            {errMsg}
             <h1> Welcome to the Forgot Password Page </h1>
             Enter your email below to send a recovery email.
             <form onSubmit={(event)=>{handleForgotPassword(event)}}>
@@ -166,7 +172,35 @@ function App() {
         ))
       }
       function handleForgotPassword(event){
-
+        event.preventDefault();
+        var email = document.getElementById("userEmail").value;
+        const requestSetup = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({email: email})
+        }
+        fetch(process.env.REACT_APP_SERVERLOCATION + "/forgotPassword",requestSetup)
+          .then(response => response.json())
+          .then(data=>{
+            if (data.status === -1){
+              getForgotPasswordPage(data.message);
+            }else if (data.status === 0){
+              changeBody(
+                <div>
+                  If the email, {email}, exists in our database, it should have just received an email with an activation code in it.<br></br>
+                  Enter that code in below:<br></br>
+                  <form onSubmit={(event)=>{handleCodeSubmission(event)}}>
+                  <label htmlFor='code'>Code:</label><br></br>
+                  <input name='code' id='code' required></input>
+                  <Button type='submit'>Submit</Button>
+                  </form>
+                </div>
+              )
+            }
+          })
+      }
+      function handleCodeSubmission(event){
+        
       }
 
 
