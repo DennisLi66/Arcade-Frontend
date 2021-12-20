@@ -189,7 +189,8 @@ function App() {
                 <div>
                   If the email, {email}, exists in our database, it should have just received an email with an activation code in it.<br></br>
                   Enter that code in below:<br></br>
-                  <form onSubmit={(event)=>{handleCodeSubmission(event)}}>
+                  <form onSubmit={(event)=>{handleCodeSubmission(event,3,email)}}>
+                  Chances Remaining: 3 <br></br>
                   <label htmlFor='code'>Code:</label><br></br>
                   <input name='code' id='code' required></input>
                   <Button type='submit'>Submit</Button>
@@ -199,10 +200,69 @@ function App() {
             }
           })
       }
-      function handleCodeSubmission(event){
-        
+      function handleCodeSubmission(event,chances,email){
+        event.preventDefault();
+        var code = document.getElementById('code').value;
+        const requestSetup = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({code:code})
+        }
+        fetch(process.env.REACT_APP_SERVERLOCATION + "/forgotPasswordCode",requestSetup)
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 0){
+              changeBody(
+                <div>
+                  You may now change your password.
+                  <form onSubmit={()=>{handleNewPassword(event,email)}}>
+                    <label htmlFor="newPass">New Password</label><br></br>
+                    <input type="password" name="newPass" id="newPass"></input><br></br>
+                    <label htmlFor="confPass">Confirm Password</label><br></br>
+                    <input type="password" name="confPass" id="confPass"></input><br></br>
+                    <Button type='submit'>Submit</Button>
+                  </form>
+                </div>
+              )
+            }else if (data.status === -1){
+              changeBody(
+                <div>
+                  <div className='errMsg'>{data.message}</div>
+                  If the email, {email}, exists in our database, it should have just received an email with an activation code in it.<br></br>
+                  Enter that code in below:<br></br>
+                  <form onSubmit={(event)=>{handleCodeSubmission(event,chances,email)}}>
+                  Chances Remaining: {chances} <br></br>
+                  <label htmlFor='code'>Code:</label><br></br>
+                  <input name='code' id='code' required></input>
+                  <Button type='submit'>Submit</Button>
+                  </form>
+                </div>
+              )
+            }
+            else if (data.status === -2){
+              if (chances === 1){
+                getForgotPasswordPage("You've run out of chances.")
+              }else{
+                changeBody(
+                  <div>
+                    <div className='errMsg'> That was not correct. </div>
+                    If the email, {email}, exists in our database, it should have just received an email with an activation code in it.<br></br>
+                    Enter that code in below:<br></br>
+                    <form onSubmit={(event)=>{handleCodeSubmission(event,chances - 1,email)}}>
+                    Chances Remaining: {chances - 1} <br></br>
+                    <label htmlFor='code'>Code:</label><br></br>
+                    <input name='code' id='code' required></input>
+                    <Button type='submit'>Submit</Button>
+                    </form>
+                  </div>
+                )
+              }
+            }
+          })
       }
+    function handleNewPassword(event,email){
 
+    }
 
       function logOut(){
         //FIX THIS: KILL COOKIES
