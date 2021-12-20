@@ -179,7 +179,7 @@ function App() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({email: email})
         }
-        fetch(process.env.REACT_APP_SERVERLOCATION + "/forgotPassword",requestSetup)
+        fetch(process.env.REACT_APP_SERVERLOCATION + "/forgotpassword",requestSetup)
           .then(response => response.json())
           .then(data=>{
             if (data.status === -1){
@@ -208,11 +208,11 @@ function App() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({code:code})
         }
-        fetch(process.env.REACT_APP_SERVERLOCATION + "/forgotPasswordCode",requestSetup)
+        fetch(process.env.REACT_APP_SERVERLOCATION + "/forgotpasswordcode",requestSetup)
           .then(response => response.json())
           .then(data => {
             if (data.status === 0){
-              showChangePasswordPage(email);
+              showChangePasswordPage(email,"",code);
             }else if (data.status === -1){
               changeBody(
                 <div>
@@ -249,7 +249,7 @@ function App() {
             }
           })
       }
-      function showChangePasswordPage(email,error = ""){
+      function showChangePasswordPage(email,error = "",code){
         var errMsg;
         if (error !== ""){
           errMsg = (<div className='errMsg'>{error}</div>)
@@ -259,7 +259,7 @@ function App() {
             {errMsg}
             <h1>Change Your Password</h1>
             You may now change your password.
-            <form onSubmit={()=>{handleNewPassword(email)}}>
+            <form onSubmit={()=>{handleNewPassword(email,code)}}>
               <label htmlFor="newPass">New Password</label><br></br>
               <input type="password" name="newPass" id="newPass"></input><br></br>
               <label htmlFor="confPass">Confirm Password</label><br></br>
@@ -269,18 +269,31 @@ function App() {
           </div>
         )
       }
-      function handleNewPassword(event,email){
+      function handleNewPassword(event,email,code){
         event.preventDefault();
         var password = document.getElementById("newPass").value;
         var confPass = document.getElementById("confPass").value;
         if (password !== confPass){
-          showChangePasswordPage(email,"Those passwords did not match.")
+          showChangePasswordPage(email,"Those passwords did not match.",code)
         }else{
-          if (cookies.get("id")){
-            //FIX THIS
-          }else{
-            getLoginPage("","You have successfully changed your password.")
+          const requestSetup = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({code:code,password:password})
           }
+          fetch(process.env.REACT_APP_SERVERLOCATION + "/changePassword",requestSetup)
+            .then(response => response.json())
+            .then(data=>{
+              if (data.status === -1){
+                showChangePasswordPage(email,data.message)
+              }else{
+                if (cookies.get("id")){
+                  //FIX THIS
+                }else{
+                  getLoginPage("","You have successfully changed your password.")
+                }
+              }
+            })
         }
       }
 
