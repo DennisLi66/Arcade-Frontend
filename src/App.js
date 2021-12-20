@@ -212,18 +212,7 @@ function App() {
           .then(response => response.json())
           .then(data => {
             if (data.status === 0){
-              changeBody(
-                <div>
-                  You may now change your password.
-                  <form onSubmit={()=>{handleNewPassword(event,email)}}>
-                    <label htmlFor="newPass">New Password</label><br></br>
-                    <input type="password" name="newPass" id="newPass"></input><br></br>
-                    <label htmlFor="confPass">Confirm Password</label><br></br>
-                    <input type="password" name="confPass" id="confPass"></input><br></br>
-                    <Button type='submit'>Submit</Button>
-                  </form>
-                </div>
-              )
+              showChangePasswordPage(email);
             }else if (data.status === -1){
               changeBody(
                 <div>
@@ -260,9 +249,40 @@ function App() {
             }
           })
       }
-    function handleNewPassword(event,email){
-
-    }
+      function showChangePasswordPage(email,error = ""){
+        var errMsg;
+        if (error !== ""){
+          errMsg = (<div className='errMsg'>{error}</div>)
+        }
+        changeBody(
+          <div>
+            {errMsg}
+            <h1>Change Your Password</h1>
+            You may now change your password.
+            <form onSubmit={()=>{handleNewPassword(email)}}>
+              <label htmlFor="newPass">New Password</label><br></br>
+              <input type="password" name="newPass" id="newPass"></input><br></br>
+              <label htmlFor="confPass">Confirm Password</label><br></br>
+              <input type="password" name="confPass" id="confPass"></input><br></br>
+              <Button type='submit'>Submit</Button>
+            </form>
+          </div>
+        )
+      }
+      function handleNewPassword(event,email){
+        event.preventDefault();
+        var password = document.getElementById("newPass").value;
+        var confPass = document.getElementById("confPass").value;
+        if (password !== confPass){
+          showChangePasswordPage(email,"Those passwords did not match.")
+        }else{
+          if (cookies.get("id")){
+            //FIX THIS
+          }else{
+            getLoginPage("","You have successfully changed your password.")
+          }
+        }
+      }
 
       function logOut(){
         //FIX THIS: KILL COOKIES
