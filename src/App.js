@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button'
 import Cookies from 'universal-cookie';
 require('dotenv').config();
 
+//Update adding timeduration to Login
 function App() {
 
   const [navBar,changeNavbar] = React.useState(
@@ -63,14 +64,14 @@ function App() {
             <form onSubmit={(event)=>{handleRegistration(event)}}>
               Enter in these details to register.<br></br>
               <label htmlFor='userEmail'>Email:</label><br></br>
-              <input type='email' name='userEmail' id='userEmail' autocomplete="off" required></input><br></br>
+              <input type='email' name='userEmail' id='userEmail' autoComplete="off" required></input><br></br>
               <label htmlFor='username'>Username:</label><br></br>
-              <input name='username' id='username' autocomplete="off" required></input><br></br>
+              <input name='username' id='username' autoComplete="off" required></input><br></br>
               <label htmlFor='password'>Password:</label><br></br>
-              <input type='password' name='password' id='password' autocomplete="off" minLength='8' required></input><br></br>
+              <input type='password' name='password' id='password' autoComplete="off" minLength='8' required></input><br></br>
               <label htmlFor='confPass'>Confirm Password</label><br></br>
-              <input type='password' name='confPass' id='confPass' autocomplete="off" minLength='8' required></input><br></br><br></br>
-              <Button type='submit'>Submit</Button>
+              <input type='password' name='confPass' id='confPass' autoComplete="off" minLength='8' required></input><br></br><br></br>
+              <Button type='submit'>Register</Button>
             </form>
             <Button onClick={()=>{getLoginPage()}}>Already Have An Account?</Button>
           </div>
@@ -120,8 +121,16 @@ function App() {
               <label htmlFor='userEmail'>Email:</label><br></br>
               <input name='userEmail' id='userEmail' type='email' required></input><br></br>
               <label htmlFor='password'>Password:</label><br></br>
-              <input type='password' name='password' id='password' autocomplete='off' required></input><br></br>
-              <Button type='submit'>Submit</Button>
+              <input type='password' name='password' id='password' autoComplete='off' required></input><br></br>
+              <br></br><br></br>
+              <label htmlFor="rememberMe"> Remember Me?</label><br></br>
+              <label className="switch">
+              <input type="checkbox" id='rememberMe'
+              ></input>
+              <span className="slider round"></span>
+              </label>
+              <br></br><br></br>
+              <Button type='submit'>Login</Button>
             </form>
             <Button onClick={()=>{getRegisterPage()}}>Don't Already Have An Account?</Button><br></br>
             <Button onClick={()=>{getForgotPasswordPage()}}>Forgot Your Password?</Button>
@@ -132,10 +141,11 @@ function App() {
         event.preventDefault();
         var email = document.getElementById("userEmail").value;
         var password = document.getElementById("password").value;
+        var timeDuration = document.getElementById("rememberMe").checked ? "forever" : "hour";
         const requestSetup = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({email: email, password:password})
+          body: JSON.stringify({email: email, password:password,timeDuration:timeDuration})
         }
         fetch(process.env.REACT_APP_SERVERLOCATION + "/login",requestSetup)
           .then(response => response.json())
@@ -192,7 +202,7 @@ function App() {
                   <form onSubmit={(event)=>{handleCodeSubmission(event,3,email)}}>
                   Chances Remaining: 3 <br></br>
                   <label htmlFor='code'>Code:</label><br></br>
-                  <input name='code' id='code' required></input>
+                  <input name='code' id='code' autoComplete='off' required></input><br></br>
                   <Button type='submit'>Submit</Button>
                   </form>
                 </div>
@@ -206,7 +216,7 @@ function App() {
         const requestSetup = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({code:code})
+          body: JSON.stringify({code:code,email:email})
         }
         fetch(process.env.REACT_APP_SERVERLOCATION + "/forgotpasswordcode",requestSetup)
           .then(response => response.json())
@@ -222,7 +232,7 @@ function App() {
                   <form onSubmit={(event)=>{handleCodeSubmission(event,chances,email)}}>
                   Chances Remaining: {chances} <br></br>
                   <label htmlFor='code'>Code:</label><br></br>
-                  <input name='code' id='code' required></input>
+                  <input name='code' id='code' autoComplete='off' required></input><br></br>
                   <Button type='submit'>Submit</Button>
                   </form>
                 </div>
@@ -240,7 +250,7 @@ function App() {
                     <form onSubmit={(event)=>{handleCodeSubmission(event,chances - 1,email)}}>
                     Chances Remaining: {chances - 1} <br></br>
                     <label htmlFor='code'>Code:</label><br></br>
-                    <input name='code' id='code' required></input>
+                    <input name='code' id='code' autoComplete='off' required></input><br></br>
                     <Button type='submit'>Submit</Button>
                     </form>
                   </div>
@@ -259,11 +269,11 @@ function App() {
             {errMsg}
             <h1>Change Your Password</h1>
             You may now change your password.
-            <form onSubmit={()=>{handleNewPassword(email,code)}}>
+            <form onSubmit={(event)=>{handleNewPassword(event,email,code)}}>
               <label htmlFor="newPass">New Password</label><br></br>
-              <input type="password" name="newPass" id="newPass"></input><br></br>
+              <input type="password" name="newPass" id="newPass" required minLength='8'></input><br></br>
               <label htmlFor="confPass">Confirm Password</label><br></br>
-              <input type="password" name="confPass" id="confPass"></input><br></br>
+              <input type="password" name="confPass" id="confPass" required minLength='8'></input><br></br>
               <Button type='submit'>Submit</Button>
             </form>
           </div>
@@ -279,14 +289,14 @@ function App() {
           const requestSetup = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({code:code,password:password})
+            body: JSON.stringify({email:email,code:code,password:password})
           }
-          fetch(process.env.REACT_APP_SERVERLOCATION + "/changePassword",requestSetup)
+          fetch(process.env.REACT_APP_SERVERLOCATION + "/changepassword",requestSetup)
             .then(response => response.json())
             .then(data=>{
               if (data.status === -1){
                 showChangePasswordPage(email,data.message)
-              }else{
+              }else if (data.status === 0){
                 if (cookies.get("id")){
                   //FIX THIS
                 }else{
@@ -298,8 +308,9 @@ function App() {
       }
 
       function logOut(){
-        //FIX THIS: KILL COOKIES
-        changeNavbarToLoggedOut();
+        cookies.remove('name');
+        cookies.remove('id');
+        cookies.remove('sessionID');
         getHome();
       }
 
