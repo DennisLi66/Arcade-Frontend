@@ -4,6 +4,7 @@ import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import Button from 'react-bootstrap/Button'
 import Cookies from 'universal-cookie';
+import Snake from './games/Snake';
 require('dotenv').config();
 
 //Update adding timeduration to Login
@@ -102,7 +103,7 @@ function App() {
             })
         }
       }
-      //
+      //Login and Passwords Stuffs
       function getLoginPage(error="",conf=""){
         var errMsg, confMsg;
         if (error !== ""){
@@ -306,14 +307,18 @@ function App() {
             })
         }
       }
-
       function logOut(){
         cookies.remove('name');
         cookies.remove('id');
         cookies.remove('sessionID');
         getHome();
       }
-
+      //games
+      function openGame(gameTitle){
+        if (gameTitle === "Snake"){
+          changeBody(Snake())
+        }
+      }
       //Detect Stuff Here
       if (cookies.get("name")){
         changeNavbarToLoggedIn()
@@ -328,7 +333,12 @@ function App() {
       changeBody((
         <div>
           {conf}
-          Welcome to Dennis' Arcade!
+          <h1>Welcome to Dennis' Arcade!</h1>
+          <div>
+            <div className="gameBox">
+              <Button  onClick={() => {openGame("Snake")}}>Play Snake</Button>
+            </div>
+          </div>
         </div>
       ));
   },[cookies])
