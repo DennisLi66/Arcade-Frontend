@@ -1,6 +1,7 @@
 import React from "react";
 import Button from 'react-bootstrap/Button'
 import "./css/Snake.css"
+import ReactDOMServer from 'react-dom/server';
 
 //To do
 //convert to a react hook
@@ -38,12 +39,13 @@ function Snake() {
     // console.log(gameBoard);
   }
   function readInstructions(){
-    document.getElementById("gameScreen").innerHTML = (
+    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(
       <div>
-        <Button onClick={getFrontPage}>Back</Button>
+        <Button id='backButton'>Back</Button>
         <h1> Instructions </h1>
       </div>
     )
+    document.getElementById('backButton').onclick = function(){getFrontPage()}
   }
   //Printers
   function printSnakeBoard(){
@@ -64,29 +66,41 @@ function Snake() {
     toPrint += "</div>";
     toPrint += "<div class='bulletinBoard' id='bulletinBoard'></div>";
     document.getElementById("gameScreen").innerHTML = toPrint;
-    printBulletinBoard();
+    printInfoRow();
   }
-  function printBulletinBoard(){
-    var text = "<Button onClick=''>Return</Button>";
+  function printInfoRow(){
+    var text = (<Button id='returnButton'>Return</Button>);
+    var middleText;
     if (gameStarted){
-      text += " Score: " + score;
+      middleText = " Score: " + score;
     }else{
-      text += " Press on any of the arrow keys to start."
+      middleText = " Press on any of the arrow keys to start."
     }
-    document.getElementById("bulletinBoard").innerHTML = text;
+    document.getElementById("bulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      (
+        <div>
+          {text}
+          {middleText}
+        </div>
+      )
+    );
+    document.getElementById("returnButton").onclick = function(){getFrontPage()};
   }
   function startSnakeGame(){
     printSnakeBoard();
   }
   function getFrontPage(){
-    document.getElementById("gameScreen").innerHTML =
-    (
-      <div>
-        <h1>Snake</h1>
-        <Button onClick={startSnakeGame}>Play Snake</Button><br></br>
-        <Button onClick={readInstructions}>Read Instructions</Button><br></br>
-      </div>
+    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      (
+        <div>
+          <h1>Snake</h1>
+            <Button id='playSnakeButton'>Play Snake</Button><br></br>
+            <Button id='readInstructionsButton'>Read Instructions</Button><br></br><br></br>
+        </div>
+      )
     )
+    document.getElementById('playSnakeButton').onclick = function(){startSnakeGame()};
+    document.getElementById('readInstructionsButton').onclick = function(){readInstructions()};
   }
 
   fillGameBoard();
