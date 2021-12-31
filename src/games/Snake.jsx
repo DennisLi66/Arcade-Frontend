@@ -11,6 +11,7 @@ function Snake() {
   //IMPORTANT GAME VARIABLES
   var gameBoard = []; //    42 * 42 Board
   var score = 0;
+  // var timeElaspsed = 0;
   var gameStarted = false;
   var validSquares = [];
   //var direction;
@@ -38,12 +39,30 @@ function Snake() {
     }
     //push bottom border row
     gameBoard.push(...borderRow);
-    console.log(gameBoard);
-    // gameBoard[1][1] = 'S'; //snake
-    // console.log(gameBoard[5][39])
-    // gameBoard[5][37] = 'S'; //snake
-    // gameBoard[5][36] = "H"; //head
-    //FIX THIS: ADD VALID SQUARES, THEN SPAWN PRIZE
+    //console.log(gameBoard);
+    gameBoard[38 * 42 + 5] = 'S'; //snake
+    gameBoard[37 * 42 + 5] = 'S'; //snake
+    gameBoard[36 * 42 + 5] = "H"; //head
+    validSquares = [...Array(42*42).keys()];
+    console.log(validSquares)
+    for (let i = 0; i < (42 * 42); i++){
+      if (i % 42 === 0 || i % 42 === 41 || i < 42 || i > (42 * 42 - 42)){
+        validSquares.splice(validSquares.indexOf(i),1);
+      }
+    }
+    console.log(validSquares)
+    validSquares.splice(validSquares.indexOf(38 * 42 + 5),1);
+    validSquares.splice(validSquares.indexOf(37 * 42 + 5),1);
+    validSquares.splice(validSquares.indexOf(36 * 42 + 5),1);
+    spawnPrize(6 * 42 - 6);
+  }
+  //inGame
+  function spawnPrize(number = -1){
+    if (number === -1){
+      gameBoard[validSquares[Math.floor(Math.random() * validSquares.length)]] = 'P'
+    }else{
+      gameBoard[number] = "P";
+    }
   }
   //Printers
   function printSnakeBoard(){
@@ -58,14 +77,19 @@ function Snake() {
           // + (row * 42 + col)
            + "</div>"
         }else if (gameBoard[row * 42 + col] === "S"){
-          console.log(row, " " , col ," ", row * 42 + col);
+          // console.log(row, " " , col ," ", row * 42 + col);
           toPrint += "<div class='simpleSnake'>"
-           + (row * 42 + col)
+           // + (row * 42 + col)
            + "</div>"
         }else if (gameBoard[row * 42 + col] === "H"){
-                    console.log(row * 42 + col);
+                    // console.log(row * 42 + col);
           toPrint += "<div class='simpleSnake'>"
-          + (row * 42 + col)
+          // + (row * 42 + col)
+           + "</div>"
+        }
+        else if (gameBoard[row * 42 + col] === "P"){
+          toPrint += "<div class='simplePrize'>"
+          // + (row * 42 + col)
            + "</div>"
         }
       }

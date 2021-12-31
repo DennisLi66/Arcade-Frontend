@@ -27,6 +27,15 @@
   margin: 0;
   padding: 0;
 }
+.simplePrize{
+  border: 1px solid black;
+  float:left;
+  width: 14px;
+  height: 14px;
+  background-color: yellow;
+  margin: 0;
+  padding: 0;
+}
 .gameBoard{
   line-height: 0;
   border: 1px solid black;
