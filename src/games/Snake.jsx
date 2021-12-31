@@ -12,18 +12,20 @@ function Snake() {
   var gameBoard = []; //    42 * 42 Board
   var score = 0;
   var gameStarted = false;
+  var validSquares = [];
   //var direction;
   //var inMotion;
   //var snakeLength;
   //var snakePositions; //is a stack
 
+  //Pregame
   function fillGameBoard(){
     var borderRow = []
     for (let i = 0; i < 42; i++){
       borderRow.push("X");
     }
     //push top border row
-    gameBoard.push(borderRow);
+    gameBoard.push(...borderRow);
     //push middle content
     var row = [];
     row.push("X");
@@ -32,32 +34,38 @@ function Snake() {
     }
     row.push("X");
     for (let i = 0; i < 40; i++){
-      gameBoard.push(row);
+      gameBoard.push(...row);
     }
     //push bottom border row
-    gameBoard.push(borderRow);
-    // console.log(gameBoard);
-  }
-  function readInstructions(){
-    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(
-      <div>
-        <Button id='backButton'>Back</Button>
-        <h1> Instructions </h1>
-      </div>
-    )
-    document.getElementById('backButton').onclick = function(){getFrontPage()}
+    gameBoard.push(...borderRow);
+    console.log(gameBoard);
+    // gameBoard[1][1] = 'S'; //snake
+    // console.log(gameBoard[5][39])
+    // gameBoard[5][37] = 'S'; //snake
+    // gameBoard[5][36] = "H"; //head
+    //FIX THIS: ADD VALID SQUARES, THEN SPAWN PRIZE
   }
   //Printers
   function printSnakeBoard(){
     var toPrint = "<h1>Snake</h1><div class='gameBoard' id='gameBoard'>";
     for (let row = 0; row < 42; row++){
       for (let col = 0; col < 42; col++){
-        // toPrint += gameBoard[row][col];
-        if (gameBoard[row][col] === '0'){
+        if (gameBoard[row * 42 + col] === '0'){
           toPrint += "<div class='boardSquare'>" // + (row * 42 + col)
            + "</div>"
-        }else if (gameBoard[row][col] === 'X'){
-          toPrint += "<div class='borderSquare'>" // + (row * 42 + col)
+        }else if (gameBoard[row * 42 + col] === 'X'){
+          toPrint += "<div class='borderSquare'>"
+          // + (row * 42 + col)
+           + "</div>"
+        }else if (gameBoard[row * 42 + col] === "S"){
+          console.log(row, " " , col ," ", row * 42 + col);
+          toPrint += "<div class='simpleSnake'>"
+           + (row * 42 + col)
+           + "</div>"
+        }else if (gameBoard[row * 42 + col] === "H"){
+                    console.log(row * 42 + col);
+          toPrint += "<div class='simpleSnake'>"
+          + (row * 42 + col)
            + "</div>"
         }
       }
@@ -67,7 +75,7 @@ function Snake() {
     toPrint += "<div class='bulletinBoard' id='bulletinBoard'></div>";
     document.getElementById("gameScreen").innerHTML = toPrint;
     printInfoRow();
-  }
+  } //FIX THIS: can change toReact
   function printInfoRow(){
     var text = (<Button id='returnButton'>Return</Button>);
     var middleText;
@@ -88,6 +96,16 @@ function Snake() {
   }
   function startSnakeGame(){
     printSnakeBoard();
+  }
+  //Pages
+  function readInstructions(){ //FIX THIS: ADD INSTRUCTIONS
+    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <div>
+        <Button id='backButton'>Back</Button>
+        <h1> Instructions </h1>
+      </div>
+    )
+    document.getElementById('backButton').onclick = function(){getFrontPage()}
   }
   function getFrontPage(){
     document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(
