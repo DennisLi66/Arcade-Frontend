@@ -9,14 +9,11 @@ import ReactDOMServer from 'react-dom/server';
 //write function to spawn targets
 function Snake() {
   //IMPORTANT GAME VARIABLES
-  var gameBoard = []; //    42 * 42 Board
-  var score = 0;
+  var gameBoard = []; //    42 * 42 Board FIX THIS: SHOULD PROBABLY CHANGE SIZE
+  var score = 0; //snakeLength = score + 3
   // var timeElaspsed = 0;
-  var gameStarted = false;
   var validSquares = [];
-  //var direction;
-  //var inMotion;
-  //var snakeLength;
+  var direction = false; //will also tell us if gamestarted
   //var snakePositions; //is a stack
 
   //Pregame
@@ -44,13 +41,11 @@ function Snake() {
     gameBoard[37 * 42 + 5] = 'S'; //snake
     gameBoard[36 * 42 + 5] = "H"; //head
     validSquares = [...Array(42*42).keys()];
-    console.log(validSquares)
     for (let i = 0; i < (42 * 42); i++){
       if (i % 42 === 0 || i % 42 === 41 || i < 42 || i > (42 * 42 - 42)){
         validSquares.splice(validSquares.indexOf(i),1);
       }
     }
-    console.log(validSquares)
     validSquares.splice(validSquares.indexOf(38 * 42 + 5),1);
     validSquares.splice(validSquares.indexOf(37 * 42 + 5),1);
     validSquares.splice(validSquares.indexOf(36 * 42 + 5),1);
@@ -63,6 +58,30 @@ function Snake() {
     }else{
       gameBoard[number] = "P";
     }
+  }
+  function detectDirectionalKeyDown(key){
+    //left: 37, up: 38, right: 39, down: 40
+    key = key.keyCode;
+    // console.log(key);
+    if (key === 37 || key === '37'){
+      if (!direction){
+        direction = "left";
+        runGame();
+      }
+      direction = "left";
+    }else if (key === 38 || key === "38"){
+      direction = "up";
+    }else if (key === 39 || key === "39"){
+      direction = "right";
+    }else if (key === 40 || key === "40"){
+      direction = "down";
+    }
+  }
+  function runGame(){ //constantly check state of game
+    //if snake on prize, change that position to head and previous position to snake
+    //move snake
+      //check if lost
+        //also add a stopping condition
   }
   //Printers
   function printSnakeBoard(){
@@ -103,7 +122,7 @@ function Snake() {
   function printInfoRow(){
     var text = (<Button id='returnButton'>Return</Button>);
     var middleText;
-    if (gameStarted){
+    if (direction){
       middleText = " Score: " + score;
     }else{
       middleText = " Press on any of the arrow keys to start."
@@ -117,6 +136,7 @@ function Snake() {
       )
     );
     document.getElementById("returnButton").onclick = function(){getFrontPage()};
+    document.addEventListener('keydown',detectDirectionalKeyDown);
   }
   function startSnakeGame(){
     printSnakeBoard();
