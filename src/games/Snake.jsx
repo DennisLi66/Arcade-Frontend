@@ -12,10 +12,34 @@ function Snake() {
   var gameBoard = []; //    42 * 42 Board FIX THIS: SHOULD PROBABLY CHANGE SIZE
   var score = 0; //snakeLength = score + 3
   // var timeElaspsed = 0;
+  var intervalID;
   var validSquares = [];
   var direction = false; //will also tell us if gamestarted
-  //var snakePositions; //is a stack
+  var snakePositions; //is a stack
 
+  //Helper Functions
+  function moveToSpace(space){
+    if (space < 42 || space > (42*42-42) ||  space % 42 === 41 || space % 42 === 0 || snakePositions.slice(1).indexOf(space) !== -1 ){//snake collides onto wall or body part that is not tail //FIX THIS
+      clearInterval(intervalID);
+      displayEndingScreen();
+    }else{
+      //add snake head to location above previous head
+      //change snake stack
+      //change validSquares
+      // if (gameBoard[space] === 'P'){
+      //   //change previous head to snake body
+      //   //change prize slot to head
+      //   spawnPrize(); //add new prize
+      // }else{
+      //   //move head to new slot
+      //   //change previous tail to empty space
+      // }
+      //if snake on prize, change that position to head and previous position to snake
+      //move snake
+        //check if lost
+          //also add a stopping condition
+    }
+  }
   //Pregame
   function fillGameBoard(){
     var borderRow = []
@@ -40,6 +64,7 @@ function Snake() {
     gameBoard[38 * 42 + 5] = 'S'; //snake
     gameBoard[37 * 42 + 5] = 'S'; //snake
     gameBoard[36 * 42 + 5] = "H"; //head
+    snakePositions.push(...[38*42+5,37*42+5,36*42+5])
     validSquares = [...Array(42*42).keys()];
     for (let i = 0; i < (42 * 42); i++){
       if (i % 42 === 0 || i % 42 === 41 || i < 42 || i > (42 * 42 - 42)){
@@ -62,26 +87,44 @@ function Snake() {
   function detectDirectionalKeyDown(key){
     //left: 37, up: 38, right: 39, down: 40
     key = key.keyCode;
-    // console.log(key);
+    console.log(key);
     if (key === 37 || key === '37'){
       if (!direction){
         direction = "left";
-        runGame();
+        intervalID = setInterval(runGame, 1000);
       }
       direction = "left";
     }else if (key === 38 || key === "38"){
+      if (!direction){
+        direction = "up";
+        intervalID = setInterval(runGame, 1000);
+      }
       direction = "up";
     }else if (key === 39 || key === "39"){
+      if (!direction){
+        direction = "right";
+        intervalID = setInterval(runGame, 1000);
+      }
       direction = "right";
     }else if (key === 40 || key === "40"){
+      if (!direction){
+        direction = "down";
+        intervalID = setInterval(runGame, 1000);
+      }
       direction = "down";
     }
   }
   function runGame(){ //constantly check state of game
-    //if snake on prize, change that position to head and previous position to snake
-    //move snake
-      //check if lost
-        //also add a stopping condition
+    console.log(direction);
+    if (direction === "up"){
+      moveToSpace(snakePositions[snakePositions.length - 1]- 42)
+    }else if (direction === "left"){
+      moveToSpace(snakePositions[snakePositions.length - 1] - 1)
+    }else if (direction === "right"){
+      moveToSpace(snakePositions[snakePositions.length - 1] + 1)
+    }else if (direction === "down"){
+      moveToSpace(snakePositions[snakePositions.length - 1] + 42)
+    }
   }
   //Printers
   function printSnakeBoard(){
@@ -117,8 +160,7 @@ function Snake() {
     toPrint += "</div>";
     toPrint += "<div class='bulletinBoard' id='bulletinBoard'></div>";
     document.getElementById("gameScreen").innerHTML = toPrint;
-    printInfoRow();
-  } //FIX THIS: can change toReact
+  }
   function printInfoRow(){
     var text = (<Button id='returnButton'>Return</Button>);
     var middleText;
@@ -136,10 +178,11 @@ function Snake() {
       )
     );
     document.getElementById("returnButton").onclick = function(){getFrontPage()};
-    document.addEventListener('keydown',detectDirectionalKeyDown);
   }
   function startSnakeGame(){
     printSnakeBoard();
+    printInfoRow();
+    document.addEventListener('keydown',detectDirectionalKeyDown);
   }
   //Pages
   function readInstructions(){ //FIX THIS: ADD INSTRUCTIONS
@@ -163,6 +206,9 @@ function Snake() {
     )
     document.getElementById('playSnakeButton').onclick = function(){startSnakeGame()};
     document.getElementById('readInstructionsButton').onclick = function(){readInstructions()};
+  }
+  function displayEndingScreen(){
+    //FIX THIS ADD LOSING SCREEN
   }
 
   fillGameBoard();
