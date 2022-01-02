@@ -3,23 +3,25 @@ import Button from 'react-bootstrap/Button'
 import "./css/Snake.css"
 import ReactDOMServer from 'react-dom/server';
 
-//To do
-//convert to a react hook
-//Draw snake
-//write function to spawn targets
+//Could Add Difficuly FIX THIS, like faster or constantly increasing
+//Add seeing scores FIX THIS
+//Add score submission FIX THIS
+
 function Snake() {
   //IMPORTANT GAME VARIABLES
   var gameBoard = []; //    42 * 42 Board FIX THIS: SHOULD PROBABLY CHANGE SIZE
   var score = 0; //snakeLength = score + 3
+  //var lastPress = 0;
   // var timeElaspsed = 0;
-  var intervalID;
+  var intervalID = "";
   var validSquares = [];
   var direction = false; //will also tell us if gamestarted
-  var snakePositions; //is a stack
-
+  var currentDirection = false;
+  var snakePositions = []; //is a stack
   //Helper Functions
   function moveToSpace(space){
     if (space < 42 || space > (42*42-42) ||  space % 42 === 41 || space % 42 === 0 || snakePositions.slice(1).indexOf(space) !== -1 ){//snake collides onto wall or body part that is not tail //FIX THIS
+      direction = "end";
       clearInterval(intervalID);
       displayEndingScreen();
     }else{
@@ -30,6 +32,7 @@ function Snake() {
         validSquares.splice(validSquares.indexOf(space),1)//change prize slot to head
         score++;
         spawnPrize(); //add new prize
+        printInfoRow();
       }else{
         //Make new space head
         gameBoard[snakePositions[snakePositions.length - 1]] = 'S';
@@ -37,17 +40,26 @@ function Snake() {
         validSquares.splice(validSquares.indexOf(space),1)
         snakePositions.push(space);
         //Make old tail valid
-        var tail = snakePositions.pop(); //pop stack snake
+        var tail = snakePositions.shift(); //pop stack snake
         gameBoard[tail] = "0";//change previous tail to empty space
-        validSquares.push(space)//make tail validsquare
+        validSquares.push(space);//make tail validsquare
       }
       printSnakeBoard();
-      printInfoRow();
     }
   }
   //Pregame
   function fillGameBoard(){
-    var borderRow = []
+    if (intervalID !== ""){
+      clearInterval(intervalID);
+    }
+    intervalID = "";
+    validSquares = [];
+    direction = false;
+    snakePositions = [];
+    gameBoard = [];
+    score = 0;
+    //Actual Function
+    var borderRow = [];
     for (let i = 0; i < 42; i++){
       borderRow.push("X");
     }
@@ -65,7 +77,6 @@ function Snake() {
     }
     //push bottom border row
     gameBoard.push(...borderRow);
-    //console.log(gameBoard);
     gameBoard[38 * 42 + 5] = 'S'; //snake
     gameBoard[37 * 42 + 5] = 'S'; //snake
     gameBoard[36 * 42 + 5] = "H"; //head
@@ -93,47 +104,63 @@ function Snake() {
     //left: 37, up: 38, right: 39, down: 40
     key = key.keyCode;
     console.log(key);
-    if (key === 37 || key === '37'){
+    if ((key === 37 || key === '37') && currentDirection !== "right"){
       if (!direction){
         direction = "left";
-        intervalID = setInterval(runGame, 1000);
+        intervalID = setInterval(runGame, 125);
+        printInfoRow();
       }
       direction = "left";
-    }else if (key === 38 || key === "38"){
+    }else if ((key === 38 || key === "38") && currentDirection !== "down"){
       if (!direction){
         direction = "up";
-        intervalID = setInterval(runGame, 1000);
+        intervalID = setInterval(runGame, 125);
+        printInfoRow();
       }
       direction = "up";
-    }else if (key === 39 || key === "39"){
+    }else if ((key === 39 || key === "39") && currentDirection !== "left"){
       if (!direction){
         direction = "right";
-        intervalID = setInterval(runGame, 1000);
+        intervalID = setInterval(runGame, 125);
+        printInfoRow();
       }
       direction = "right";
-    }else if (key === 40 || key === "40"){
-      if (!direction){
+    }else if ((key === 40 || key === "40") && currentDirection !== "up"){
+      if (direction){
         direction = "down";
-        intervalID = setInterval(runGame, 1000);
       }
-      direction = "down";
+    }
+    else if ((key === 82 || key === "82")){ //R
+      startSnakeGame();
     }
   }
   function runGame(){ //constantly check state of game
-    console.log(direction);
+    //console.log(direction);
     if (direction === "up"){
+      currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1]- 42)
     }else if (direction === "left"){
+      currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1] - 1)
     }else if (direction === "right"){
+      currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1] + 1)
     }else if (direction === "down"){
+      currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1] + 42)
     }
   }
   //Printers
-  function printSnakeBoard(){
+  function printInitialContent(){
     var toPrint = "<h1>Snake</h1><div class='gameBoard' id='gameBoard'>";
+    toPrint += "</div>";
+    toPrint += "<div class='bulletinBoard' id='bulletinBoard'></div>";
+    document.getElementById("gameScreen").innerHTML = toPrint;
+    printSnakeBoard();
+    printInfoRow();
+  }
+  function printSnakeBoard(){
+    var toPrint = "";
     for (let row = 0; row < 42; row++){
       for (let col = 0; col < 42; col++){
         if (gameBoard[row * 42 + col] === '0'){
@@ -162,31 +189,33 @@ function Snake() {
       }
       toPrint += "<br></br>"
     }
-    toPrint += "</div>";
-    toPrint += "<div class='bulletinBoard' id='bulletinBoard'></div>";
-    document.getElementById("gameScreen").innerHTML = toPrint;
+    document.getElementById("gameBoard").innerHTML = toPrint;
   }
   function printInfoRow(){
-    var text = (<Button id='returnButton'>Return</Button>);
+    var text = (<Button id='returnButton'>Main Menu</Button>);
     var middleText;
+    var quickRestartButton;
     if (direction){
-      middleText = " Score: " + score;
+      middleText = (" Score: " + score + " ");
+      quickRestartButton = (<Button id="quickRestartButton">Quick Restart</Button>)
     }else{
-      middleText = " Press on any of the arrow keys to start."
+      middleText = ("Press on any of the arrow keys to start.")
     }
     document.getElementById("bulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
       (
         <div>
           {text}
           {middleText}
+          {quickRestartButton}
         </div>
       )
     );
     document.getElementById("returnButton").onclick = function(){getFrontPage()};
+    if (direction) document.getElementById("quickRestartButton").onclick = function(){startSnakeGame()};
   }
   function startSnakeGame(){
-    printSnakeBoard();
-    printInfoRow();
+    fillGameBoard();
+    printInitialContent();
     document.addEventListener('keydown',detectDirectionalKeyDown);
   }
   //Pages
@@ -214,9 +243,9 @@ function Snake() {
   }
   function displayEndingScreen(){
     //FIX THIS ADD LOSING SCREEN
+    //document.removeEventListener('keydown',detectDirectionalKeyDown);
   }
 
-  fillGameBoard();
   return (
     <div className="gameScreen" id="gameScreen">
       <h1>Snake</h1>
