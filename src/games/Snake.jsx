@@ -23,21 +23,26 @@ function Snake() {
       clearInterval(intervalID);
       displayEndingScreen();
     }else{
-      //add snake head to location above previous head
-      //change snake stack
-      //change validSquares
-      // if (gameBoard[space] === 'P'){
-      //   //change previous head to snake body
-      //   //change prize slot to head
-      //   spawnPrize(); //add new prize
-      // }else{
-      //   //move head to new slot
-      //   //change previous tail to empty space
-      // }
-      //if snake on prize, change that position to head and previous position to snake
-      //move snake
-        //check if lost
-          //also add a stopping condition
+      if (gameBoard[space] === 'P'){
+        gameBoard[snakePositions[snakePositions.length - 1]] = 'S';//change previous head to snake body
+        gameBoard[space] = 'H';
+        snakePositions.push(space);
+        validSquares.splice(validSquares.indexOf(space),1)//change prize slot to head
+        score++;
+        spawnPrize(); //add new prize
+      }else{
+        //Make new space head
+        gameBoard[snakePositions[snakePositions.length - 1]] = 'S';
+        gameBoard[space] = 'H';
+        validSquares.splice(validSquares.indexOf(space),1)
+        snakePositions.push(space);
+        //Make old tail valid
+        var tail = snakePositions.pop(); //pop stack snake
+        gameBoard[tail] = "0";//change previous tail to empty space
+        validSquares.push(space)//make tail validsquare
+      }
+      printSnakeBoard();
+      printInfoRow();
     }
   }
   //Pregame
