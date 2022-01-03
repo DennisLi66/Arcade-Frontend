@@ -11,8 +11,7 @@ function Snake() {
   //IMPORTANT GAME VARIABLES
   var gameBoard = []; //    42 * 42 Board FIX THIS: SHOULD PROBABLY CHANGE SIZE
   var score = 0; //snakeLength = score + 3
-  //var lastPress = 0;
-  // var timeElaspsed = 0;
+  var timeElaspsed = 0;
   var intervalID = "";
   var validSquares = [];
   var direction = false; //will also tell us if gamestarted
@@ -20,7 +19,7 @@ function Snake() {
   var snakePositions = []; //is a stack
   //Helper Functions
   function moveToSpace(space){
-    if (space < 42 || space > (42*42-42) ||  space % 42 === 41 || space % 42 === 0 || snakePositions.slice(1).indexOf(space) !== -1 ){//snake collides onto wall or body part that is not tail //FIX THIS
+    if (space < 42 || space > (42*42-42) ||  space % 42 === 41 || space % 42 === 0 || snakePositions.slice(1).indexOf(space) !== -1 ){//snake collides onto wall or body part that is not tail
       direction = "end";
       clearInterval(intervalID);
       displayEndingScreen();
@@ -52,6 +51,7 @@ function Snake() {
     if (intervalID !== ""){
       clearInterval(intervalID);
     }
+    timeElaspsed = 0;
     intervalID = "";
     validSquares = [];
     direction = false;
@@ -135,17 +135,20 @@ function Snake() {
     }
   }
   function runGame(){ //constantly check state of game
-    //console.log(direction);
     if (direction === "up"){
+      timeElaspsed = Date.now();
       currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1]- 42)
     }else if (direction === "left"){
+      timeElaspsed = Date.now();
       currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1] - 1)
     }else if (direction === "right"){
+      timeElaspsed = Date.now();
       currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1] + 1)
     }else if (direction === "down"){
+      timeElaspsed = Date.now();
       currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1] + 42)
     }
@@ -197,7 +200,7 @@ function Snake() {
     var quickRestartButton;
     if (direction){
       middleText = (" Score: " + score + " ");
-      quickRestartButton = (<Button id="quickRestartButton">Quick Restart</Button>)
+      quickRestartButton = (<Button id="quickRestartButton">Restart</Button>)
     }else{
       middleText = ("Press on any of the arrow keys to start.")
     }
@@ -241,9 +244,27 @@ function Snake() {
     document.getElementById('playSnakeButton').onclick = function(){startSnakeGame()};
     document.getElementById('readInstructionsButton').onclick = function(){readInstructions()};
   }
-  function displayEndingScreen(){
-    //FIX THIS ADD LOSING SCREEN
+  //Post GAME
+  function submitScore(){
+
+  }
+  function displayEndingScreen(){ //Display Score and Time Elapsed, Restart Button, Submit Score Button
     //document.removeEventListener('keydown',detectDirectionalKeyDown);
+    var scoreInformation = (" Score: " + score + " Time Elasped: " + Date.now() - timeElaspsed);
+    var returnButton = (<Button id="returnButton">Main Menu</Button>)
+    var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
+    var submitScoreButton = (<Button id='submitScoreButton'>Submit Score</Button>)
+    document.getElementById('bulletinBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <div>
+        {returnButton}
+        {scoreInformation}
+        {quickRestartButton}
+        {submitScoreButton}
+      </div>
+    );
+    document.getElementById("returnButton").onclick = function(){getFrontPage()};
+    document.getElementById("quickRestartButton").onclick = function(){startSnakeGame()};
+    document.getElementById("submitScoreButton").onclick = function(){submitScore()}
   }
 
   return (
