@@ -2,12 +2,14 @@ import React from "react";
 import Button from 'react-bootstrap/Button'
 import "./css/Snake.css"
 import ReactDOMServer from 'react-dom/server';
-
+import Cookies from 'universal-cookie';
+require('dotenv').config();
 //Could Add Difficuly FIX THIS, like faster or constantly increasing
 //Add seeing scores FIX THIS
 //Add score submission FIX THIS
 
 function Snake() {
+  const cookies = React.useMemo(() => {return new Cookies()},[])
   //IMPORTANT GAME VARIABLES
   var gameBoard = []; //    42 * 42 Board FIX THIS: SHOULD PROBABLY CHANGE SIZE
   var score = 0; //snakeLength = score + 3
@@ -17,10 +19,12 @@ function Snake() {
   var direction = false; //will also tell us if gamestarted
   var currentDirection = false;
   var snakePositions = []; //is a stack
+  var endingTime = 0;
   //Helper Functions
   function moveToSpace(space){
     if (space < 42 || space > (42*42-42) ||  space % 42 === 41 || space % 42 === 0 || snakePositions.slice(1).indexOf(space) !== -1 ){//snake collides onto wall or body part that is not tail
       direction = "end";
+      endingTime = Date.now() - timeElaspsed;
       clearInterval(intervalID);
       displayEndingScreen();
     }else{
@@ -162,8 +166,11 @@ function Snake() {
     printSnakeBoard();
     printInfoRow();
   }
-  function printSnakeBoard(){
+  function printSnakeBoard(message = ""){
     var toPrint = "";
+    if (message !== ""){
+      toPrint += "<div class='errMsg'>" + message + "</div>"
+    }
     for (let row = 0; row < 42; row++){
       for (let col = 0; col < 42; col++){
         if (gameBoard[row * 42 + col] === '0'){
@@ -237,20 +244,45 @@ function Snake() {
         <div>
           <h1>Snake</h1>
             <Button id='playSnakeButton'>Play Snake</Button><br></br>
-            <Button id='readInstructionsButton'>Read Instructions</Button><br></br><br></br>
+            <Button id='readInstructionsButton'>Read Instructions</Button><br></br>
+            <Button id="getScoresButton">Scores</Button><br></br><br></br>
         </div>
       )
     )
     document.getElementById('playSnakeButton').onclick = function(){startSnakeGame()};
     document.getElementById('readInstructionsButton').onclick = function(){readInstructions()};
+    document.getElementById('getScoresButton').onclick = function(){getScoresPage()}
+  }
+  function getScoresPage(message = ""){
+
   }
   //Post GAME
   function submitScore(){
-
+    if (cookies.get("id")){
+      const requestSetup = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({userID:cookies.get("id"),score:score,gameID:1,
+        timeInMilliseconds: endingTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
+      }
+      fetch(process.env.REACT_APP_SERVERLOCATION + 'scoreswithtimes',requestSetup)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === -1){
+            printSnakeBoard(data.message);
+          }else{
+            getScoresPage("Your score has been submitted.")
+          }
+        })
+      //redirect to personal scores FIX THIS
+    }else{
+      //ask that the user logs in FIX THIS
+      // pass a dictionary to a new object in a new file
+    }
   }
   function displayEndingScreen(){ //Display Score and Time Elapsed, Restart Button, Submit Score Button
     //document.removeEventListener('keydown',detectDirectionalKeyDown);
-    var scoreInformation = (" Score: " + score + " Time Elasped: " + Date.now() - timeElaspsed);
+    var scoreInformation = (" Score: " + score + " Time Elasped: " + endingTime);
     var returnButton = (<Button id="returnButton">Main Menu</Button>)
     var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
     var submitScoreButton = (<Button id='submitScoreButton'>Submit Score</Button>)
