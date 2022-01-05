@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie';
 require('dotenv').config();
 
 function loginFunctionality(gameData){
+  const cookies = new Cookies();
   function getLoginPage(errMsg = "",confMsg = ""){
     var loginContent = (
       <div>
@@ -83,11 +84,56 @@ function loginFunctionality(gameData){
   function handleForgotPassword(){
 
   }
-  function handleLogin(){
+  function handleLogin(event){
     //once logged in refresh the page after submitting score
+    event.preventDefault();
+    var email = document.getElementById("userEmail").value;
+    var password = document.getElementById("password").value;
+    var timeDuration = document.getElementById("rememberMe").checked ? "forever" : "hour";
+    const requestSetup = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({email: email, password:password,timeDuration:timeDuration})
+    }
+    fetch(process.env.REACT_APP_SERVERLOCATION + "/login",requestSetup)
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === -1){
+          getLoginPage(data.message,"")
+        }else if (data.status === 0){
+          cookies.set('name',data.username,{path:'/'});
+          cookies.set('id',data.userID,{path:'/'});
+          cookies.set('sessionID',data.sessionID,{path:'/'});
+          cookies.set('redirect','Snake',{path:'/'});
+          window.reload();
+        }
+      })
   }
-  function handleRegistration(){
+  function handleRegistration(event){
     //once logged in refresh the page after submitting score
+    event.preventDefault();
+    var userPassword = document.getElementById('password').value;
+    var confPassword = document.getElementById('confPass').value;
+    var email = document.getElementById('userEmail').value;
+    var username = document.getElementById('username').value;
+    if (userPassword !== confPassword){
+      getRegisterPage("Your passwords did not match.")
+    }else{
+      const requestSetup = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({email: email, username: username,password:userPassword})
+      };
+      fetch(process.env.REACT_APP_SERVERLOCATION + "/register",requestSetup)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === -1){
+            getRegisterPage(data.message)
+          }else{
+            getLoginPage("","You have successfully registered!");
+          }
+        })
+    }
   }
   return (
     <div>
