@@ -1,6 +1,7 @@
 import React from "react";
 import Button from 'react-bootstrap/Button'
 import "./css/Snake.css"
+import loginFunctionality from "../loginFunctionality/loginFunctionality"
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 require('dotenv').config();
@@ -254,7 +255,7 @@ function Snake() {
     document.getElementById('getScoresButton').onclick = function(){getScoresPage()}
   }
   function getScoresPage(message = ""){
-
+    //FIX THIS
   }
   //Post GAME
   function submitScore(){
@@ -274,8 +275,10 @@ function Snake() {
             getScoresPage("Your score has been submitted.")
           }
         })
-      //redirect to personal scores FIX THIS
     }else{
+      document.getElementById('gameScreen').innerHTML = ReactDOMServer(
+        loginFunctionality({score: score, timeInMilliseconds: endingTime, gameID: 1})
+      )
       //ask that the user logs in FIX THIS
       // pass a dictionary to a new object in a new file
     }

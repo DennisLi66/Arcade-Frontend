@@ -325,22 +325,27 @@ function App() {
       }else{
         changeNavbarToLoggedOut();
       }
-
-      var conf;
-      if (confMsg !== ""){
-        conf = (<div className='confMsg'>{confMsg}</div>)
-      }
-      changeBody((
-        <div>
-          {conf}
-          <h1>Welcome to Dennis' Arcade!</h1>
+      if (cookies.get("redirect")){
+        if (cookies.get("redirect") === "Snake"){
+          openGame("Snake");
+        }
+      }else{
+        var conf;
+        if (confMsg !== ""){
+          conf = (<div className='confMsg'>{confMsg}</div>)
+        }
+        changeBody((
           <div>
-            <div className="gameBox">
-              <Button  onClick={() => {openGame("Snake")}}>Play Snake</Button>
+            {conf}
+            <h1>Welcome to Dennis' Arcade!</h1>
+            <div>
+              <div className="gameBox">
+                <Button  onClick={() => {openGame("Snake")}}>Play Snake</Button>
+              </div>
             </div>
           </div>
-        </div>
-      ));
+        ));
+      }
   },[cookies])
 
   React.useEffect(() => {

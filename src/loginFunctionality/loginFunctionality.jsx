@@ -81,8 +81,131 @@ function loginFunctionality(gameData){
       forgotPasswordCode
     )
   }
-  function handleForgotPassword(){
-
+  function handleForgotPassword(event){
+    event.preventDefault();
+    var email = document.getElementById("userEmail").value;
+    const requestSetup = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({email: email})
+    }
+    fetch(process.env.REACT_APP_SERVERLOCATION + "/forgotpassword",requestSetup)
+      .then(response => response.json())
+      .then(data=>{
+        if (data.status === -1){
+          getForgotPasswordPage(data.message);
+        }else if (data.status === 0){
+          var fPassText = (
+            <div>
+              If the email, {email}, exists in our database, it should have just received an email with an activation code in it.<br></br>
+              Enter that code in below:<br></br>
+              <form onSubmit={(event)=>{handleCodeSubmission(event,3,email)}}>
+              Chances Remaining: 3 <br></br>
+              <label htmlFor='code'>Code:</label><br></br>
+              <input name='code' id='code' autoComplete='off' required></input><br></br>
+              <Button type='submit'>Submit</Button>
+              </form>
+            </div>
+          )
+          document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(fPassText);
+        }
+      })
+  }
+  function handleCodeSubmission(event,chances,email){
+    event.preventDefault();
+    var code = document.getElementById('code').value;
+    const requestSetup = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({code:code,email:email})
+    }
+    fetch(process.env.REACT_APP_SERVERLOCATION + "/forgotpasswordcode",requestSetup)
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 0){
+          showChangePasswordPage(email,"",code);
+        }else if (data.status === -1){
+          document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(
+            <div>
+              <div className='errMsg'>{data.message}</div>
+              If the email, {email}, exists in our database, it should have just received an email with an activation code in it.<br></br>
+              Enter that code in below:<br></br>
+              <form onSubmit={(event)=>{handleCodeSubmission(event,chances,email)}}>
+              Chances Remaining: {chances} <br></br>
+              <label htmlFor='code'>Code:</label><br></br>
+              <input name='code' id='code' autoComplete='off' required></input><br></br>
+              <Button type='submit'>Submit</Button>
+              </form>
+            </div>
+          )
+        }
+        else if (data.status === -2){
+          if (chances === 1){
+            getForgotPasswordPage("You've run out of chances.")
+          }else{
+            document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+              <div>
+                <div className='errMsg'> That was not correct. </div>
+                If the email, {email}, exists in our database, it should have just received an email with an activation code in it.<br></br>
+                Enter that code in below:<br></br>
+                <form onSubmit={(event)=>{handleCodeSubmission(event,chances - 1,email)}}>
+                Chances Remaining: {chances - 1} <br></br>
+                <label htmlFor='code'>Code:</label><br></br>
+                <input name='code' id='code' autoComplete='off' required></input><br></br>
+                <Button type='submit'>Submit</Button>
+                </form>
+              </div>
+            )
+          }
+        }
+      })
+  }
+  function showChangePasswordPage(email,error = "",code){
+    var errMsg;
+    if (error !== ""){
+      errMsg = (<div className='errMsg'>{error}</div>)
+    }
+    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <div>
+        {errMsg}
+        <h1>Change Your Password</h1>
+        You may now change your password.
+        <form onSubmit={(event)=>{handleNewPassword(event,email,code)}}>
+          <label htmlFor="newPass">New Password</label><br></br>
+          <input type="password" name="newPass" id="newPass" required minLength='8'></input><br></br>
+          <label htmlFor="confPass">Confirm Password</label><br></br>
+          <input type="password" name="confPass" id="confPass" required minLength='8'></input><br></br>
+          <Button type='submit'>Submit</Button>
+        </form>
+      </div>
+    )
+  }
+  function handleNewPassword(event,email,code){
+    event.preventDefault();
+    var password = document.getElementById("newPass").value;
+    var confPass = document.getElementById("confPass").value;
+    if (password !== confPass){
+      showChangePasswordPage(email,"Those passwords did not match.",code)
+    }else{
+      const requestSetup = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({email:email,code:code,password:password})
+      }
+      fetch(process.env.REACT_APP_SERVERLOCATION + "/changepassword",requestSetup)
+        .then(response => response.json())
+        .then(data=>{
+          if (data.status === -1){
+            showChangePasswordPage(email,data.message)
+          }else if (data.status === 0){
+            if (cookies.get("id")){
+              //FIX THIS
+            }else{
+              getLoginPage("","You have successfully changed your password.")
+            }
+          }
+        })
+    }
   }
   function handleLogin(event){
     //once logged in refresh the page after submitting score
@@ -101,11 +224,26 @@ function loginFunctionality(gameData){
         if (data.status === -1){
           getLoginPage(data.message,"")
         }else if (data.status === 0){
-          cookies.set('name',data.username,{path:'/'});
-          cookies.set('id',data.userID,{path:'/'});
-          cookies.set('sessionID',data.sessionID,{path:'/'});
-          cookies.set('redirect','Snake',{path:'/'});
-          window.reload();
+          var request2Setup = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({sessionID: data.sessionID,userID:data.userID,gameID:gameData.gameID,
+              score: gameData.score, timeInMilliseconds: gameData.timeInMilliseconds
+            })
+          }
+          fetch(process.env.REACT_APP_SERVERLOCATION + "",request2Setup)
+            .then(repsonse => repsonse.json())
+            .then(daat => {
+              if (data.status === -1){
+                getLoginPage(daat.message,"")
+              }else{
+                cookies.set('name',data.username,{path:'/'});
+                cookies.set('id',data.userID,{path:'/'});
+                cookies.set('sessionID',data.sessionID,{path:'/'});
+                cookies.set('redirect','Snake',{path:'/'});
+                window.reload();
+              }
+            })
         }
       })
   }
