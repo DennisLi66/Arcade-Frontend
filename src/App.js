@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button'
 import Cookies from 'universal-cookie';
 import Snake from './games/Snake';
 require('dotenv').config();
-
+//logout causes crash
 //Update adding timeduration to Login
 function App() {
 
@@ -154,7 +154,6 @@ function App() {
             if (data.status === -1){
               getLoginPage(data.message,"")
             }else if (data.status === 0){
-              cookies.set('name',data.username,{path:'/'});
               cookies.set('id',data.userID,{path:'/'});
               cookies.set('sessionID',data.sessionID,{path:'/'});
               //cookies.set('expireTime',rememberMe === 'hour' ? Date.now() + 3600000 : "forever",{path:"/"});

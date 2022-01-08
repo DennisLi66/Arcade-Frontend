@@ -1,5 +1,6 @@
 import React from "react";
 import Button from 'react-bootstrap/Button'
+import Table from 'react-bootstrap/Table'
 import "./css/Snake.css"
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
 import ReactDOMServer from 'react-dom/server';
@@ -10,11 +11,11 @@ require('dotenv').config();
 //Add score submission FIX THIS
 
 function Snake() {
-  const cookies = React.useMemo(() => {return new Cookies()},[])
+  const cookies = new Cookies();
   //IMPORTANT GAME VARIABLES
   var gameBoard = []; //    42 * 42 Board FIX THIS: SHOULD PROBABLY CHANGE SIZE
   var score = 0; //snakeLength = score + 3
-  var timeElaspsed = 0;
+  var startingTime = 0;
   var intervalID = "";
   var validSquares = [];
   var direction = false; //will also tell us if gamestarted
@@ -25,7 +26,7 @@ function Snake() {
   function moveToSpace(space){
     if (space < 42 || space > (42*42-42) ||  space % 42 === 41 || space % 42 === 0 || snakePositions.slice(1).indexOf(space) !== -1 ){//snake collides onto wall or body part that is not tail
       direction = "end";
-      endingTime = Date.now() - timeElaspsed;
+      endingTime = Date.now() - startingTime;
       clearInterval(intervalID);
       displayEndingScreen();
     }else{
@@ -56,7 +57,7 @@ function Snake() {
     if (intervalID !== ""){
       clearInterval(intervalID);
     }
-    timeElaspsed = 0;
+    startingTime = 0;
     intervalID = "";
     validSquares = [];
     direction = false;
@@ -108,10 +109,11 @@ function Snake() {
   function detectDirectionalKeyDown(key){
     //left: 37, up: 38, right: 39, down: 40
     key = key.keyCode;
-    console.log(key);
+    // console.log(key);
     if ((key === 37 || key === '37') && currentDirection !== "right"){
       if (!direction){
         direction = "left";
+        startingTime = Date.now();
         intervalID = setInterval(runGame, 125);
         printInfoRow();
       }
@@ -119,6 +121,7 @@ function Snake() {
     }else if ((key === 38 || key === "38") && currentDirection !== "down"){
       if (!direction){
         direction = "up";
+        startingTime = Date.now();
         intervalID = setInterval(runGame, 125);
         printInfoRow();
       }
@@ -126,6 +129,7 @@ function Snake() {
     }else if ((key === 39 || key === "39") && currentDirection !== "left"){
       if (!direction){
         direction = "right";
+        startingTime = Date.now();
         intervalID = setInterval(runGame, 125);
         printInfoRow();
       }
@@ -141,19 +145,15 @@ function Snake() {
   }
   function runGame(){ //constantly check state of game
     if (direction === "up"){
-      timeElaspsed = Date.now();
       currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1]- 42)
     }else if (direction === "left"){
-      timeElaspsed = Date.now();
       currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1] - 1)
     }else if (direction === "right"){
-      timeElaspsed = Date.now();
       currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1] + 1)
     }else if (direction === "down"){
-      timeElaspsed = Date.now();
       currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1] + 42)
     }
@@ -254,11 +254,61 @@ function Snake() {
     document.getElementById('readInstructionsButton').onclick = function(){readInstructions()};
     document.getElementById('getScoresButton').onclick = function(){getScoresPage()}
   }
-  function getScoresPage(message = ""){
+  function getScoresPage(message = "", rule = ""){
     //FIX THIS
+    function prev10Scores(){
+
+    }
+    function next10Scores(){
+
+    }
+    var fetchString;
+    var scoreTitle;
+    if (rule === "" || rule === "best"){//Get the best
+      fetchString = "/scoreswithtimes?sortBy=top";
+      scoreTitle = "Top Scores";
+    }else if (rule === "recent"){
+      fetchString = "/scoreswithtimes?sortBy=recent"
+      scoreTitle = "Recent Scores";
+    }else if (rule === "mybest"){
+      fetchString = "/scoreswithtimes?sortBy=top&userID="  + cookies.get("id");
+      scoreTitle = "Your Top Scores";
+    }else if (rule === "myrecent"){
+      fetchString = "scoreswithtimes?sortBy=recent&userID=" + cookies.get("id");
+      scoreTitle = "Your Recent Scores";
+    }
+    fetch(process.env.REACT_APP_SERVERLOCATION + fetchString + '&gameID=1')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.status === -1){
+          // do nothing... FIX THIS
+          console.log(data.message);
+        }else{
+          var listOfElements = [];
+          console.log(data.results);
+          for (let i = 0; i < Math.min(data.results.length,10); i++){
+            listOfElements.push(<tr key = {i}><td>{i + 1}</td> <td> {data.results[i][0]} </td> <td> {data.results[i][1]} </td> <td> {data.results[i][2]}</td> <td> {data.results[i][3]}</td> </tr>)
+          }
+          var reactString = (
+            <div>
+              <h1> {scoreTitle} </h1>
+              <Table>
+              <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
+              <tbody>
+              {listOfElements}
+              </tbody>
+              </Table>
+            </div>
+          );
+          document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
+        }
+      })
   }
   //Post GAME
   function submitScore(){
+    console.log(cookies.get("id"));
+    console.log(cookies.get("sessionID"));
     if (cookies.get("id")){
       const requestSetup = {
         method: 'PUT',
@@ -266,9 +316,10 @@ function Snake() {
         body: JSON.stringify({userID:cookies.get("id"),score:score,gameID:1,
         timeInMilliseconds: endingTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
       }
-      fetch(process.env.REACT_APP_SERVERLOCATION + 'scoreswithtimes',requestSetup)
+      fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
         .then(response => response.json())
         .then(data => {
+          console.log(data);
           if (data.status === -1){
             printSnakeBoard(data.message);
           }else{
@@ -285,7 +336,7 @@ function Snake() {
   }
   function displayEndingScreen(){ //Display Score and Time Elapsed, Restart Button, Submit Score Button
     //document.removeEventListener('keydown',detectDirectionalKeyDown);
-    var scoreInformation = (" Score: " + score + " Time Elasped: " + endingTime);
+    var scoreInformation = (" Score: " + score + " Time Elapsed: " + endingTime / 1000 + " seconds ");
     var returnButton = (<Button id="returnButton">Main Menu</Button>)
     var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
     var submitScoreButton = (<Button id='submitScoreButton'>Submit Score</Button>)
@@ -307,6 +358,7 @@ function Snake() {
       <h1>Snake</h1>
       <Button onClick={startSnakeGame}>Play Snake</Button><br></br>
       <Button onClick={readInstructions}>Read Instructions</Button><br></br>
+      <Button onClick={getScoresPage}>Scores</Button><br></br>
     </div>
   )
 };

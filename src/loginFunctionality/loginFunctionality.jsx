@@ -231,19 +231,24 @@ function loginFunctionality(gameData){
               score: gameData.score, timeInMilliseconds: gameData.timeInMilliseconds
             })
           }
-          fetch(process.env.REACT_APP_SERVERLOCATION + "",request2Setup)
-            .then(repsonse => repsonse.json())
-            .then(daat => {
-              if (data.status === -1){
-                getLoginPage(daat.message,"")
-              }else{
-                cookies.set('name',data.username,{path:'/'});
-                cookies.set('id',data.userID,{path:'/'});
-                cookies.set('sessionID',data.sessionID,{path:'/'});
-                cookies.set('redirect','Snake',{path:'/'});
-                window.reload();
-              }
-            })
+          if (gameData.score && gameData.time){
+            fetch(process.env.REACT_APP_SERVERLOCATION + "/scoreswithtimes",request2Setup)
+              .then(repsonse => repsonse.json())
+              .then(daat => {
+                if (data.status === -1){
+                  getLoginPage(daat.message,"")
+                }else{
+                  cookies.set('name',data.username,{path:'/'});
+                  cookies.set('id',data.userID,{path:'/'});
+                  cookies.set('sessionID',data.sessionID,{path:'/'});
+                  cookies.set('redirect','Snake',{path:'/'});
+                  window.reload();
+                }
+              })
+          }
+          else{
+            //ADD MORE VARIATIONS FIX THIS
+          }
         }
       })
   }
