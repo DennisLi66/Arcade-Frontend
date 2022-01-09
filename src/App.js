@@ -310,7 +310,8 @@ function App() {
         cookies.remove('name');
         cookies.remove('id');
         cookies.remove('sessionID');
-        getHome();
+        changeNavbarToLoggedOut();
+        //FIX THIS: WILL NEED CHANGES ON CERTAIN PAGES reload page with a cookie that tracks last page
       }
       //games
       function openGame(gameTitle){
@@ -326,6 +327,7 @@ function App() {
       }
       if (cookies.get("redirect")){
         if (cookies.get("redirect") === "Snake"){
+          cookies.remove("redirect");
           openGame("Snake");
         }
       }else{

@@ -224,14 +224,15 @@ function loginFunctionality(gameData){
         if (data.status === -1){
           getLoginPage(data.message,"")
         }else if (data.status === 0){
-          var request2Setup = {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({sessionID: data.sessionID,userID:data.userID,gameID:gameData.gameID,
-              score: gameData.score, timeInMilliseconds: gameData.timeInMilliseconds
-            })
-          }
+          var request2Setup;
           if (gameData.score && gameData.time){
+            request2Setup = {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({sessionID: data.sessionID,userID:data.userID,gameID:gameData.gameID,
+                score: gameData.score, timeInMilliseconds: gameData.timeInMilliseconds
+              })
+            }
             fetch(process.env.REACT_APP_SERVERLOCATION + "/scoreswithtimes",request2Setup)
               .then(repsonse => repsonse.json())
               .then(daat => {
@@ -241,13 +242,52 @@ function loginFunctionality(gameData){
                   cookies.set('name',data.username,{path:'/'});
                   cookies.set('id',data.userID,{path:'/'});
                   cookies.set('sessionID',data.sessionID,{path:'/'});
-                  cookies.set('redirect','Snake',{path:'/'});
+                  if(gameData.gameID === 1 || gameData.gameID === '1'){cookies.set('redirect','Snake',{path:'/'});}
                   window.reload();
                 }
               })
           }
-          else{
-            //ADD MORE VARIATIONS FIX THIS
+          else if (gameData.score){
+            request2Setup = {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({sessionID: data.sessionID,userID:data.userID,gameID:gameData.gameID,
+                score: gameData.score
+              })
+            }
+            fetch(process.env.REACT_APP_SERVERLOCATION + "/scores",request2Setup)
+              .then(repsonse => repsonse.json())
+              .then(daat => {
+                if (data.status === -1){
+                  getLoginPage(daat.message,"")
+                }else{
+                  cookies.set('name',data.username,{path:'/'});
+                  cookies.set('id',data.userID,{path:'/'});
+                  cookies.set('sessionID',data.sessionID,{path:'/'});
+                  //FIX THIS ADD GAMES
+                  window.reload();
+                }
+              })
+          }else if (gameData.time){
+            request2Setup = {
+              method: 'PUT',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({sessionID: data.sessionID,userID:data.userID,gameID:gameData.gameID,
+  timeInMilliseconds: gameData.timeInMilliseconds})
+            };
+            fetch(process.env.REACT_APP_SERVERLOCATION + "/times",request2Setup)
+              .then(repsonse => repsonse.json())
+              .then(daat => {
+                if (data.status === -1){
+                  getLoginPage(daat.message,"")
+                }else{
+                  cookies.set('name',data.username,{path:'/'});
+                  cookies.set('id',data.userID,{path:'/'});
+                  cookies.set('sessionID',data.sessionID,{path:'/'});
+                  //FIX THIS ADD GAMES
+                  window.reload();
+                }
+              })
           }
         }
       })
