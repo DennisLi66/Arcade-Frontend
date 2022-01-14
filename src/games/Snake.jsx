@@ -343,7 +343,7 @@ function Snake() {
           personalScoresSwitchButton = (<Button onClick={getScoresPage("","myrecent")}> My Recent Scores </Button>)
         }
         otherMetricButton =  (<Button onClick={getScoresPage("","best")}> All Best Scores </Button>)
-      }else if (rule === "best"){
+      }else if (rule === "best" || rule===""){
         if (cookies.get("id")){
           personalScoresSwitchButton = (<Button onClick={getScoresPage("","mybest")}> My Best Scores </Button>)
         }
@@ -359,6 +359,7 @@ function Snake() {
       var reactString = (
         <div>
           <h1> {scoreTitle} </h1>
+          <div><Button id='backButton'>Back Button</Button></div>
           <div> {otherMetricButton} {personalScoresSwitchButton} </div>
           <Table>
           <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
@@ -370,6 +371,7 @@ function Snake() {
         </div>
       );
       document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
+      document.getElementById('backButton').onclick = getFrontPage();
     }
   }
   //Post GAME
