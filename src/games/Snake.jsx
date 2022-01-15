@@ -254,7 +254,7 @@ function Snake() {
     document.getElementById('readInstructionsButton').onclick = function(){readInstructions()};
     document.getElementById('getScoresButton').onclick = function(){getScoresPage()}
   }
-  function getScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
+  function getScoresPage(message = "", rule = "", results = [], start = 0, end = 10){ //FIX THIS DOES NOT DISPLAY PROPERLY
     var fetchString;
     var scoreTitle;
     if (rule === "" || rule === "best"){//Get the best
