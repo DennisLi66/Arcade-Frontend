@@ -5,6 +5,7 @@ import Navbar from 'react-bootstrap/Navbar'
 import Button from 'react-bootstrap/Button'
 import Cookies from 'universal-cookie';
 import Snake from './games/Snake';
+import Tetris from './games/Tetris';
 require('dotenv').config();
 //logout causes crash
 //Update adding timeduration to Login
@@ -317,6 +318,8 @@ function App() {
       function openGame(gameTitle){
         if (gameTitle === "Snake"){
           changeBody(Snake())
+        }else if (gameTitle === "Tetris"){
+          changeBody(Tetris())
         }
       }
       //Detect Stuff Here
