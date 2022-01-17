@@ -12,10 +12,18 @@ function Tetris(){
   var startingTime = 0;
   var intervalID = "";
   var currentPiece = false; //will also tell us if gamestarted
-  var orientation = false;
   var storedPiece = false;
+  var nextPiece = false;
   var endingTime = 0;
   var timeTilDescent = 0;
+  var currentPieceOccupyingSpaces = []; //use negative numbers to indicate off screen
+  var maxTimeTilDescent = 1000;
+  //Board Manipulation
+  function getNewPiece(){
+    //return a number corresponsing to a piece and update nextPiece
+    //there are 7 block variations
+    nextPiece = Math.floor(Math.random() * 7);
+  }
   function setBoard(){
     // 22 rows, 12 wide
     if (intervalID !== ""){
@@ -24,7 +32,6 @@ function Tetris(){
     startingTime = 0;
     intervalID = "";
     currentPiece = false; //will also tell us if gamestarted
-    orientation = false;
     storedPiece = false;
     endingTime = 0;
     timeTilDescent = 0;
@@ -46,6 +53,58 @@ function Tetris(){
     }
     gameBoard.push(...borderRow);
   }
+  function placeNewBlock(){
+    //update currentPieceOccupyingSpaces
+    if (currentPiece === 1){ // Line Blocks
+      currentPieceOccupyingSpaces = [...[4,-8,-20,-28]]
+    }else if (currentPiece === 2){ //Square Blocks
+      currentPieceOccupyingSpaces = [...[4,5,-8,-7]]
+    }else if (currentPiece === 3){ //L Block
+      currentPieceOccupyingSpaces = [...[4,5,-8,-20]]
+    }else if (currentPiece === 4){ //T Block
+      currentPieceOccupyingSpaces = [...[4,-8,-7,-20]]
+    }else if (currentPiece === 5){ // J Block
+      currentPieceOccupyingSpaces = [...[4,5,-7,-19]]
+    }else if (currentPiece === 6){ // s block
+      currentPieceOccupyingSpaces = [...[5,-7,-8,-20]]
+    }else if (currentPiece === 0){ // z block
+      currentPieceOccupyingSpaces = [...[4,-8,-7,-19]]
+    }
+  }
+  function rotatePiece(){
+    //make sure piece isn't blocked
+    //otherwise rotate
+  }
+  function updateDescent(){
+    //if hit the bottom get a new piece, place new piece
+    //else descend
+    //either way reset timeTilDescent and printBoard
+  }
+  function detectDirectionalKeyDown(key){
+    //left: 37, up: 38, right: 39, down: 40
+    //FIX THIS USE DIFFERENT KEYS (a and d) FOR ROTATION
+    key = key.keyCode;
+    // console.log(key);
+    if ((key === 37 || key === '37')){
+      printTetrisBoard();
+    }else if ((key === 38 || key === "38")){ //move left
+      printTetrisBoard();
+    }else if ((key === 39 || key === "39")){ //move right
+      printTetrisBoard();
+    }else if ((key === 40 || key === "40")){ //immediately descent
+      if (!currentPiece){
+        currentPiece = Math.floor(Math.random() * 7);
+        nextPiece = Math.floor(Math.random() * 7);
+        timeTilDescent = maxTimeTilDescent;
+        placeNewBlock();
+        printTetrisBoard();
+      }
+    }
+    else if ((key === 82 || key === "82")){ //R
+      startGame();
+    }
+  }
+  //Printing
   function printInitialContent(){
     var toPrint = "<h1>Tetris</h1><div class='gameBoard' id='gameBoard'>";
     toPrint += "</div>";
@@ -54,40 +113,19 @@ function Tetris(){
     printTetrisBoard();
     printInfoRow();
   }
-  function printSnakeBoard(message = ""){
+  function printTetrisBoard(message = ""){
     var toPrint = "";
     if (message !== ""){
       toPrint += "<div class='errMsg'>" + message + "</div>"
     }
-    for (let row = 0; row < 42; row++){
-      for (let col = 0; col < 42; col++){
-        if (gameBoard[row * 42 + col] === '0'){
-          toPrint += "<div class='boardSquare'>" // + (row * 42 + col)
-           + "</div>"
-        }else if (gameBoard[row * 42 + col] === 'X'){
-          toPrint += "<div class='borderSquare'>"
-          // + (row * 42 + col)
-           + "</div>"
-        }else if (gameBoard[row * 42 + col] === "S"){
-          // console.log(row, " " , col ," ", row * 42 + col);
-          toPrint += "<div class='simpleSnake'>"
-           // + (row * 42 + col)
-           + "</div>"
-        }else if (gameBoard[row * 42 + col] === "H"){
-                    // console.log(row * 42 + col);
-          toPrint += "<div class='simpleSnake'>"
-          // + (row * 42 + col)
-           + "</div>"
-        }
-        else if (gameBoard[row * 42 + col] === "P"){
-          toPrint += "<div class='simplePrize'>"
-          // + (row * 42 + col)
-           + "</div>"
-        }
+    for (let i = 0; i < gameBoard.length; i++){
+      if (gameBoard[i] === 'X'){
+        toPrint += "<div id='borderSquare'></div>"
+      }else if (gameBoard[i] === 0){
+        toPrint += "<div id='emptySquare'></div>"
       }
-      toPrint += "<br></br>"
     }
-    document.getElementById("gameBoard").innerHTML = toPrint;
+  document.getElementById("gameBoard").innerHTML = toPrint;
   }
   function printInfoRow(){
     var text = (<Button id='returnButton'>Main Menu</Button>);
@@ -97,7 +135,7 @@ function Tetris(){
       middleText = (" Score: " + score + " ");
       quickRestartButton = (<Button id="quickRestartButton">Restart</Button>)
     }else{
-      middleText = ("Press on any of the arrow keys to start.")
+      middleText = ("Press on the down arrow key to start.")
     }
     document.getElementById("bulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
       (
@@ -111,11 +149,13 @@ function Tetris(){
     document.getElementById("returnButton").onclick = function(){getFrontPage()};
     if (currentPiece) document.getElementById("quickRestartButton").onclick = function(){startGame()};
   }
+  // Initial
   function startGame(){
     setBoard();
     printInitialContent();
-    //document.addEventListener('keydown',detectDirectionalKeyDown);
+    document.addEventListener('keydown',detectDirectionalKeyDown);
   }
+  //Pages
   function readInstructions(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <div>
