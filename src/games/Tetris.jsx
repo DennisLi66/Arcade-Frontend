@@ -46,8 +46,75 @@ function Tetris(){
     }
     gameBoard.push(...borderRow);
   }
+  function printInitialContent(){
+    var toPrint = "<h1>Tetris</h1><div class='gameBoard' id='gameBoard'>";
+    toPrint += "</div>";
+    toPrint += "<div class='bulletinBoard' id='bulletinBoard'></div>";
+    document.getElementById("gameScreen").innerHTML = toPrint;
+    printTetrisBoard();
+    printInfoRow();
+  }
+  function printSnakeBoard(message = ""){
+    var toPrint = "";
+    if (message !== ""){
+      toPrint += "<div class='errMsg'>" + message + "</div>"
+    }
+    for (let row = 0; row < 42; row++){
+      for (let col = 0; col < 42; col++){
+        if (gameBoard[row * 42 + col] === '0'){
+          toPrint += "<div class='boardSquare'>" // + (row * 42 + col)
+           + "</div>"
+        }else if (gameBoard[row * 42 + col] === 'X'){
+          toPrint += "<div class='borderSquare'>"
+          // + (row * 42 + col)
+           + "</div>"
+        }else if (gameBoard[row * 42 + col] === "S"){
+          // console.log(row, " " , col ," ", row * 42 + col);
+          toPrint += "<div class='simpleSnake'>"
+           // + (row * 42 + col)
+           + "</div>"
+        }else if (gameBoard[row * 42 + col] === "H"){
+                    // console.log(row * 42 + col);
+          toPrint += "<div class='simpleSnake'>"
+          // + (row * 42 + col)
+           + "</div>"
+        }
+        else if (gameBoard[row * 42 + col] === "P"){
+          toPrint += "<div class='simplePrize'>"
+          // + (row * 42 + col)
+           + "</div>"
+        }
+      }
+      toPrint += "<br></br>"
+    }
+    document.getElementById("gameBoard").innerHTML = toPrint;
+  }
+  function printInfoRow(){
+    var text = (<Button id='returnButton'>Main Menu</Button>);
+    var middleText;
+    var quickRestartButton;
+    if (currentPiece){
+      middleText = (" Score: " + score + " ");
+      quickRestartButton = (<Button id="quickRestartButton">Restart</Button>)
+    }else{
+      middleText = ("Press on any of the arrow keys to start.")
+    }
+    document.getElementById("bulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      (
+        <div>
+          {text}
+          {middleText}
+          {quickRestartButton}
+        </div>
+      )
+    );
+    document.getElementById("returnButton").onclick = function(){getFrontPage()};
+    if (currentPiece) document.getElementById("quickRestartButton").onclick = function(){startGame()};
+  }
   function startGame(){
     setBoard();
+    printInitialContent();
+    //document.addEventListener('keydown',detectDirectionalKeyDown);
   }
   function readInstructions(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
