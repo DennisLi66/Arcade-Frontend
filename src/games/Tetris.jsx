@@ -7,18 +7,47 @@ require('dotenv').config();
 
 function Tetris(){
   const cookies = new Cookies();
-  var gameBoard = [];
+  var gameBoard = []; //10 wide, 20 high inner board
   var score = 0;
   var startingTime = 0;
   var intervalID = "";
-  var direction = false; //will also tell us if gamestarted
+  var currentPiece = false; //will also tell us if gamestarted
+  var orientation = false;
+  var storedPiece = false;
   var endingTime = 0;
   var timeTilDescent = 0;
   function setBoard(){
-
+    // 22 rows, 12 wide
+    if (intervalID !== ""){
+      clearInterval(intervalID);
+    }
+    startingTime = 0;
+    intervalID = "";
+    currentPiece = false; //will also tell us if gamestarted
+    orientation = false;
+    storedPiece = false;
+    endingTime = 0;
+    timeTilDescent = 0;
+    gameBoard = [];
+    score = 0;
+    var borderRow = [];
+    for (let i = 0; i < 12 ; i++){
+      borderRow.push('X')
+    }
+    gameBoard.push(...borderRow);
+    var row = [];
+    row.push('X');
+    for (let i = 0; i < 10; i++){
+      row.push("0");
+    }
+    row.push('X');
+    for (let i = 0; i < 20; i++){
+      gameBoard.push(...row);
+    }
+    gameBoard.push(...borderRow);
   }
   function startGame(){
-
+    setBoard();
   }
   function readInstructions(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
