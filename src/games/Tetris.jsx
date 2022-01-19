@@ -17,6 +17,7 @@ function Tetris(){
   var endingTime = 0;
   var timeTilDescent = 0;
   var currentPieceOccupyingSpaces = []; //use negative numbers to indicate off screen
+  var currentPieceOrientation = 0;
   var maxTimeTilDescent = 1000;
   //Board Manipulation
   function getNewPiece(){
@@ -55,27 +56,55 @@ function Tetris(){
   }
   function placeNewBlock(){
     //update currentPieceOccupyingSpaces
+    //organize by top to bottom, left to right
     if (currentPiece === 1){ // Line Blocks
-      currentPieceOccupyingSpaces = [...[4,-8,-20,-28]]
+      currentPieceOccupyingSpaces = [...[-28,-20,-8,4]];
     }else if (currentPiece === 2){ //Square Blocks
-      currentPieceOccupyingSpaces = [...[4,5,-8,-7]]
+      currentPieceOccupyingSpaces = [...[-8,-7,4,5]];
     }else if (currentPiece === 3){ //L Block
-      currentPieceOccupyingSpaces = [...[4,5,-8,-20]]
+      currentPieceOccupyingSpaces = [...[-20,-8,4,5]];
     }else if (currentPiece === 4){ //T Block
-      currentPieceOccupyingSpaces = [...[4,-8,-7,-20]]
+      currentPieceOccupyingSpaces = [...[-20,-8,-7,4]];
     }else if (currentPiece === 5){ // J Block
-      currentPieceOccupyingSpaces = [...[4,5,-7,-19]]
+      currentPieceOccupyingSpaces = [...[-19,-7,4,5]];
     }else if (currentPiece === 6){ // s block
-      currentPieceOccupyingSpaces = [...[5,-7,-8,-20]]
+      currentPieceOccupyingSpaces = [...[-20,-8,-7,5]];
     }else if (currentPiece === 0){ // z block
-      currentPieceOccupyingSpaces = [...[4,-8,-7,-19]]
+      currentPieceOccupyingSpaces = [...[-19,-8,-7,4]];
     }
+    currentPieceOrientation = 0;
   }
-  function rotatePiece(){
+  function rotatePiece(rotation){
     //make sure piece isn't blocked
     //otherwise rotate
   }
-  function updateDescent(){
+  function movePiece(direction){
+    //if unobstructed, shift blocks to the corresponding direction
+    if (direction === "left"){
+      for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
+        if (currentPieceOccupyingSpaces[i] < 12 || gameBoard[currentPieceOccupyingSpaces[i] - 1] === 0){
+        }else{
+          console.log("Movement Blocked...")
+          return;
+        }
+      }
+      for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
+        currentPieceOccupyingSpaces[i] = currentPieceOccupyingSpaces[i] - 1;
+      }
+    }else if (direction === "right"){
+      for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
+        if (currentPieceOccupyingSpaces[i] < 12 || gameBoard[currentPieceOccupyingSpaces[i] + 1] === 0){
+        }else{
+          console.log("Movement Blocked...")
+          return;
+        }
+      }
+      for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
+        currentPieceOccupyingSpaces[i] = currentPieceOccupyingSpaces[i] + 1;
+      }
+    }
+  }
+  function quickenDescent(){
     //if hit the bottom get a new piece, place new piece
     //else descend
     //either way reset timeTilDescent and printBoard
@@ -85,11 +114,21 @@ function Tetris(){
     //FIX THIS USE DIFFERENT KEYS (a and d) FOR ROTATION
     key = key.keyCode;
     // console.log(key);
-    if ((key === 37 || key === '37')){
+    if ((key === 65) || key === '65'){ //a key //rotate counter counterclockwise
+      rotatePiece("counterclockwise");
       printTetrisBoard();
-    }else if ((key === 38 || key === "38")){ //move left
+    }else if (key === 68 || key === '68'){ //d key // rotate clockwise
+      rotatePiece('clockwise');
+      printTetrisBoard();
+    }
+    //else if ((key === 37 || key === '37')){//up?
+    //  printTetrisBoard();
+    //}
+    else if ((key === 38 || key === "38")){ //move left
+      movePiece("left");
       printTetrisBoard();
     }else if ((key === 39 || key === "39")){ //move right
+      movePiece("right");
       printTetrisBoard();
     }else if ((key === 40 || key === "40")){ //immediately descent
       if (!currentPiece){
@@ -98,6 +137,8 @@ function Tetris(){
         timeTilDescent = maxTimeTilDescent;
         placeNewBlock();
         printTetrisBoard();
+      }else{
+        quickenDescent();
       }
     }
     else if ((key === 82 || key === "82")){ //R
