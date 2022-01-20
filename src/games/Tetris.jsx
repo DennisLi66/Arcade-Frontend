@@ -64,7 +64,7 @@ function Tetris(){
     }else if (currentPiece === 3){ //L Block
       currentPieceOccupyingSpaces = [...[-20,-8,4,5]];
     }else if (currentPiece === 4){ //T Block
-      currentPieceOccupyingSpaces = [...[-20,-8,-7,4]];
+      currentPieceOccupyingSpaces = [...[-20,-9,-8,4]];
     }else if (currentPiece === 5){ // J Block
       currentPieceOccupyingSpaces = [...[-19,-7,4,5]];
     }else if (currentPiece === 6){ // s block
@@ -81,9 +81,9 @@ function Tetris(){
       if (currentPiece === 1){
         if (currentPieceOrientation === 0){
           if (
-            (currentPieceOccupyingSpaces[1] - 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] + 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 1] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] + 2 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 2] === 0 )
+            ((currentPieceOccupyingSpaces[1] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] + 2 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 2] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[1] - 1,
@@ -95,9 +95,9 @@ function Tetris(){
           }
         }else if (currentPieceOrientation === 90){
           if (
-            (currentPieceOccupyingSpaces[2] - 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 12] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] + 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 12] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] + 24 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 24] === 0 )
+            ((currentPieceOccupyingSpaces[2] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 12] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] + 24 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 24] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[2] - 12,
@@ -109,9 +109,9 @@ function Tetris(){
           }
         }else if (currentPieceOrientation === 180){
           if (
-            (currentPieceOccupyingSpaces[2] - 2 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 2] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] - 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] + 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 1] === 0 )
+            ((currentPieceOccupyingSpaces[2] - 2 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 2] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[2] - 2,
@@ -123,9 +123,9 @@ function Tetris(){
           }
         }else if (currentPieceOrientation === 270){
           if (
-            (currentPieceOccupyingSpaces[1] - 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 12] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] + 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 12] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] - 24 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 24] === 0 )
+            ((currentPieceOccupyingSpaces[1] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 12] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] - 24 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 24] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[1] - 24,
@@ -141,9 +141,9 @@ function Tetris(){
       }else if (currentPiece === 3){ // L block rotate along center block
         if (currentPieceOrientation === 0){
           if (
-            (currentPieceOccupyingSpaces[1] - 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] + 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 1] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] + 11 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 11] === 0 )
+            ((currentPieceOccupyingSpaces[1] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] + 11 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 11] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[1] - 1,
@@ -155,9 +155,9 @@ function Tetris(){
           }
         }else if (currentPieceOrientation === 90){
         if (
-          (currentPieceOccupyingSpaces[1] - 13 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 13] === 0 ) &&
-          (currentPieceOccupyingSpaces[1] - 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 12] === 0 ) &&
-          (currentPieceOccupyingSpaces[1] + 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 12] === 0 )
+          ((currentPieceOccupyingSpaces[1] - 13 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 13] === 0 )) &&
+          ((currentPieceOccupyingSpaces[1] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 12] === 0 )) &&
+          ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === 0 ))
         ){ //move along second space
           currentPieceOccupyingSpaces = [...[
             currentPieceOccupyingSpaces[1] - 13,
@@ -169,9 +169,9 @@ function Tetris(){
         }
         }else if (currentPieceOrientation === 180){
           if (
-            (currentPieceOccupyingSpaces[2] - 11 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[2] - 11] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] - 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[2] - 1] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] + 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[2] + 1] === 0 )
+            ((currentPieceOccupyingSpaces[2] - 11 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 11] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 1] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 1] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[2] - 11,
@@ -183,9 +183,9 @@ function Tetris(){
           }
         }else if (currentPieceOrientation === 270){
           if (
-            (currentPieceOccupyingSpaces[2] - 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[2] - 12] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] + 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[2] + 12] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] + 13 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[2] + 13] === 0 )
+            ((currentPieceOccupyingSpaces[2] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 12] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 12] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] + 13 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 13] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[2] - 12,
@@ -196,15 +196,55 @@ function Tetris(){
             currentPieceOrientation = 0;
           }
         }
-      }else if (currentPiece === 4){
+      }else if (currentPiece === 4){ // T Block
         if (currentPieceOrientation === 0){
-
+          if (
+            (currentPieceOccupyingSpaces[2] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 1] === 0 )
+          ){
+            currentPieceOccupyingSpaces = [...[
+              currentPieceOccupyingSpaces[2] - 12,
+              currentPieceOccupyingSpaces[2] - 1,
+              currentPieceOccupyingSpaces[2],
+              currentPieceOccupyingSpaces[2] + 1
+            ]];
+            currentPieceOrientation = 90;
+          }
         }else if (currentPieceOrientation === 90){
-
+          if (
+            (currentPieceOccupyingSpaces[2] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 12] === 0 )
+          ){
+            currentPieceOccupyingSpaces = [...[
+              currentPieceOccupyingSpaces[2] - 12,
+              currentPieceOccupyingSpaces[2],
+              currentPieceOccupyingSpaces[2] + 1,
+              currentPieceOccupyingSpaces[2] + 12
+            ]];
+            currentPieceOrientation = 180;
+          }
         }else if (currentPieceOrientation === 180){
-
+          if (
+            (currentPieceOccupyingSpaces[1] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 )
+          ){
+            currentPieceOccupyingSpaces = [...[
+              currentPieceOccupyingSpaces[1] - 1,
+              currentPieceOccupyingSpaces[1],
+              currentPieceOccupyingSpaces[1] + 1,
+              currentPieceOccupyingSpaces[1] + 12
+            ]];
+            currentPieceOrientation = 270;
+          }
         }else if (currentPieceOrientation === 270){
-
+          if (
+            (currentPieceOccupyingSpaces[1] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 12] === 0 )
+          ){
+            currentPieceOccupyingSpaces = [...[
+              currentPieceOccupyingSpaces[1] - 12,
+              currentPieceOccupyingSpaces[1] - 1,
+              currentPieceOccupyingSpaces[1],
+              currentPieceOccupyingSpaces[1] + 12
+            ]];
+            currentPieceOrientation = 0;
+          }
         }
       }else if (currentPiece === 5){
         if (currentPieceOrientation === 0){
@@ -242,9 +282,9 @@ function Tetris(){
       if (currentPiece === 1){
         if (currentPieceOrientation === 0){
           if (
-            (currentPieceOccupyingSpaces[2] - 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] + 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 1] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] + 2 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 2] === 0 )
+            ((currentPieceOccupyingSpaces[2] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] + 2 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 2] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[2] - 1,
@@ -256,9 +296,9 @@ function Tetris(){
           }
         }else if (currentPieceOrientation === 90){
           if (
-            (currentPieceOccupyingSpaces[1] - 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 12] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] + 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 12] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] + 24 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 24] === 0 )
+            ((currentPieceOccupyingSpaces[1] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 12] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] + 24 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 24] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[1] - 12,
@@ -270,9 +310,9 @@ function Tetris(){
           }
         }else if (currentPieceOrientation === 180){
           if (
-            (currentPieceOccupyingSpaces[1] - 2 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 2] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] - 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] + 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 1] === 0 )
+            ((currentPieceOccupyingSpaces[1] - 2 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 2] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[1] - 2,
@@ -284,9 +324,9 @@ function Tetris(){
           }
         }else if (currentPieceOrientation === 270){
           if (
-            (currentPieceOccupyingSpaces[2] - 24 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 24] === 0 ) &&
-            (currentPieceOccupyingSpaces[2]  -12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1]  -12] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] + 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 12] === 0 )
+            ((currentPieceOccupyingSpaces[2] - 24 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 24] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2]  -12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1]  -12] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[2] - 24,
@@ -302,9 +342,9 @@ function Tetris(){
       }else if (currentPiece === 3){ // L block
         if (currentPieceOrientation === 0){
           if (
-            (currentPieceOccupyingSpaces[1] - 11 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 11] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] - 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] + 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 1] === 0 )
+            ((currentPieceOccupyingSpaces[1] - 11 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 11] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[1] - 11,
@@ -316,9 +356,9 @@ function Tetris(){
           }
         }else if (currentPieceOrientation === 90){
           if (
-            (currentPieceOccupyingSpaces[1] - 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] - 12] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] + 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 12] === 0 ) &&
-            (currentPieceOccupyingSpaces[1] + 13 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[1] + 13] === 0 )
+            ((currentPieceOccupyingSpaces[1] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 12] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === 0 )) &&
+            ((currentPieceOccupyingSpaces[1] + 13 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 13] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[1] - 12,
@@ -330,9 +370,9 @@ function Tetris(){
           }
         }else if (currentPieceOrientation === 180){
           if (
-            (currentPieceOccupyingSpaces[2] - 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[2] - 1] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] + 1 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[2] + 1] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] + 11 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[2] + 11] === 0 )
+            ((currentPieceOccupyingSpaces[2] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 1] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 1] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] + 11 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 11] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[2] - 1,
@@ -344,9 +384,9 @@ function Tetris(){
           }
         }else if (currentPieceOrientation === 270){
           if (
-            (currentPieceOccupyingSpaces[2] - 13 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[2] - 13] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] - 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[2] - 12] === 0 ) &&
-            (currentPieceOccupyingSpaces[2] + 12 < 12 ) && (gameBoard[currentPieceOccupyingSpaces[2] + 12] === 0 )
+            ((currentPieceOccupyingSpaces[2] - 13 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 13] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 12] === 0 )) &&
+            ((currentPieceOccupyingSpaces[2] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 12] === 0 ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[2] - 13,
@@ -357,15 +397,55 @@ function Tetris(){
             currentPieceOrientation = 90;
           }
         }
-      }else if (currentPiece === 4){
+      }else if (currentPiece === 4){ //T block
         if (currentPieceOrientation === 0){
-
+          if (
+            (currentPieceOccupyingSpaces[2] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 1] === 0 )
+          ){
+            currentPieceOccupyingSpaces = [...[
+              currentPieceOccupyingSpaces[2] - 1,
+              currentPieceOccupyingSpaces[2],
+              currentPieceOccupyingSpaces[2] + 1,
+              currentPieceOccupyingSpaces[2] + 12
+            ]];
+            currentPieceOrientation = 270;
+          }
         }else if (currentPieceOrientation === 90){
-
+          if (
+            (currentPieceOccupyingSpaces[2] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 12] === 0 )
+          ){
+            currentPieceOccupyingSpaces = [...[
+              currentPieceOccupyingSpaces[2] - 12,
+              currentPieceOccupyingSpaces[2] - 1,
+              currentPieceOccupyingSpaces[2],
+              currentPieceOccupyingSpaces[2] + 12
+            ]];
+            currentPieceOrientation = 0;
+          }
         }else if (currentPieceOrientation === 180){
-
+          if (
+            (currentPieceOccupyingSpaces[1] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === 0 )
+          ){
+            currentPieceOccupyingSpaces = [...[
+              currentPieceOccupyingSpaces[1] - 12,
+              currentPieceOccupyingSpaces[1] - 1,
+              currentPieceOccupyingSpaces[1],
+              currentPieceOccupyingSpaces[1] + 1
+            ]];
+            currentPieceOrientation = 90;
+          }
         }else if (currentPieceOrientation === 270){
-
+          if (
+            (currentPieceOccupyingSpaces[1] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 12] === 0 )
+          ){
+            currentPieceOccupyingSpaces = [...[
+              currentPieceOccupyingSpaces[1] - 12,
+              currentPieceOccupyingSpaces[1],
+              currentPieceOccupyingSpaces[1] + 1,
+              currentPieceOccupyingSpaces[1] + 12
+            ]];
+            currentPieceOrientation = 180;
+          }
         }
       }else if (currentPiece === 5){
         if (currentPieceOrientation === 0){
