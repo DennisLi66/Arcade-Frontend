@@ -13,6 +13,7 @@ function Tetris(){
   var intervalID = "";
   var currentPiece = false; //will also tell us if gamestarted
   var storedPiece = false;
+  var afterStoredPiece = false;
   var nextPiece = false;
   var endingTime = 0;
   var timeTilDescent = 0;
@@ -795,10 +796,43 @@ function Tetris(){
       }
     }
   }
-  function quickenDescent(){
-    //if hit the bottom get a new piece, place new piece
-    //else descend
-    //either way reset timeTilDescent and printBoard
+  function toppleBlocks(){
+    //check the rows starting upwards from the bottom most currentPiece rows
+    //delete rows where necessary and bring board down
+    //give points for each row deleted
+    //also give points for each block added other wise
+  }
+  function storePiece(){
+    // set next piece to stored
+    //if already stored, set next piece to stored and queue for afterStoredPiece
+  }
+  function updateDescent(){
+    //check that each square is not touching a floor
+    var hasReachedFloor = false;
+    for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
+      if (gameBoard[currentPieceOccupyingSpaces[i] + 12] === 0 || gameBoard[currentPieceOccupyingSpaces[i] + 12 === '0']){
+        hasReachedFloor = true;
+        break;
+      }
+    }
+    if (hasReachedFloor){
+      //change the blocks where they are located to fixed
+      for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
+        gameBoard[currentPieceOccupyingSpaces[i]] = 'B';
+      }
+      //clear and topple blocks as necessary
+      toppleBlocks();
+      //change current and next piece
+      currentPiece = nextPiece;
+      placeNewBlock()
+      getNewPiece();
+    }else{
+      for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
+        currentPieceOccupyingSpaces[i] = currentPieceOccupyingSpaces[i] + 12;
+      }
+    }
+    timeTilDescent = maxTimeTilDescent;
+    printTetrisBoard();
   }
   function detectDirectionalKeyDown(key){
     //left: 37, up: 38, right: 39, down: 40
@@ -812,9 +846,10 @@ function Tetris(){
       rotatePiece('clockwise');
       printTetrisBoard();
     }
-    //else if ((key === 37 || key === '37')){//up?
-    //  printTetrisBoard();
-    //}
+    else if ((key === 37 || key === '37')){//rotate clockwise
+      rotatePiece('clockwise');
+      printTetrisBoard();
+    }
     else if ((key === 38 || key === "38")){ //move left
       movePiece("left");
       printTetrisBoard();
@@ -829,11 +864,14 @@ function Tetris(){
         placeNewBlock();
         printTetrisBoard();
       }else{
-        quickenDescent();
+        updateDescent();
       }
     }
     else if ((key === 82 || key === "82")){ //R
       startGame();
+    }
+    else if ((key === 32 || key === "32")){
+      storePiece();
     }
   }
   //Printing
@@ -855,6 +893,8 @@ function Tetris(){
         toPrint += "<div id='borderSquare'></div>"
       }else if (gameBoard[i] === 0){
         toPrint += "<div id='emptySquare'></div>"
+      }else if (gameBoard[i] === 'B'){
+        toPrint += "<div id='blockSquare'></div>"
       }
     }
   document.getElementById("gameBoard").innerHTML = toPrint;
