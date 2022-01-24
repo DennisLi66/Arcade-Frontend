@@ -1,0 +1,55 @@
+.bulletinBoard{
+  border: 1px solid black;
+  background-color: beige;
+  width: 100%;
+  text-align: center;
+  margin:0;
+  height: 50px;
+  bottom: 0;
+  position: relative;
+
+}
+.gameScreen{
+  border: 3px solid black;
+      padding: 20px;
+  background-color: gray;
+  padding:0;
+}
+.gameBoard{
+  line-height: 0;
+  border: 1px solid black;
+  background-color: beige;
+  height: 590px;
+  width: 590px;
+  display: inline-block;
+    margin:0;
+}
+.emptySquare{
+  border: 1px solid black;
+  float:left;
+  width: 14px;
+  height: 14px;
+  background-color: white;
+  margin: 0;
+  padding: 0;
+  /* clear: both; */
+}
+.borderSquare{
+  border: 1px solid black;
+  float:left;
+  width: 14px;
+  height: 14px;
+  background-color: black;
+  margin: 0;
+  padding: 0;
+}
+.blockSquare{
+  border: 1px solid black;
+  float:left;
+  width: 14px;
+  height: 14px;
+  background-color: gray;
+  margin: 0;
+  padding: 0;
+  /* clear: both; */
+}
