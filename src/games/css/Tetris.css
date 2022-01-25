@@ -19,16 +19,16 @@
   line-height: 0;
   border: 1px solid black;
   background-color: beige;
-  height: 590px;
-  width: 590px;
+  height: 725px;
+  width: 398px;
   display: inline-block;
     margin:0;
 }
 .emptySquare{
   border: 1px solid black;
   float:left;
-  width: 14px;
-  height: 14px;
+  width: 33px;
+  height: 33px;
   background-color: white;
   margin: 0;
   padding: 0;
@@ -37,8 +37,8 @@
 .borderSquare{
   border: 1px solid black;
   float:left;
-  width: 14px;
-  height: 14px;
+  width: 33px;
+  height: 33px;
   background-color: black;
   margin: 0;
   padding: 0;
@@ -46,8 +46,8 @@
 .blockSquare{
   border: 1px solid black;
   float:left;
-  width: 14px;
-  height: 14px;
+  width: 33px;
+  height: 33px;
   background-color: gray;
   margin: 0;
   padding: 0;

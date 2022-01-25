@@ -3,7 +3,10 @@ import Button from 'react-bootstrap/Button'
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
+import "./css/Tetris.css"
 require('dotenv').config();
+
+//maybe change currentPiece and nextPiece into a list queue
 
 function Tetris(){
   const cookies = new Cookies();
@@ -13,6 +16,7 @@ function Tetris(){
   var intervalID = "";
   var currentPiece = false; //will also tell us if gamestarted
   var storedPiece = false;
+  var pieceQueue = [];
   var afterStoredPiece = false;
   var nextPiece = false;
   var endingTime = 0;
@@ -24,7 +28,12 @@ function Tetris(){
   function getNewPiece(){
     //return a number corresponsing to a piece and update nextPiece
     //there are 7 block variations
-    nextPiece = Math.floor(Math.random() * 7);
+    // if (afterStoredPiece){
+    //   nextPiece = afterStoredPiece;
+    //   afterStoredPiece = false;
+    // }else{
+      nextPiece = Math.floor(Math.random() * 7);
+    // }
   }
   function setBoard(){
     // 22 rows, 12 wide
@@ -884,17 +893,18 @@ function Tetris(){
     printInfoRow();
   }
   function printTetrisBoard(message = ""){
+    console.log(gameBoard);
     var toPrint = "";
     if (message !== ""){
       toPrint += "<div class='errMsg'>" + message + "</div>"
     }
     for (let i = 0; i < gameBoard.length; i++){
       if (gameBoard[i] === 'X'){
-        toPrint += "<div id='borderSquare'></div>"
-      }else if (gameBoard[i] === 0){
-        toPrint += "<div id='emptySquare'></div>"
+        toPrint += "<div class='borderSquare'></div>"
+      }else if (gameBoard[i] === '0'){
+        toPrint += "<div class='emptySquare'></div>"
       }else if (gameBoard[i] === 'B'){
-        toPrint += "<div id='blockSquare'></div>"
+        toPrint += "<div class='blockSquare'></div>"
       }
     }
   document.getElementById("gameBoard").innerHTML = toPrint;
@@ -954,7 +964,7 @@ function Tetris(){
       scoreTitle = "Your Recent Scores";
     }
     if (results.length === 0){
-      fetch(process.env.REACT_APP_SERVERLOCATION + fetchString + '&gameID=1')
+      fetch(process.env.REACT_APP_SERVERLOCATION + fetchString + '&gameID=2')
         .then(response => response.json())
         .then(data => {
           console.log(data.results);

@@ -344,7 +344,8 @@ function App() {
             <h1>Welcome to Dennis' Arcade!</h1>
             <div>
               <div className="gameBox">
-                <Button  onClick={() => {openGame("Snake")}}>Play Snake</Button>
+                <Button  onClick={() => {openGame("Snake")}}>Play Snake</Button><br></br>
+                <Button  onClick={() => {openGame("Tetris")}}>Play Tetris</Button><br></br>
               </div>
             </div>
           </div>
