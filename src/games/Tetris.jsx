@@ -68,7 +68,7 @@ function Tetris(){
     //update currentPieceOccupyingSpaces
     //organize by top to bottom, left to right
     if (currentPiece === 1){ // Line Blocks
-      currentPieceOccupyingSpaces = [...[-28,-20,-8,4]];
+      currentPieceOccupyingSpaces = [...[-32,-20,-8,4]];
     }else if (currentPiece === 2){ //Square Blocks
       currentPieceOccupyingSpaces = [...[-8,-7,4,5]];
     }else if (currentPiece === 3){ //L Block
@@ -783,7 +783,7 @@ function Tetris(){
     //if unobstructed, shift blocks to the corresponding direction
     if (direction === "left"){
       for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
-        if (currentPieceOccupyingSpaces[i] < 12 || gameBoard[currentPieceOccupyingSpaces[i] - 1] === 0){
+        if (currentPieceOccupyingSpaces[i] < 12 || gameBoard[currentPieceOccupyingSpaces[i] - 1] === '0'){
         }else{
           console.log("Movement Blocked...")
           return;
@@ -794,7 +794,7 @@ function Tetris(){
       }
     }else if (direction === "right"){
       for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
-        if (currentPieceOccupyingSpaces[i] < 12 || gameBoard[currentPieceOccupyingSpaces[i] + 1] === 0){
+        if (currentPieceOccupyingSpaces[i] < 12 || gameBoard[currentPieceOccupyingSpaces[i] + 1] === '0'){
         }else{
           console.log("Movement Blocked...")
           return;
@@ -804,12 +804,14 @@ function Tetris(){
         currentPieceOccupyingSpaces[i] = currentPieceOccupyingSpaces[i] + 1;
       }
     }
+    console.log(currentPieceOccupyingSpaces);
   }
   function toppleBlocks(){
     //check the rows starting upwards from the bottom most currentPiece rows
     //delete rows where necessary and bring board down
     //give points for each row deleted
     //also give points for each block added other wise
+    //if board is overfilled, cause loss
   }
   function storePiece(){
     // set next piece to stored
@@ -819,7 +821,10 @@ function Tetris(){
     //check that each square is not touching a floor
     var hasReachedFloor = false;
     for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
-      if (gameBoard[currentPieceOccupyingSpaces[i] + 12] === 0 || gameBoard[currentPieceOccupyingSpaces[i] + 12 === '0']){
+      if (
+        currentPieceOccupyingSpaces[i] > 0 &&
+        (gameBoard[currentPieceOccupyingSpaces[i] + 12] !== '0')
+      ){
         hasReachedFloor = true;
         break;
       }
@@ -827,7 +832,9 @@ function Tetris(){
     if (hasReachedFloor){
       //change the blocks where they are located to fixed
       for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
-        gameBoard[currentPieceOccupyingSpaces[i]] = 'B';
+        if (currentPieceOccupyingSpaces[i] > 12){
+          gameBoard[currentPieceOccupyingSpaces[i]] = 'B';
+        }
       }
       //clear and topple blocks as necessary
       toppleBlocks();
@@ -856,11 +863,11 @@ function Tetris(){
       printTetrisBoard();
     }
     else if ((key === 37 || key === '37')){//rotate clockwise
-      rotatePiece('clockwise');
+      movePiece("left");
       printTetrisBoard();
     }
     else if ((key === 38 || key === "38")){ //move left
-      movePiece("left");
+      rotatePiece('clockwise');
       printTetrisBoard();
     }else if ((key === 39 || key === "39")){ //move right
       movePiece("right");
@@ -893,13 +900,18 @@ function Tetris(){
     printInfoRow();
   }
   function printTetrisBoard(message = ""){
-    console.log(gameBoard);
+    // console.log(gameBoard);
+    //console.log(currentPieceOccupyingSpaces);
     var toPrint = "";
+    var counter = 0;
     if (message !== ""){
       toPrint += "<div class='errMsg'>" + message + "</div>"
     }
     for (let i = 0; i < gameBoard.length; i++){
-      if (gameBoard[i] === 'X'){
+      if (currentPieceOccupyingSpaces.length !== 0 && currentPieceOccupyingSpaces[counter] === i){
+        counter++;
+        toPrint += "<div class='activeSquare'></div>"
+      }else if (gameBoard[i] === 'X'){
         toPrint += "<div class='borderSquare'></div>"
       }else if (gameBoard[i] === '0'){
         toPrint += "<div class='emptySquare'></div>"
@@ -917,7 +929,7 @@ function Tetris(){
       middleText = (" Score: " + score + " ");
       quickRestartButton = (<Button id="quickRestartButton">Restart</Button>)
     }else{
-      middleText = ("Press on the down arrow key to start.")
+      middleText = (" Press on the down arrow key to start. ")
     }
     document.getElementById("bulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
       (
