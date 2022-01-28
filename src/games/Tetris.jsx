@@ -807,10 +807,10 @@ function Tetris(){
     }
   }
   function toppleBlocks(){
+    score += 4; //give points for each block;
     //check the rows starting upwards from the bottom most currentPiece rows
     //delete rows where necessary and bring board down
     //give points for each row deleted
-    //also give points for each block added other wise
     //if board is overfilled, cause loss
   }
   function storePiece(){
@@ -892,9 +892,9 @@ function Tetris(){
   }
   //Printing
   function printInitialContent(){
-    var toPrint = "<h1>Tetris</h1><div class='gameBoard' id='gameBoard'>";
+    var toPrint = "<h1>Tetris</h1><div class='tetrisBoard' id='tetrisBoard'>";
     toPrint += "</div>";
-    toPrint += "<div class='bulletinBoard' id='bulletinBoard'></div>";
+    toPrint += "<div class='tetrisBulletinBoard' id='tetrisBulletinBoard'></div>";
     document.getElementById("gameScreen").innerHTML = toPrint;
     printTetrisBoard();
     printInfoRow();
@@ -910,16 +910,16 @@ function Tetris(){
     for (let i = 0; i < gameBoard.length; i++){
       if (currentPieceOccupyingSpaces.length !== 0 && currentPieceOccupyingSpaces[counter] === i){
         counter++;
-        toPrint += "<div class='activeSquare'></div>"
+        toPrint += "<div class='tetrisActiveSquare'></div>"
       }else if (gameBoard[i] === 'X'){
-        toPrint += "<div class='borderSquare'></div>"
+        toPrint += "<div class='tetrisBorderSquare'></div>"
       }else if (gameBoard[i] === '0'){
-        toPrint += "<div class='emptySquare'></div>"
+        toPrint += "<div class='tetrisEmptySquare'></div>"
       }else if (gameBoard[i] === 'B'){
-        toPrint += "<div class='blockSquare'></div>"
+        toPrint += "<div class='tetrisBlockSquare'></div>"
       }
     }
-  document.getElementById("gameBoard").innerHTML = toPrint;
+  document.getElementById("tetrisBoard").innerHTML = toPrint;
   }
   function printInfoRow(){
     var text = (<Button id='returnButton'>Main Menu</Button>);
@@ -931,7 +931,7 @@ function Tetris(){
     }else{
       middleText = (" Press on the down arrow key to start. ")
     }
-    document.getElementById("bulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    document.getElementById("tetrisBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
       (
         <div>
           {text}
