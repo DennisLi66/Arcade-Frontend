@@ -9,10 +9,12 @@ import Tetris from './games/Tetris';
 require('dotenv').config();
 //logout causes crash
 //Update adding timeduration to Login
+//login needs to set a redirection then reload
 function App() {
 
   const [navBar,changeNavbar] = React.useState(
-
+    <Navbar bg='light' expand="lg" className='loggedOutBar'>
+    </Navbar>
   );
   const [body,changeBody] = React.useState()
   const cookies = React.useMemo(() => {return new Cookies()},[])
@@ -23,12 +25,12 @@ function App() {
       function changeNavbarToLoggedIn(){
         changeNavbar(
           (
-            <Navbar bg='light' expand="lg" className='loggedOutBar'>
+            <Navbar key='out' bg='light' expand="lg" className='loggedOutBar'>
             <Navbar.Brand>QuickiePost</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
             <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
-              <Nav.Link onClick={()=>{getHome()}}>Home</Nav.Link>
+              <Nav.Link onClick={()=>{window.location.reload()}}>Home</Nav.Link>
               <Nav.Link onClick={()=>{logOut()}}>Log Out</Nav.Link>
             </Nav>
             </Navbar.Collapse>
@@ -39,14 +41,20 @@ function App() {
       function changeNavbarToLoggedOut(){
         changeNavbar(
           (
-            <Navbar bg='light' expand="lg" className='loggedOutBar'>
+            <Navbar key='in' bg='light' expand="lg" className='loggedOutBar'>
             <Navbar.Brand>QuickiePost</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
             <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
-              <Nav.Link onClick={()=>{getHome()}}>Home</Nav.Link>
-              <Nav.Link onClick={()=>{getRegisterPage()}}>Register</Nav.Link>
-              <Nav.Link onClick={()=>{getLoginPage()}}>Log In</Nav.Link>
+              <Nav.Link onClick={()=>{window.location.reload()}}>Home</Nav.Link>
+              <Nav.Link onClick={()=>{
+                cookies.set("redirect","Register");
+                window.location.reload();
+              }}>Register</Nav.Link>
+              <Nav.Link onClick={()=>{
+                cookies.set("redirect","Login");
+                window.location.reload();
+              }}>Log In</Nav.Link>
             </Nav>
             </Navbar.Collapse>
             </Navbar>
@@ -324,7 +332,7 @@ function App() {
       }
       //Detect Stuff Here
       if (cookies.get("name")){
-        changeNavbarToLoggedIn()
+        changeNavbarToLoggedIn();
       }else{
         changeNavbarToLoggedOut();
       }
@@ -332,6 +340,15 @@ function App() {
         if (cookies.get("redirect") === "Snake"){
           cookies.remove("redirect");
           openGame("Snake");
+        }else if (cookies.get("redirect") === "Tetris"){
+          cookies.remove("redirect");
+          openGame("Tetris");
+        }else if (cookies.get("redirect") === "Login"){
+          cookies.remove("redirect");
+          getLoginPage();
+        }else if (cookies.get("redirect") === "Register"){
+          cookies.remove("redirect");
+          getRegisterPage();
         }
       }else{
         var conf;
@@ -344,8 +361,8 @@ function App() {
             <h1>Welcome to Dennis' Arcade!</h1>
             <div>
               <div className="gameBox">
-                <Button  onClick={() => {openGame("Snake")}}>Play Snake</Button><br></br>
-                <Button  onClick={() => {openGame("Tetris")}}>Play Tetris</Button><br></br>
+                <Button onClick={() => {openGame("Snake")}}>Play Snake</Button><br></br>
+                <Button onClick={() => {openGame("Tetris")}}>Play Tetris</Button><br></br>
               </div>
             </div>
           </div>

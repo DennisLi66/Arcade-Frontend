@@ -953,11 +953,11 @@ function Tetris(){
   function readInstructions(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <div>
-        <Button id='backButton'> Back </Button><br></br>
+        <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
       </div>
     )
-    document.getElementById("backButton").onclick = getFrontPage();
+    document.getElementById("backButton").onclick = function(){getFrontPage()};
   }
   function getScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
     var fetchString;
