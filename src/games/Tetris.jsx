@@ -808,10 +808,45 @@ function Tetris(){
   }
   function toppleBlocks(){
     score += 4; //give points for each block;
+    var rowsToTopple = [];
+    var lastRow = -1;
+    for (let i = 0; i < 4; i++){
+      var currentRow = Math.floor(currentPieceOccupyingSpaces[i] / 12);
+      if (currentRow !== lastRow){
+        var allBlocked = true;
+        for (let t = 0; t < 12; t++){
+          if (gameBoard[currentRow * 12 + t] === '0'){
+            allBlocked = false;
+            break;
+          }
+        }
+        if (allBlocked){
+          rowsToTopple.push(currentRow);
+        }
+        lastRow = currentRow;
+      }
+    }
+    //console.log(rowsToTopple);
     //check the rows starting upwards from the bottom most currentPiece rows
     //delete rows where necessary and bring board down
-    //give points for each row deleted
+    for (let y = 0; y < rowsToTopple.length; y++){
+      for (let t = rowsToTopple[y] * 12 + 11; t > 12; t--){
+        //console.log(t);
+        if (t > 12 && t < 23 && gameBoard[t] !== 'X'){
+          gameBoard[t] = '0';
+        }else if (t < 12 && gameBoard[t] !== 'X'
+          //FIX THIS: way to check over fill
+        ){
+
+        }else{
+          gameBoard[t] = gameBoard[t - 12];
+        }
+      }
+    }
     //if board is overfilled, cause loss
+    //for (let k = 0; k < )
+    var points = [0,10,25,40,60];
+    score += points[rowsToTopple.length];
   }
   function storePiece(){
     // set next piece to stored
@@ -832,9 +867,7 @@ function Tetris(){
     if (hasReachedFloor){
       //change the blocks where they are located to fixed
       for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
-        if (currentPieceOccupyingSpaces[i] > 12){
-          gameBoard[currentPieceOccupyingSpaces[i]] = 'B';
-        }
+        gameBoard[currentPieceOccupyingSpaces[i]] = 'B';
       }
       //clear and topple blocks as necessary
       toppleBlocks();
