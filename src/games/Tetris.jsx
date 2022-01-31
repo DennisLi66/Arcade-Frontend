@@ -830,23 +830,41 @@ function Tetris(){
     //check the rows starting upwards from the bottom most currentPiece rows
     //delete rows where necessary and bring board down
     for (let y = 0; y < rowsToTopple.length; y++){
-      for (let t = rowsToTopple[y] * 12 + 11; t > 12; t--){
+      for (let t = rowsToTopple[y] * 12 + 11; t > 0; t--){
         //console.log(t);
         if (t > 12 && t < 23 && gameBoard[t] !== 'X'){
           gameBoard[t] = '0';
         }else if (t < 12 && gameBoard[t] !== 'X'
           //FIX THIS: way to check over fill
         ){
-
+          for (let u = 0; u < currentPieceOccupyingSpaces.length; u++){
+            if (currentPieceOccupyingSpaces[u] - t % 12 === 0){
+              currentPieceOccupyingSpaces[u] = currentPieceOccupyingSpaces[u] - 12;
+              if (t === currentPieceOccupyingSpaces[u]){
+                gameBoard[t] = 'B';
+              }
+            }
+          }
         }else{
           gameBoard[t] = gameBoard[t - 12];
         }
       }
     }
-    //if board is overfilled, cause loss
-    //for (let k = 0; k < )
     var points = [0,10,25,40,60];
     score += points[rowsToTopple.length];
+    printInfoRow();
+    //if board is overfilled, cause loss
+    var isLoss = false;
+    for (let g = 0; g < 12; g++){
+      if (gameBoard[g] === '0'){
+        gameBoard[g] = 'X';
+      }else if (gameBoard[g] === 'B'){
+        isLoss = true;
+      }
+    }
+    if (isLoss){
+      showLossScreen();
+    }
   }
   function storePiece(){
     // set next piece to stored
@@ -975,6 +993,9 @@ function Tetris(){
     );
     document.getElementById("returnButton").onclick = function(){getFrontPage()};
     if (currentPiece) document.getElementById("quickRestartButton").onclick = function(){startGame()};
+  }
+  function showLossScreen(){
+    
   }
   // Initial
   function startGame(){
