@@ -7,11 +7,13 @@ import Cookies from 'universal-cookie';
 import Snake from './games/Snake';
 import Tetris from './games/Tetris';
 require('dotenv').config();
-//logout causes crash
+
+//COuld do puyo puyo or match 3
+
+//logout causes crash?
 //Update adding timeduration to Login
 //login needs to set a redirection then reload
 function App() {
-
   const [navBar,changeNavbar] = React.useState(
     <Navbar bg='light' expand="lg" className='loggedOutBar'>
     </Navbar>

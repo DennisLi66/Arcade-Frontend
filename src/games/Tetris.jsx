@@ -925,6 +925,7 @@ function Tetris(){
       printTetrisBoard();
     }else if ((key === 40 || key === "40")){ //immediately descent
       if (!currentPiece){
+        startingTime = Date.now();
         currentPiece = Math.floor(Math.random() * 7);
         getNewPiece();
         timeTilDescent = maxTimeTilDescent;
@@ -995,7 +996,22 @@ function Tetris(){
     if (currentPiece) document.getElementById("quickRestartButton").onclick = function(){startGame()};
   }
   function showLossScreen(){
-    
+    endingTime = Date.now() - startingTime;
+    //remove event handler
+    document.removeEventListener('keydown',detectDirectionalKeyDown);
+    //remove runGame
+    //clearInterval(intervalID); //FIX THIS: ADD IN AFTER ADDING INTERVAL
+    //change infoRow
+    var returnButtonText = (<Button id='returnButton'>Main Menu</Button>);
+    var middleText = (" Score: " + score + " Elapsed Time: " + endingTime);
+    var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
+    document.getElementById("tetrisBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <div>
+        {returnButtonText}
+        {middleText}
+        {quickRestartButton}
+      </div>
+    );
   }
   // Initial
   function startGame(){
