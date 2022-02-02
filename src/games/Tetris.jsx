@@ -94,61 +94,13 @@ function Tetris(){
     if (rotation === "clockwise"){
       if (currentPiece === 1){
         if (currentPieceOrientation === 0){
-          if (
-            ((currentPieceOccupyingSpaces[1] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 2 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 2] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1] - 1,
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 1,
-              currentPieceOccupyingSpaces[1] + 2
-            ]];
-            currentPieceOrientation = 90;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[-1,0,1,2]) ? 90: 0;
         }else if (currentPieceOrientation === 90){
-          if (
-            ((currentPieceOccupyingSpaces[2] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] + 24 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 24] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[2] - 12,
-              currentPieceOccupyingSpaces[2],
-              currentPieceOccupyingSpaces[2] + 12,
-              currentPieceOccupyingSpaces[2] + 24
-            ]];
-            currentPieceOrientation = 180;
-          }
+          currentPieceOrientation = rotationHelperFunction(2,[-12,0,12,24]) ? 180: 90;
         }else if (currentPieceOrientation === 180){
-          if (
-            ((currentPieceOccupyingSpaces[2] - 2 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 2] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[2] - 2,
-              currentPieceOccupyingSpaces[2] - 1,
-              currentPieceOccupyingSpaces[2],
-              currentPieceOccupyingSpaces[2] + 1
-            ]];
-            currentPieceOrientation = 270;
-          }
+          currentPieceOrientation = rotationHelperFunction(2,[-2,-1,0,1]) ? 270: 180;
         }else if (currentPieceOrientation === 270){
-          if (
-            ((currentPieceOccupyingSpaces[1] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] - 24 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 24] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1] - 24,
-              currentPieceOccupyingSpaces[1] - 12,
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 12
-            ]];
-            currentPieceOrientation = 0;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[-24,-12,0,12]) ? 0: 270;
         }
       }else if (currentPiece === 2) {
           //squares don't rotate
@@ -440,9 +392,9 @@ function Tetris(){
       if (currentPiece === 1){
         if (currentPieceOrientation === 0){
           if (
-            ((currentPieceOccupyingSpaces[2] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] + 2 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 2] === '0' ))
+            ((currentPieceOccupyingSpaces[2] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 1] === '0' )) &&
+            ((currentPieceOccupyingSpaces[2] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 1] === '0' )) &&
+            ((currentPieceOccupyingSpaces[2] + 2 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 2] === '0' ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[2] - 1,
@@ -482,9 +434,9 @@ function Tetris(){
           }
         }else if (currentPieceOrientation === 270){
           if (
-            ((currentPieceOccupyingSpaces[2] - 24 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 24] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2]  -12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1]  -12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === '0' ))
+            ((currentPieceOccupyingSpaces[2] - 24 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 24] === '0' )) &&
+            ((currentPieceOccupyingSpaces[2]  -12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2]  -12] === '0' )) &&
+            ((currentPieceOccupyingSpaces[2] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 12] === '0' ))
           ){ //move along second space
             currentPieceOccupyingSpaces = [...[
               currentPieceOccupyingSpaces[2] - 24,
@@ -783,8 +735,23 @@ function Tetris(){
       }
     }
   }
-  function rotationHelperFunction(){
-
+  function rotationHelperFunction(blockToRotateAround,newLocations){
+    for (let i = 0; i < newLocations.length; i++){
+      if (currentPieceOccupyingSpaces[blockToRotateAround] + newLocations[i] < 12 ||
+      gameBoard[currentPieceOccupyingSpaces[blockToRotateAround] + newLocations[i]] === '0'){
+      }else{
+        console.log(gameBoard[currentPieceOccupyingSpaces[blockToRotateAround] + newLocations[i]])
+        return false;
+      }
+    }
+    var newList = [];
+    for (let i = 0; i < newLocations.length; i++){
+      newList.push(currentPieceOccupyingSpaces[blockToRotateAround] + newLocations[i])
+    }
+    //console.log(currentPieceOccupyingSpaces);
+    currentPieceOccupyingSpaces = [...newList];
+    //console.log(currentPieceOccupyingSpaces);
+    return true;
   }
   function movePiece(direction){
     //if unobstructed, shift blocks to the corresponding direction
