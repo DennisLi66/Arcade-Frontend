@@ -106,286 +106,54 @@ function Tetris(){
           //squares don't rotate
       }else if (currentPiece === 3){ // L block rotate along center block
         if (currentPieceOrientation === 0){
-          if (
-            ((currentPieceOccupyingSpaces[1] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 11 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 11] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1] - 1,
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 1,
-              currentPieceOccupyingSpaces[1] + 11
-            ]];
-            currentPieceOrientation = 90;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[-1,0,1,11]) ? 90 : 0;
         }else if (currentPieceOrientation === 90){
-        if (
-          ((currentPieceOccupyingSpaces[1] - 13 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 13] === '0' )) &&
-          ((currentPieceOccupyingSpaces[1] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 12] === '0' )) &&
-          ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === '0' ))
-        ){ //move along second space
-          currentPieceOccupyingSpaces = [...[
-            currentPieceOccupyingSpaces[1] - 13,
-            currentPieceOccupyingSpaces[1] - 12,
-            currentPieceOccupyingSpaces[1],
-            currentPieceOccupyingSpaces[1] + 12
-          ]];
-          currentPieceOrientation = 180;
-        }
+          currentPieceOrientation = rotationHelperFunction(1,[-13,-12,0,12]) ? 180 : 90;
         }else if (currentPieceOrientation === 180){
-          if (
-            ((currentPieceOccupyingSpaces[2] - 11 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 11] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 1] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[2] - 11,
-              currentPieceOccupyingSpaces[2] - 1,
-              currentPieceOccupyingSpaces[2],
-              currentPieceOccupyingSpaces[2] + 1
-            ]];
-            currentPieceOrientation = 270;
-          }
+          currentPieceOrientation = rotationHelperFunction(2,[-11,-1,0,1]) ? 270 : 180;
         }else if (currentPieceOrientation === 270){
-          if (
-            ((currentPieceOccupyingSpaces[2] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] + 13 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 13] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[2] - 12,
-              currentPieceOccupyingSpaces[2],
-              currentPieceOccupyingSpaces[2] + 12,
-              currentPieceOccupyingSpaces[2] + 13
-            ]];
-            currentPieceOrientation = 0;
-          }
+          currentPieceOrientation = rotationHelperFunction(2,[-12,0,12,13]) ? 0 : 270;
         }
       }else if (currentPiece === 4){ // T Block
         if (currentPieceOrientation === 0){
-          if (
-            (currentPieceOccupyingSpaces[2] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 1] === '0' )
-          ){
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[2] - 12,
-              currentPieceOccupyingSpaces[2] - 1,
-              currentPieceOccupyingSpaces[2],
-              currentPieceOccupyingSpaces[2] + 1
-            ]];
-            currentPieceOrientation = 90;
-          }
+          currentPieceOrientation = rotationHelperFunction(2,[-12,-1,0,1]) ? 90 : 0;
         }else if (currentPieceOrientation === 90){
-          if (
-            (currentPieceOccupyingSpaces[2] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 12] === '0' )
-          ){
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[2] - 12,
-              currentPieceOccupyingSpaces[2],
-              currentPieceOccupyingSpaces[2] + 1,
-              currentPieceOccupyingSpaces[2] + 12
-            ]];
-            currentPieceOrientation = 180;
-          }
+          currentPieceOrientation = rotationHelperFunction(2,[-12,0,1,12]) ? 180 : 90;
         }else if (currentPieceOrientation === 180){
-          if (
-            (currentPieceOccupyingSpaces[1] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === '0' )
-          ){
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1] - 1,
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 1,
-              currentPieceOccupyingSpaces[1] + 12
-            ]];
-            currentPieceOrientation = 270;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[-1,0,1,12]) ? 270 : 180;
         }else if (currentPieceOrientation === 270){
-          if (
-            (currentPieceOccupyingSpaces[1] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 12] === '0' )
-          ){
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1] - 12,
-              currentPieceOccupyingSpaces[1] - 1,
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 12
-            ]];
-            currentPieceOrientation = 0;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[-12,-1,0,12]) ? 0 : 270;
         }
       }else if (currentPiece === 5){ // J block
         if (currentPieceOrientation === 0){
-          if (
-            ((currentPieceOccupyingSpaces[1] - 13 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 13] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1] - 13,
-              currentPieceOccupyingSpaces[1] - 1,
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 1
-            ]];
-            currentPieceOrientation = 90;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[-13,-1,0,1]) ? 90 : 0;
         }else if (currentPieceOrientation === 90){
-          if (
-            ((currentPieceOccupyingSpaces[2] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] - 11 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 11] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 12] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[2] - 12,
-              currentPieceOccupyingSpaces[2] - 11,
-              currentPieceOccupyingSpaces[2],
-              currentPieceOccupyingSpaces[2] + 12
-            ]];
-            currentPieceOrientation = 180;
-          }
+          currentPieceOrientation = rotationHelperFunction(2,[-12,-11,0,12]) ? 180 : 90;
         }else if (currentPieceOrientation === 180){
-          if (
-            ((currentPieceOccupyingSpaces[2] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] - 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[2] + 13 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[2] + 13] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[2] - 1,
-              currentPieceOccupyingSpaces[2],
-              currentPieceOccupyingSpaces[2] + 1,
-              currentPieceOccupyingSpaces[2] + 13
-            ]];
-            currentPieceOrientation = 270;
-          }
+          currentPieceOrientation = rotationHelperFunction(2,[-1,0,1,13]) ? 270 : 180;
         }else if (currentPieceOrientation === 270){
-          if (
-            ((currentPieceOccupyingSpaces[1] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 11 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 11] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1] - 12,
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 11,
-              currentPieceOccupyingSpaces[1] + 12
-            ]];
-            currentPieceOrientation = 0;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[-12,0,11,12]) ? 0 : 270;
         }
       }else if (currentPiece === 6){ //S BLOCK
         if (currentPieceOrientation === 0){
-          if (
-            ((currentPieceOccupyingSpaces[1] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 11 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 1,
-              currentPieceOccupyingSpaces[1] + 11,
-              currentPieceOccupyingSpaces[1] + 12
-            ]];
-            currentPieceOrientation = 90;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[0,1,11,12]) ? 90 : 0;
         }else if (currentPieceOrientation === 90){
-          if (
-            ((currentPieceOccupyingSpaces[0] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[0] - 12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[0] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[0] + 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[0] + 13 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[0] + 13] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[0] - 12,
-              currentPieceOccupyingSpaces[0],
-              currentPieceOccupyingSpaces[0] + 1,
-              currentPieceOccupyingSpaces[0] + 13
-            ]];
-            currentPieceOrientation = 180;
-          }
+          currentPieceOrientation = rotationHelperFunction(0,[-12,0,1,13]) ? 180 : 90;
         }else if (currentPieceOrientation === 180){
-          if (
-            ((currentPieceOccupyingSpaces[1] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 11 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 1,
-              currentPieceOccupyingSpaces[1] + 11,
-              currentPieceOccupyingSpaces[1] + 12
-            ]];
-            currentPieceOrientation = 270;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[0,1,11,12]) ? 270 : 180;
         }else if (currentPieceOrientation === 270){
-          if (
-            ((currentPieceOccupyingSpaces[0] - 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[0] - 12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[0] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[0] + 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[0] + 13 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[0] + 13] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[0] - 12,
-              currentPieceOccupyingSpaces[0],
-              currentPieceOccupyingSpaces[0] + 1,
-              currentPieceOccupyingSpaces[0] + 13
-            ]];
-            currentPieceOrientation = 0;
-          }
+          currentPieceOrientation = rotationHelperFunction(0,[-12,0,1,13]) ? 0 : 270;
         }
       }
       else if (currentPiece === 7){ // Z BLOCK
         if (currentPieceOrientation === 0){
-          if (
-            ((currentPieceOccupyingSpaces[1] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 13 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 13] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1] - 1,
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 12,
-              currentPieceOccupyingSpaces[1] + 13
-            ]];
-            currentPieceOrientation = 90;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[-1,0,12,13]) ? 90 : 0;
         }else if (currentPieceOrientation === 90){
-          if (
-            ((currentPieceOccupyingSpaces[1] - 11 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 11] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1] - 11,
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 1,
-              currentPieceOccupyingSpaces[1] + 12
-            ]];
-            currentPieceOrientation = 180;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[-11,0,1,12]) ? 180 : 90;
         }else if (currentPieceOrientation === 180){
-          if (
-            ((currentPieceOccupyingSpaces[1] - 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 13 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 13] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1] - 1,
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 12,
-              currentPieceOccupyingSpaces[1] + 13
-            ]];
-            currentPieceOrientation = 270;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[-1,0,12,13]) ? 270 : 180;
         }else if (currentPieceOrientation === 270){
-          if (
-            ((currentPieceOccupyingSpaces[1] - 11 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] - 11] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 1 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 1] === '0' )) &&
-            ((currentPieceOccupyingSpaces[1] + 12 < 12 ) || (gameBoard[currentPieceOccupyingSpaces[1] + 12] === '0' ))
-          ){ //move along second space
-            currentPieceOccupyingSpaces = [...[
-              currentPieceOccupyingSpaces[1] - 11,
-              currentPieceOccupyingSpaces[1],
-              currentPieceOccupyingSpaces[1] + 1,
-              currentPieceOccupyingSpaces[1] + 12
-            ]];
-            currentPieceOrientation = 0;
-          }
+          currentPieceOrientation = rotationHelperFunction(1,[-11,0,1,12]) ? 180 : 90;
         }
       }
     }else if (rotation === "counterclockwise"){
