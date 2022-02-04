@@ -8,8 +8,11 @@ require('dotenv').config();
 
 //maybe change currentPiece and nextPiece into a list queue
 //FIX THIS change gameBoard to tetrisBoard so css doesnt affect snake
+//FIX THIS ADD NEXT TWO PIECES AND STORED PIECE DISPLAY
 //FIx Ending gameScreen
 //fix end buttons for print infro screen.
+//FIX THIS: make sure setboard uses up to date variables
+//FIX THIS: Mid secion topple may cause issues, check periodically
 
 function Tetris(){
   const cookies = new Cookies();
@@ -19,30 +22,30 @@ function Tetris(){
   var intervalID = "";
   var currentPiece = false; //will also tell us if gamestarted
   var storedPiece = false;
-  var pieceQueue = [];
-  var afterStoredPiece = false;
-  var nextPiece = false;
+  var pieceQueue = []; //Queue 3 Pieces
+  var recentlyStored = false;
   var endingTime = 0;
   var timeTilDescent = 0;
   var currentPieceOccupyingSpaces = []; //use negative numbers to indicate off screen
   var currentPieceOrientation = 0;
   var maxTimeTilDescent = 1000;
   //Board Manipulation
+  function loadPieceQueue(){
+    while (pieceQueue.length < 3){
+      pieceQueue.push(Math.floor(Math.random() * 8));
+    }
+  }
   function getNewPiece(){
     //return a number corresponsing to a piece and update nextPiece
-    //there are 7 block variations
-    // if (afterStoredPiece){
-    //   nextPiece = afterStoredPiece;
-    //   afterStoredPiece = false;
-    // }else{
-      nextPiece = Math.floor(Math.random() * 8);
-    // }
+      currentPiece = pieceQueue.shift();
+      loadPieceQueue();
   }
   function setBoard(){
     // 22 rows, 12 wide
     if (intervalID !== ""){
       clearInterval(intervalID);
     }
+    recentlyStored = false;
     startingTime = 0;
     intervalID = "";
     currentPiece = false; //will also tell us if gamestarted
@@ -241,7 +244,7 @@ function Tetris(){
               }
             }
           }
-        }else{
+        }else if (gameBoard[t] !== 'X'){
           gameBoard[t] = gameBoard[t - 12];
         }
       }
@@ -249,11 +252,26 @@ function Tetris(){
     var points = [0,10,25,40,60];
     score += points[rowsToTopple.length];
     printInfoRow();
-    detectLoss()
+    recentlyStored = false;
+    detectLoss();
   }
   function storePiece(){
-    // set next piece to stored
-    //if already stored, set next piece to stored and queue for afterStoredPiece
+    // set current piece to stored
+    if (!storedPiece){
+      storedPiece = currentPiece;
+      getNewPiece();
+      placeNewBlock()
+      printTetrisBoard();
+      recentlyStored = true;
+      score -= 5;
+      printInfoRow();
+      //printSideDisplay();
+    }else if (!recentlyStored){
+      //if already stored, set next piece to stored and queue for afterStoredPiece
+      pieceQueue.unshift(storedPiece);
+      storedPiece = false;
+      //printSideDisplay();
+    }
   }
   function updateDescent(){
     //check that each square is not touching a floor
@@ -275,9 +293,8 @@ function Tetris(){
       //clear and topple blocks as necessary
       toppleBlocks();
       //change current and next piece
-      currentPiece = nextPiece;
-      placeNewBlock()
       getNewPiece();
+      placeNewBlock();
     }else{
       for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
         currentPieceOccupyingSpaces[i] = currentPieceOccupyingSpaces[i] + 12;
@@ -312,10 +329,12 @@ function Tetris(){
       if (!currentPiece){
         startingTime = Date.now();
         currentPiece = Math.floor(Math.random() * 7);
+        loadPieceQueue();
         getNewPiece();
         timeTilDescent = maxTimeTilDescent;
         placeNewBlock();
         printTetrisBoard();
+        printInfoRow();
       }else{
         updateDescent();
       }
@@ -323,7 +342,7 @@ function Tetris(){
     else if ((key === 82 || key === "82")){ //R
       startGame();
     }
-    else if ((key === 32 || key === "32")){
+    else if ((key === 32 || key === "32")){ //spacebar
       storePiece();
     }
   }
@@ -356,7 +375,8 @@ function Tetris(){
         toPrint += "<div class='tetrisBlockSquare'></div>"
       }
     }
-  document.getElementById("tetrisBoard").innerHTML = toPrint;
+    document.getElementById("tetrisBoard").innerHTML = toPrint;
+    //console.log(gameBoard);
   }
   function printInfoRow(){
     var text = (<Button id='returnButton'>Main Menu</Button>);
@@ -379,6 +399,9 @@ function Tetris(){
     );
     document.getElementById("returnButton").onclick = function(){getFrontPage()};
     if (currentPiece) document.getElementById("quickRestartButton").onclick = function(){startGame()};
+  }
+  function printSideDisplay(){
+
   }
   //Losing
   function detectLoss(){
