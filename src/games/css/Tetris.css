@@ -52,9 +52,18 @@
 .tetrisMiniEmptyBlock{
   border: 1px solid black;
   float:left;
-  width: 41px;
-  height: 41px;
+  width: 30.7px;
+  height: 30.7px;
   background-color: white;
+  margin: 0;
+  padding: 0;
+}
+.tetrisMiniFilledBlock{
+  border: 1px solid black;
+  float:left;
+  width: 30.7px;
+  height: 30.7px;
+  background-color: lightblue;
   margin: 0;
   padding: 0;
 }

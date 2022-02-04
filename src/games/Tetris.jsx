@@ -258,17 +258,16 @@ function Tetris(){
       storedPiece = currentPiece;
       getNewPiece();
       placeNewBlock()
-      printTetrisBoard();
       recentlyStored = true;
       score -= 5;
       printInfoRow();
-      //printSideDisplay();
     }else if (!recentlyStored){
       //if already stored, set next piece to stored and queue for afterStoredPiece
       pieceQueue.unshift(storedPiece);
       storedPiece = false;
-      //printSideDisplay();
     }
+    printTetrisBoard();
+    printSideDisplay()
   }
   function updateDescent(){
     //check that each square is not touching a floor
@@ -292,6 +291,7 @@ function Tetris(){
       //change current and next piece
       getNewPiece();
       placeNewBlock();
+      printSideDisplay();
     }else{
       for (let i = 0; i < currentPieceOccupyingSpaces.length; i++){
         currentPieceOccupyingSpaces[i] = currentPieceOccupyingSpaces[i] + 12;
@@ -332,6 +332,7 @@ function Tetris(){
         placeNewBlock();
         printTetrisBoard();
         printInfoRow();
+        printSideDisplay();
       }else{
         updateDescent();
       }
@@ -409,26 +410,49 @@ function Tetris(){
     //Need to display storedPiece, and next two upcoming pieces
     var holdPieceGrid = [];
     var holdPieceReactString = (<div></div>);
-    if (!currentPiece){
-      for (let i = 0; i < 9; i++){
+    var pictures = [
+      [],
+      [0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0],
+      [0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0],
+      [0,0,0,0,0,1,0,0,0,1,0,0,0,1,1,0],
+      [0,0,0,0,0,0,1,0,0,1,1,0,0,0,1,0],
+      [0,0,0,0,0,0,1,0,0,0,1,0,0,1,1,0],
+      [0,0,0,0,0,1,0,0,0,1,1,0,0,0,1,0],
+      [0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0]
+    ]
+    if (!storedPiece){
+      for (let i = 0; i < 16; i++){
         holdPieceGrid.push(<div className='tetrisMiniEmptyBlock' key={i}></div>)
       }
-      holdPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='heldPiecePicture'>{holdPieceGrid}</div>)
     }else{
-
+      holdPieceGrid = [...pictures[storedPiece]]
+      for (let i = 0; i < 16; i++){
+        if (holdPieceGrid[i] === 0) holdPieceGrid[i] = (<div className='tetrisMiniEmptyBlock' key={i}></div>);
+        else holdPieceGrid[i] = (<div className='tetrisMiniFilledBlock' key={i}></div>);
+      }
     }
+    holdPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='heldPiecePicture'>{holdPieceGrid}</div>)
     var nextPieceGrid = [];
     var nextPieceReactString = (<div></div>)
     var afterNextPieceGrid = [];
     var afterNextPieceReactString = (<div></div>)
     if (!currentPiece){
-      for (let i = 0; i < 9; i++){
+      for (let i = 0; i < 16; i++){
         nextPieceGrid.push(<div className='tetrisMiniEmptyBlock' key={i}></div>)
       }
       nextPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='nextPiecePicture'>{nextPieceGrid}</div>)
       afterNextPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='afterPiecePicture'>{nextPieceGrid}</div>)
     }else{
-
+      nextPieceGrid = [...pictures[pieceQueue[0]]];
+      afterNextPieceGrid = [...pictures[pieceQueue[1]]]
+      for (let i = 0; i < 16; i++){
+        if (nextPieceGrid[i] === 0) nextPieceGrid[i] = (<div className='tetrisMiniEmptyBlock' key={i}></div>)
+        else nextPieceGrid[i] = (<div className='tetrisMiniFilledBlock' key={i}></div>)
+        if (afterNextPieceGrid[i] === 0) afterNextPieceGrid[i] = (<div className='tetrisMiniEmptyBlock' key={i}></div>)
+        else afterNextPieceGrid[i] = (<div className='tetrisMiniFilledBlock' key={i}></div>)
+      }
+      nextPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='nextPiecePicture'>{nextPieceGrid}</div>)
+      afterNextPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='afterPiecePicture'>{afterNextPieceGrid}</div>)
     }
     document.getElementById("tetrisSideDisplay").innerHTML = ReactDOMServer.renderToStaticMarkup(
       <div className='tetrisSideDisplay'>
