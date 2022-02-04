@@ -1,3 +1,16 @@
+.gameScreen{
+  border: 3px solid black;
+  padding: 20px;
+  background-color: gray;
+  /* display: flex; */
+}
+.tetrisSideBySide{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 0px;
+  width: 60%;
+  padding-left: 35%
+}
 .tetrisBulletinBoard{
   border: 1px solid black;
   background-color: beige;
@@ -7,13 +20,6 @@
   height: 50px;
   bottom: 0;
   position: relative;
-
-}
-.gameScreen{
-  border: 3px solid black;
-      padding: 20px;
-  background-color: gray;
-  padding:0;
 }
 .tetrisBoard{
   line-height: 0;
@@ -22,7 +28,35 @@
   height: 725px;
   width: 398px;
   display: inline-block;
-    margin:0;
+  margin:0;
+}
+.tetrisSideDisplay{
+  float:right;
+  line-height: 0;
+  border: 1px solid black;
+  background-color: beige;
+  height: 725px;
+  width: 150px;
+  text-align: center;
+  margin: 0;
+}
+.tetrisSideDisplayPieceHolders{
+  height: 125px;
+  width: 125px;
+  line-height: 0;
+  border: 1px solid black;
+  background-color:  white;
+  display: inline-block;
+  margin:0;
+}
+.tetrisMiniEmptyBlock{
+  border: 1px solid black;
+  float:left;
+  width: 41px;
+  height: 41px;
+  background-color: white;
+  margin: 0;
+  padding: 0;
 }
 .tetrisEmptySquare{
   border: 1px solid black;

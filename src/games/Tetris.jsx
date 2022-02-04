@@ -15,19 +15,16 @@ require('dotenv').config();
 //FIX THIS: Mid secion topple may cause issues, check periodically
 
 function Tetris(){
+   //10 wide, 20 high inner board
+   //pieceQueue loads 3 or more pieces
   const cookies = new Cookies();
-  var gameBoard = []; //10 wide, 20 high inner board
-  var score = 0;
-  var startingTime = 0;
+  var gameBoard = [];
+  var currentPieceOccupyingSpaces = [];
+  var pieceQueue = [];
+  var score, startingTime, currentPieceOrientation, endingTime = 0;
   var intervalID = "";
-  var currentPiece = false; //will also tell us if gamestarted
-  var storedPiece = false;
-  var pieceQueue = []; //Queue 3 Pieces
-  var recentlyStored = false;
-  var endingTime = 0;
+  var currentPiece, storedPiece, recentlyStored = false; //will also tell us if gamestarted
   var timeTilDescent = 0;
-  var currentPieceOccupyingSpaces = []; //use negative numbers to indicate off screen
-  var currentPieceOrientation = 0;
   var maxTimeTilDescent = 1000;
   //Board Manipulation
   function loadPieceQueue(){
@@ -348,12 +345,20 @@ function Tetris(){
   }
   //Printing
   function printInitialContent(){
-    var toPrint = "<h1>Tetris</h1><div class='tetrisBoard' id='tetrisBoard'>";
-    toPrint += "</div>";
-    toPrint += "<div class='tetrisBulletinBoard' id='tetrisBulletinBoard'></div>";
-    document.getElementById("gameScreen").innerHTML = toPrint;
+    var reactScript = (
+        <>
+        <h2>Tetris</h2>
+        <div className='tetrisSideBySide'>
+        <div className='tetrisBoard' id='tetrisBoard'></div>
+        <div className='tetrisSideDisplay' id='tetrisSideDisplay'></div>
+        </div>
+        <div className='tetrisBulletinBoard' id='tetrisBulletinBoard'></div>
+        </>
+    );
+    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(reactScript);
     printTetrisBoard();
     printInfoRow();
+    printSideDisplay();
   }
   function printTetrisBoard(message = ""){
     // console.log(gameBoard);
@@ -400,8 +405,42 @@ function Tetris(){
     document.getElementById("returnButton").onclick = function(){getFrontPage()};
     if (currentPiece) document.getElementById("quickRestartButton").onclick = function(){startGame()};
   }
-  function printSideDisplay(){
+  function printSideDisplay(){//prints at beginning, after store, and after topple
+    //Need to display storedPiece, and next two upcoming pieces
+    var holdPieceGrid = [];
+    var holdPieceReactString = (<div></div>);
+    if (!currentPiece){
+      for (let i = 0; i < 9; i++){
+        holdPieceGrid.push(<div className='tetrisMiniEmptyBlock' key={i}></div>)
+      }
+      holdPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='heldPiecePicture'>{holdPieceGrid}</div>)
+    }else{
 
+    }
+    var nextPieceGrid = [];
+    var nextPieceReactString = (<div></div>)
+    var afterNextPieceGrid = [];
+    var afterNextPieceReactString = (<div></div>)
+    if (!currentPiece){
+      for (let i = 0; i < 9; i++){
+        nextPieceGrid.push(<div className='tetrisMiniEmptyBlock' key={i}></div>)
+      }
+      nextPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='nextPiecePicture'>{nextPieceGrid}</div>)
+      afterNextPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='afterPiecePicture'>{nextPieceGrid}</div>)
+    }else{
+
+    }
+    document.getElementById("tetrisSideDisplay").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <div className='tetrisSideDisplay'>
+        <h4>Held Piece</h4>
+        {holdPieceReactString}
+        <h4>Next Pieces</h4>
+        <h5>Next</h5>
+        {nextPieceReactString}
+        <h5>After Next</h5>
+        {afterNextPieceReactString}
+      </div>
+    )
   }
   //Losing
   function detectLoss(){
