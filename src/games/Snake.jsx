@@ -9,6 +9,7 @@ require('dotenv').config();
 //Could Add Difficuly FIX THIS, like faster or constantly increasing
 //Add seeing scores FIX THIS
 //Add score submission FIX THIS
+//FIX THIS ADD instructions
 
 function Snake() {
   const cookies = new Cookies();
@@ -64,6 +65,7 @@ function Snake() {
     snakePositions = [];
     gameBoard = [];
     score = 0;
+    document.removeEventListener('keydown',detectOnlyRestart);
     //Actual Function
     var borderRow = [];
     for (let i = 0; i < 42; i++){
@@ -142,6 +144,10 @@ function Snake() {
     else if ((key === 82 || key === "82")){ //R
       startSnakeGame();
     }
+  }
+  function detectOnlyRestart(key){
+    key = key.keyCode;
+    if (key === 82 || key === "82") startSnakeGame();
   }
   function runGame(){ //constantly check state of game
     if (direction === "up"){
@@ -405,6 +411,7 @@ function Snake() {
   }
   function displayEndingScreen(){ //Display Score and Time Elapsed, Restart Button, Submit Score Button
     //document.removeEventListener('keydown',detectDirectionalKeyDown);
+    document.addEventListener('keydown',detectOnlyRestart)
     var scoreInformation = (" Score: " + score + " Time Elapsed: " + endingTime / 1000 + " seconds ");
     var returnButton = (<Button id="returnButton">Main Menu</Button>)
     var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);

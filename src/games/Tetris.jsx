@@ -6,14 +6,10 @@ import Table from 'react-bootstrap/Table'
 import "./css/Tetris.css"
 require('dotenv').config();
 
-//maybe change currentPiece and nextPiece into a list queue
-//FIX THIS change gameBoard to tetrisBoard so css doesnt affect snake
-//FIX THIS ADD NEXT TWO PIECES AND STORED PIECE DISPLAY
-//FIx Ending gameScreen
-//fix end buttons for print infro screen.
-//FIX THIS: make sure setboard uses up to date variables
+//FIX THIS: runTime interval - clear it and reinclude it if rushed down
+//FIX THIS: Write Instructions
 //FIX THIS: Mid secion topple may cause issues, check periodically
-
+//FIX THIS: Add submit score button
 function Tetris(){
    //10 wide, 20 high inner board
    //pieceQueue loads 3 or more pieces
@@ -29,7 +25,7 @@ function Tetris(){
   //Board Manipulation
   function loadPieceQueue(){
     while (pieceQueue.length < 3){
-      pieceQueue.push(Math.floor(Math.random() * 8));
+      pieceQueue.push(Math.floor(Math.random() * 7) + 1);
     }
   }
   function getNewPiece(){
@@ -41,16 +37,21 @@ function Tetris(){
     // 22 rows, 12 wide
     if (intervalID !== ""){
       clearInterval(intervalID);
+      intervalID = "";
     }
-    recentlyStored = false;
+    document.removeEventListener('keydown',detectOnlyRestart);
+    gameBoard = [];
+    currentPieceOccupyingSpaces = [];
+    pieceQueue = [];
+    score = 0;
     startingTime = 0;
-    intervalID = "";
+    currentPieceOrientation = 0;
+    endingTime = 0;
     currentPiece = false; //will also tell us if gamestarted
     storedPiece = false;
-    endingTime = 0;
+    recentlyStored = false;
     timeTilDescent = 0;
-    gameBoard = [];
-    score = 0;
+    maxTimeTilDescent = 1000;
     var borderRow = [];
     for (let i = 0; i < 12 ; i++){
       borderRow.push('X')
@@ -164,7 +165,6 @@ function Tetris(){
       if (currentPieceOccupyingSpaces[blockToRotateAround] + newLocations[i] < 12 ||
       gameBoard[currentPieceOccupyingSpaces[blockToRotateAround] + newLocations[i]] === '0'){
       }else{
-        console.log(gameBoard[currentPieceOccupyingSpaces[blockToRotateAround] + newLocations[i]])
         return false;
       }
     }
@@ -172,9 +172,7 @@ function Tetris(){
     for (let i = 0; i < newLocations.length; i++){
       newList.push(currentPieceOccupyingSpaces[blockToRotateAround] + newLocations[i])
     }
-    //console.log(currentPieceOccupyingSpaces);
     currentPieceOccupyingSpaces = [...newList];
-    //console.log(currentPieceOccupyingSpaces);
     return true;
   }
   function movePiece(direction){
@@ -211,7 +209,7 @@ function Tetris(){
       if (currentRow !== lastRow){
         var allBlocked = true;
         for (let t = 0; t < 12; t++){
-          if (gameBoard[currentRow * 12 + t] === '0'){
+          if (gameBoard[currentRow * 12 + t] === '0' || gameBoard[currentRow * 12 + t] === 'X'){
             allBlocked = false;
             break;
           }
@@ -222,17 +220,13 @@ function Tetris(){
         lastRow = currentRow;
       }
     }
-    //console.log(rowsToTopple);
     //check the rows starting upwards from the bottom most currentPiece rows
     //delete rows where necessary and bring board down
     for (let y = 0; y < rowsToTopple.length; y++){
       for (let t = rowsToTopple[y] * 12 + 11; t > 0; t--){
-        //console.log(t);
         if (t > 12 && t < 23 && gameBoard[t] !== 'X'){
           gameBoard[t] = '0';
-        }else if (t <= 12 && gameBoard[t] !== 'X'
-          //FIX THIS: way to check over fill
-        ){
+        }else if (t <= 12 && gameBoard[t] !== 'X'){ //Checks Overfill
           for (let u = 0; u < currentPieceOccupyingSpaces.length; u++){
             if (currentPieceOccupyingSpaces[u] - t % 12 === 0){
               currentPieceOccupyingSpaces[u] = currentPieceOccupyingSpaces[u] - 12;
@@ -248,7 +242,7 @@ function Tetris(){
     }
     var points = [0,10,25,40,60];
     score += points[rowsToTopple.length];
-    printInfoRow();
+    printAllContent();
     recentlyStored = false;
     detectLoss();
   }
@@ -260,14 +254,12 @@ function Tetris(){
       placeNewBlock()
       recentlyStored = true;
       score -= 5;
-      printInfoRow();
     }else if (!recentlyStored){
       //if already stored, set next piece to stored and queue for afterStoredPiece
       pieceQueue.unshift(storedPiece);
       storedPiece = false;
     }
-    printTetrisBoard();
-    printSideDisplay()
+    printAllContent();
   }
   function updateDescent(){
     //check that each square is not touching a floor
@@ -302,9 +294,7 @@ function Tetris(){
   }
   function detectDirectionalKeyDown(key){
     //left: 37, up: 38, right: 39, down: 40
-    //FIX THIS USE DIFFERENT KEYS (a and d) FOR ROTATION
     key = key.keyCode;
-    // console.log(key);
     if ((key === 65) || key === '65'){ //a key //rotate counter counterclockwise
       rotatePiece("counterclockwise");
       printTetrisBoard();
@@ -330,9 +320,8 @@ function Tetris(){
         getNewPiece();
         timeTilDescent = maxTimeTilDescent;
         placeNewBlock();
-        printTetrisBoard();
-        printInfoRow();
-        printSideDisplay();
+        printAllContent();
+        updateDescent();
       }else{
         updateDescent();
       }
@@ -343,6 +332,10 @@ function Tetris(){
     else if ((key === 32 || key === "32")){ //spacebar
       storePiece();
     }
+  }
+  function detectOnlyRestart(key){
+    key = key.keyCode;
+    if (key === 82 || key === "82") startGame();
   }
   //Printing
   function printInitialContent(){
@@ -361,9 +354,12 @@ function Tetris(){
     printInfoRow();
     printSideDisplay();
   }
+  function printAllContent(){
+    printTetrisBoard();
+    printInfoRow();
+    printSideDisplay();
+  }
   function printTetrisBoard(message = ""){
-    // console.log(gameBoard);
-    //console.log(currentPieceOccupyingSpaces);
     var toPrint = "";
     var counter = 0;
     if (message !== ""){
@@ -382,7 +378,6 @@ function Tetris(){
       }
     }
     document.getElementById("tetrisBoard").innerHTML = toPrint;
-    //console.log(gameBoard);
   }
   function printInfoRow(){
     var text = (<Button id='returnButton'>Main Menu</Button>);
@@ -396,11 +391,11 @@ function Tetris(){
     }
     document.getElementById("tetrisBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
       (
-        <div>
+        <>
           {text}
           {middleText}
           {quickRestartButton}
-        </div>
+        </>
       )
     );
     document.getElementById("returnButton").onclick = function(){getFrontPage()};
@@ -444,7 +439,7 @@ function Tetris(){
       afterNextPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='afterPiecePicture'>{nextPieceGrid}</div>)
     }else{
       nextPieceGrid = [...pictures[pieceQueue[0]]];
-      afterNextPieceGrid = [...pictures[pieceQueue[1]]]
+      afterNextPieceGrid = [...pictures[pieceQueue[1]]];
       for (let i = 0; i < 16; i++){
         if (nextPieceGrid[i] === 0) nextPieceGrid[i] = (<div className='tetrisMiniEmptyBlock' key={i}></div>)
         else nextPieceGrid[i] = (<div className='tetrisMiniFilledBlock' key={i}></div>)
@@ -455,7 +450,7 @@ function Tetris(){
       afterNextPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='afterPiecePicture'>{afterNextPieceGrid}</div>)
     }
     document.getElementById("tetrisSideDisplay").innerHTML = ReactDOMServer.renderToStaticMarkup(
-      <div className='tetrisSideDisplay'>
+      <>
         <h4>Held Piece</h4>
         {holdPieceReactString}
         <h4>Next Pieces</h4>
@@ -463,7 +458,7 @@ function Tetris(){
         {nextPieceReactString}
         <h5>After Next</h5>
         {afterNextPieceReactString}
-      </div>
+      </>
     )
   }
   //Losing
@@ -479,44 +474,46 @@ function Tetris(){
         gameBoard[g] = 'X';
       }
     }
-    if (isLoss){
-      console.log(gameBoard);
-      showLossScreen();
-    }
+    if (isLoss) showLossScreen();
   }
   function showLossScreen(){
     endingTime = Date.now() - startingTime;
     //remove event handler
     document.removeEventListener('keydown',detectDirectionalKeyDown);
+    document.addEventListener('keydown',detectOnlyRestart);
     //remove runGame
-    //clearInterval(intervalID); //FIX THIS: ADD IN AFTER ADDING INTERVAL
+    clearInterval(intervalID);
     //change infoRow
     var returnButtonText = (<Button id='returnButton'>Main Menu</Button>);
-    var middleText = (" Score: " + score + " Elapsed Time: " + endingTime + " ");
+    var middleText = " Score: " + score + " Elapsed Time: " + endingTime + " ";
     var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
     document.getElementById("tetrisBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
-      <div>
+      <>
         {returnButtonText}
         {middleText}
         {quickRestartButton}
-      </div>
+      </>
     );
     document.getElementById("returnButton").onclick = function(){getFrontPage()} ;
     document.getElementById("quickRestartButton").onclick = function(){startGame()};
+  }
+  function submitScore(){
+
   }
   // Initial
   function startGame(){
     setBoard();
     printInitialContent();
+    printAllContent();
     document.addEventListener('keydown',detectDirectionalKeyDown);
   }
   //Pages
   function readInstructions(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-      <div>
+      <>
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
-      </div>
+      </>
     )
     document.getElementById("backButton").onclick = function(){getFrontPage()};
   }
@@ -576,7 +573,7 @@ function Tetris(){
               prevButton = (<Button onClick={getScoresPage("",rule,data.results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
             }
             var reactString = (
-              <div>
+              <>
                 <h1> {scoreTitle} </h1>
                 <div> {otherMetricButton} {personalScoresSwitchButton} </div>
                 <Table>
@@ -586,7 +583,7 @@ function Tetris(){
                 </tbody>
                 </Table>
                 <div>{prevButton}{nextButton}</div>
-              </div>
+              </>
             );
             document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
           }
@@ -623,7 +620,7 @@ function Tetris(){
         prevButton = (<Button onClick={getScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
       }
       var reactString = (
-        <div>
+        <>
           <h1> {scoreTitle} </h1>
           <div><Button id='backButton'>Back Button</Button></div>
           <div> {otherMetricButton} {personalScoresSwitchButton} </div>
@@ -634,7 +631,7 @@ function Tetris(){
           </tbody>
           </Table>
           <div>{prevButton}{nextButton}</div>
-        </div>
+        </>
       );
       document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
       document.getElementById('backButton').onclick = function(){getFrontPage()};
@@ -642,12 +639,12 @@ function Tetris(){
   }
   function getFrontPage(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-      <div className='gameScreen' id='gameScreen'>
+      <>
         <h1> Tetris </h1>
         <Button id='startGameButton' >Start Game</Button><br></br>
         <Button id='instructionsButton'>Read Instructions</Button><br></br>
         <Button id='scoresButton'>Scores</Button><br></br>
-      </div>
+      </>
     );
       document.getElementById("startGameButton").onclick = function(){startGame()};
       document.getElementById("instructionsButton").onclick = function(){readInstructions()};
