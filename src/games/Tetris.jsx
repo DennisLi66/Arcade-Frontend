@@ -20,7 +20,6 @@ function Tetris(){
   var score, startingTime, currentPieceOrientation, endingTime = 0;
   var intervalID = "";
   var currentPiece, storedPiece, recentlyStored = false; //will also tell us if gamestarted
-  var timeTilDescent = 0;
   var maxTimeTilDescent = 1000;
   //Board Manipulation
   function loadPieceQueue(){
@@ -50,7 +49,6 @@ function Tetris(){
     currentPiece = false; //will also tell us if gamestarted
     storedPiece = false;
     recentlyStored = false;
-    timeTilDescent = 0;
     maxTimeTilDescent = 1000;
     var borderRow = [];
     for (let i = 0; i < 12 ; i++){
@@ -289,8 +287,11 @@ function Tetris(){
         currentPieceOccupyingSpaces[i] = currentPieceOccupyingSpaces[i] + 12;
       }
     }
-    timeTilDescent = maxTimeTilDescent;
     printTetrisBoard();
+    if (!endingTime){
+      clearInterval(intervalID);
+      intervalID = setInterval(updateDescent,maxTimeTilDescent);
+    }
   }
   function detectDirectionalKeyDown(key){
     //left: 37, up: 38, right: 39, down: 40
@@ -318,7 +319,6 @@ function Tetris(){
         currentPiece = Math.floor(Math.random() * 7);
         loadPieceQueue();
         getNewPiece();
-        timeTilDescent = maxTimeTilDescent;
         placeNewBlock();
         printAllContent();
         updateDescent();
@@ -592,11 +592,11 @@ function Tetris(){
                 personalScoresSwitchButton = (<Button onClick={getScoresPage("","myrecent")}> My Recent Scores </Button>)
               }
               otherMetricButton =  (<Button onClick={getScoresPage("","best")}> All Best Scores </Button>)
-            }else if (rule === "best"){
+            }else if (rule === "best" || rule === ""){
               if (cookies.get("id")){
-                personalScoresSwitchButton = (<Button onClick={getScoresPage("","mybest")}> My Best Scores </Button>)
+                personalScoresSwitchButton = (<Button onClick={()=>{getScoresPage("","mybest")}}> My Best Scores </Button>)
               }
-              otherMetricButton =  (<Button onClick={getScoresPage("","recent")}> All Recent Scores </Button>)
+              otherMetricButton =  (<Button onClick={()=>{getScoresPage("","recent")}}> All Recent Scores </Button>)
             }
             var nextButton, prevButton;
             if (end < data.results.length){
