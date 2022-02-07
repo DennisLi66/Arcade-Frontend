@@ -382,8 +382,8 @@ function Snake() {
   }
   //Post GAME
   function submitScore(){
-    console.log(cookies.get("id"));
-    console.log(cookies.get("sessionID"));
+    // console.log(cookies.get("id"));
+    // console.log(cookies.get("sessionID"));
     if (cookies.get("id")){
       const requestSetup = {
         method: 'PUT',

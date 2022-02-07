@@ -3,13 +3,13 @@ import Button from 'react-bootstrap/Button'
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
+import loginFunctionality from "../loginFunctionality/loginFunctionality"
 import "./css/Tetris.css"
 require('dotenv').config();
 
 //FIX THIS: runTime interval - clear it and reinclude it if rushed down
 //FIX THIS: Write Instructions
 //FIX THIS: Mid secion topple may cause issues, check periodically
-//FIX THIS: Add submit score button
 function Tetris(){
    //10 wide, 20 high inner board
    //pieceQueue loads 3 or more pieces
@@ -486,19 +486,52 @@ function Tetris(){
     //change infoRow
     var returnButtonText = (<Button id='returnButton'>Main Menu</Button>);
     var middleText = " Score: " + score + " Elapsed Time: " + endingTime + " ";
-    var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
+    var restartAndSubmitButton =
+    (
+      <>
+      <Button id='submitScoreButton'>Submit Score</Button>
+      <Button id="quickRestartButton">Restart</Button>
+      </>
+    );
     document.getElementById("tetrisBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
         {returnButtonText}
         {middleText}
-        {quickRestartButton}
+        {restartAndSubmitButton}
       </>
     );
+    document.getElementById("submitScoreButton").onclick = function(){submitScore()};
     document.getElementById("returnButton").onclick = function(){getFrontPage()} ;
     document.getElementById("quickRestartButton").onclick = function(){startGame()};
   }
   function submitScore(){
-
+    // console.log(cookies.get("id"));
+    // console.log(cookies.get("sessionID"));
+    if (cookies.get("id")){
+      const requestSetup = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({userID:cookies.get("id"),score:score,gameID:2
+        ,
+        timeInMilliseconds: endingTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
+      }
+      fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          if (data.status === -1){
+            printTetrisBoard(data.message);
+          }else{
+            getScoresPage("Your score has been submitted.")
+          }
+        })
+    }else{
+      document.getElementById('gameScreen').innerHTML = ReactDOMServer(
+        loginFunctionality({score: score, timeInMilliseconds: endingTime, gameID: 1})
+      )
+      //ask that the user logs in FIX THIS
+      // pass a dictionary to a new object in a new file
+    }
   }
   // Initial
   function startGame(){
