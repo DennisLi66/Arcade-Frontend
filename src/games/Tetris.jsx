@@ -575,99 +575,76 @@ function Tetris(){
             // do nothing... FIX THIS
             console.log(data.message);
           }else{
-            var listOfElements = [];
-            for (let i = start; i < Math.min(data.results.length,end); i++){
-              listOfElements.push(<tr key = {i}><td>{i + 1}</td> <td> {data.results[i][0]} </td> <td> {data.results[i][1]} </td> <td> {data.results[i][2]}</td> <td> {data.results[i][3]}</td> </tr>)
-            }
-            var otherMetricButton;
-            var personalScoresSwitchButton;
-            if (rule === "myrecent"){
-              otherMetricButton = (<Button onClick={getScoresPage("","mybest")}> My Best Scores </Button>)
-              personalScoresSwitchButton = (<Button onClick={getScoresPage("","recent")}> All Recent Scores </Button>)
-            }else if (rule === "mybest"){
-              otherMetricButton = (<Button onClick={getScoresPage("","myrecent")}> My Recent Scores </Button>)
-              personalScoresSwitchButton = (<Button onClick={getScoresPage("","best")}> All Best Scores </Button>)
-            }else if (rule === "recent"){
-              if (cookies.get("id")){
-                personalScoresSwitchButton = (<Button onClick={getScoresPage("","myrecent")}> My Recent Scores </Button>)
-              }
-              otherMetricButton =  (<Button onClick={getScoresPage("","best")}> All Best Scores </Button>)
-            }else if (rule === "best" || rule === ""){
-              if (cookies.get("id")){
-                personalScoresSwitchButton = (<Button onClick={()=>{getScoresPage("","mybest")}}> My Best Scores </Button>)
-              }
-              otherMetricButton =  (<Button onClick={()=>{getScoresPage("","recent")}}> All Recent Scores </Button>)
-            }
-            var nextButton, prevButton;
-            if (end < data.results.length){
-              nextButton = (<Button onClick={getScoresPage("",rule,data.results,start + 10, end + 10)}> Next </Button>)
-            }
-            if (start > 0){
-              prevButton = (<Button onClick={getScoresPage("",rule,data.results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
-            }
-            var reactString = (
-              <>
-                <h1> {scoreTitle} </h1>
-                <div> {otherMetricButton} {personalScoresSwitchButton} </div>
-                <Table>
-                <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
-                <tbody>
-                {listOfElements}
-                </tbody>
-                </Table>
-                <div>{prevButton}{nextButton}</div>
-              </>
-            );
-            document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
+            scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
           }
         })
     }else{ //use results instead
-      var listOfElements = [];
-      for (let i = start; i < Math.min(results.length,end); i++){
-        listOfElements.push(<tr key = {i}><td>{i + 1}</td> <td> {results[i][0]} </td> <td> {results[i][1]} </td> <td> {results[i][2]}</td> <td> {results[i][3]}</td> </tr>)
+      scoresHelperFunction(message,rule,results,start,end,scoreTitle);
+    }
+  }
+  function scoresHelperFunction(message,rule,results,start,end,scoreTitle){
+    var listOfElements = [];
+    for (let i = start; i < Math.min(results.length,end); i++){
+      listOfElements.push(<tr key = {i}><td>{i + 1}</td> <td> {results[i][0]} </td> <td> {results[i][1]} </td> <td> {results[i][2]}</td> <td> {results[i][3]}</td> </tr>)
+    }
+    var otherMetricButton;
+    var personalScoresSwitchButton;
+    if (rule === "myrecent"){
+      otherMetricButton = (<Button id='otherMetricButton'> My Best Scores </Button>)
+      personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Recent Scores </Button>)
+    }else if (rule === "mybest"){
+      otherMetricButton = (<Button id='otherMetricButton'> My Recent Scores </Button>)
+      personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Best Scores </Button>)
+    }else if (rule === "recent"){
+      if (cookies.get("id")){
+        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
       }
-      var otherMetricButton;
-      var personalScoresSwitchButton;
-      if (rule === "myrecent"){
-        otherMetricButton = (<Button onClick={getScoresPage("","mybest")}> My Best Scores </Button>)
-        personalScoresSwitchButton = (<Button onClick={getScoresPage("","recent")}> All Recent Scores </Button>)
-      }else if (rule === "mybest"){
-        otherMetricButton = (<Button onClick={getScoresPage("","myrecent")}> My Recent Scores </Button>)
-        personalScoresSwitchButton = (<Button onClick={getScoresPage("","best")}> All Best Scores </Button>)
-      }else if (rule === "recent"){
-        if (cookies.get("id")){
-          personalScoresSwitchButton = (<Button onClick={getScoresPage("","myrecent")}> My Recent Scores </Button>)
-        }
-        otherMetricButton =  (<Button onClick={getScoresPage("","best")}> All Best Scores </Button>)
-      }else if (rule === "best" || rule===""){
-        if (cookies.get("id")){
-          personalScoresSwitchButton = (<Button onClick={getScoresPage("","mybest")}> My Best Scores </Button>)
-        }
-        otherMetricButton =  (<Button onClick={getScoresPage("","recent")}> All Recent Scores </Button>)
+      otherMetricButton =  (<Button id='otherMetricButton'> All Best Scores </Button>)
+    }else if (rule === "best" || rule === ""){
+      if (cookies.get("id")){
+        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
       }
-      var nextButton, prevButton;
-      if (end < results.length){
-        nextButton = (<Button onClick={getScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
+      otherMetricButton =  (<Button id='otherMetricButton'> All Recent Scores </Button>)
+    }
+    var nextButton, prevButton;
+    if (end < results.length){
+      nextButton = (<Button onClick={getScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
+    }
+    if (start > 0){
+      prevButton = (<Button onClick={getScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
+    }
+    var reactString = (
+      <>
+        <h1> {scoreTitle} </h1>
+        <div><Button id='backButton'>Main Menu</Button></div>
+        <div> {otherMetricButton} {personalScoresSwitchButton} </div>
+        <Table>
+        <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
+        <tbody>
+        {listOfElements}
+        </tbody>
+        </Table>
+        <div>{prevButton}{nextButton}</div>
+      </>
+    );
+    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
+    document.getElementById('backButton').onclick = function(){getFrontPage()};
+    if (rule === "myrecent"){
+      document.getElementById("personalScoresSwitch").onclick = function(){getScoresPage("","recent")};
+      document.getElementById("otherMetricButton").onclick = function(){getScoresPage("","mybest")};
+    }else if (rule === "mybest"){
+      document.getElementById("personalScoresSwitch").onclick = function(){getScoresPage("","best")};
+      document.getElementById("otherMetricButton").onclick = function(){getScoresPage("","myrecent")};
+    }else if (rule === "recent"){
+      if (cookies.get("id")){
+        document.getElementById("personalScoresSwitch").onclick = function(){getScoresPage("","myrecent")};
       }
-      if (start > 0){
-        prevButton = (<Button onClick={getScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
+      document.getElementById("otherMetricButton").onclick = function(){getScoresPage("","best")};
+    }else if (rule === "best" || rule === ""){
+      if (cookies.get("id")){
+        document.getElementById("personalScoresSwitch").onclick = function(){getScoresPage("","mybest")};
       }
-      var reactString = (
-        <>
-          <h1> {scoreTitle} </h1>
-          <div><Button id='backButton'>Back Button</Button></div>
-          <div> {otherMetricButton} {personalScoresSwitchButton} </div>
-          <Table>
-          <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
-          <tbody>
-          {listOfElements}
-          </tbody>
-          </Table>
-          <div>{prevButton}{nextButton}</div>
-        </>
-      );
-      document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
-      document.getElementById('backButton').onclick = function(){getFrontPage()};
+      document.getElementById("otherMetricButton").onclick = function(){getScoresPage("","recent")};
     }
   }
   function getFrontPage(){
