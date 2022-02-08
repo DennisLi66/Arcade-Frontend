@@ -241,6 +241,13 @@ function Snake() {
       <div>
         <Button id='backButton'>Back</Button>
         <h1> Instructions </h1>
+        <div>
+          Snake is a game about controlling a snake trying to eat a dot. The snake must avoid crashing into the walls or crashing into
+          itself, and will need your help to do so.
+
+          Use the arrow keys to navigate the snake towards the dot.
+          Press R to quickly restart the game if necessary.
+        </div>
       </div>
     )
     document.getElementById('backButton').onclick = function(){getFrontPage()}

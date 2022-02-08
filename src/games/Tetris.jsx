@@ -546,6 +546,23 @@ function Tetris(){
       <>
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
+        <div>
+          In Tetris, your objective is to clear rows of blocks without them reaching the top. You can clear a row of blocks
+          by forming a complete row of blocks, but the more rows you clear at a time, the more points you get. Just make sure
+          not to reach the top.
+
+          Controls:
+          Use the left and right arrow keys to move left and right, respectively.
+          Press the A key to rotate your current piece counterclockwise, given space.
+          Press the D key or the up arrow key to rotate your current piece clockwise, given space.
+          Press the down arrow key to have your current piece descend faster.
+          Press the spacebar to store your current piece, if you aren't currently storing one. Note that this action will cause you
+          to lose a small amount of points each usage.
+          If you are currently storing a piece, pressing the spacebar once again will make it your next piece, pushing the upcoming pieces
+          back.
+          Press the R button to quickly restart the game if needed.
+
+        </div>
       </>
     )
     document.getElementById("backButton").onclick = function(){getFrontPage()};
