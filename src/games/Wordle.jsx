@@ -7,12 +7,74 @@ import Table from 'react-bootstrap/Table'
 import "./css/Wordle.css"
 require('dotenv').config();
 
+//gameScreen consists of psudeo input text box with blocks, game board with current guesses, and the score board
+
 function Wordle(){
   //VARIABLES
   const cookies = new Cookies();
+  var score = 0;
+  var wordLength = 3;
+  var currentWord = "";
+  var currentGuess = "";
+  var guesses = [];
+  //Printers
+  function printInitialContent(){
+    var reactScript = (
+      <>
+      <h2>Wordle</h2>
+      <div className='wordleColumns'>
+        <div className='WordleGameBoard' id='WordleGameBoard'></div>
+        <div className='WordleTextBox' id='WordleTextBox'></div>
+      </div>
+      <div className='WordleBulletinBoard' id='WordleBulletinBoard'></div>
+      </>
+    );
+    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(reactScript);
+    printWordleGameBoard();
+    printWordleBulletinBoard();
+    printWordleTextBox();
+  }
+  function printWordleBulletinBoard(){
+    var text = (<Button id='returnButton'>Main Menu</Button>);
+    var middleText;
+    var quickRestartButton;
+    if (currentWord !== ""){
+      middleText = (" Score: " + score + " ");
+      quickRestartButton = (<Button id="quickRestartButton">Restart</Button>)
+    }else{
+      middleText = (" Type a letter to begin. ")
+    }
+    document.getElementById("WordleBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      (
+        <>
+          {text}
+          {middleText}
+          {quickRestartButton}
+        </>
+      )
+    );
+    document.getElementById("returnButton").onclick = function(){getWordleFrontPage()};
+    if (currentWord !== "") document.getElementById("quickRestartButton").onclick = function(){startWordleGame()};
+  }
+  function printWordleGameBoard(){
+
+  }
+  function printWordleTextBox(message = ""){
+
+  }
+  //KeyLogging
+  function detectKeyPress(key){
+
+  }
   //Pages
   function startWordleGame(){
-
+    score = 0;
+    wordLength = 3;
+    currentWord = "";
+    currentGuess = "";
+    guesses = [];
+    printInitialContent();
+    document.addEventListener('keydown',detectKeyPress)
   }
   function readWordleInstructions(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(

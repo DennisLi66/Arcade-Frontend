@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button'
 import Cookies from 'universal-cookie';
 import Snake from './games/Snake';
 import Tetris from './games/Tetris';
+import Wordle from './games/Wordle';
 require('dotenv').config();
 
 //COuld do puyo puyo or match 3
@@ -327,9 +328,11 @@ function App() {
       //games
       function openGame(gameTitle){
         if (gameTitle === "Snake"){
-          changeBody(Snake())
+          changeBody(Snake());
         }else if (gameTitle === "Tetris"){
-          changeBody(Tetris())
+          changeBody(Tetris());
+        }else if (gameTitle === "Wordle"){
+          changeBody(Wordle());
         }
       }
       //Detect Stuff Here
@@ -365,6 +368,7 @@ function App() {
               <div className="gameBox">
                 <Button onClick={() => {openGame("Snake")}}>Play Snake</Button><br></br>
                 <Button onClick={() => {openGame("Tetris")}}>Play Tetris</Button><br></br>
+                <Button onClick={() => {openGame("Wordle")}}>Play Wordle</Button><br></br>
               </div>
             </div>
           </div>
