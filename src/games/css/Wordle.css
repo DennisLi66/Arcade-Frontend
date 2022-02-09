@@ -1,0 +1,60 @@
+.wordleColumns{
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 0px;
+  width: 100%;
+  /* padding-left: 35% */
+}
+.WordleBulletinBoard{
+  border: 1px solid black;
+  background-color: beige;
+  width: 100%;
+  text-align: center;
+  margin:0;
+  height: 50px;
+  bottom: 0;
+  position: relative;
+  padding: 3px
+}
+.WordleTextBox{
+  border: 1px solid black;
+  background-color: beige;
+  width: 100%;
+  text-align: center;
+  margin:0;
+  height: 100px;
+  bottom: 0;
+  position: relative;
+  padding: 3px
+}
+.WordleGameBoard{
+  border: 1px solid black;
+  background-color: beige;
+  width: 100%;
+  text-align: center;
+  margin:0;
+  height: 500px;
+  bottom: 0;
+  position: relative;
+  padding: 3px
+}
+
+.WordleMiniBox{
+  border: 1px solid black;
+  height: 48px;
+  width: 48px;
+  background-color: white;
+  float: left;
+}
+.WordleBoxesHolder{
+  /* //border: 1px solid black; */
+  /* background-color: red; */
+  /* height: 50px; */
+  margin: 10px;
+  /* width: 146px; */
+  display: inline-block;
+  text-align: center;
+  display: flex;
+justify-content: center;
+  /* position: relative; */
+}

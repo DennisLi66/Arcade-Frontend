@@ -23,7 +23,9 @@ function Wordle(){
       <>
       <h2>Wordle</h2>
       <div className='wordleColumns'>
-        <div className='WordleGameBoard' id='WordleGameBoard'></div>
+        <div className='WordleGameBoard' id='WordleGameBoard'>
+          <div className='wordleColumns' id='guessBoxes'></div>
+        </div>
         <div className='WordleTextBox' id='WordleTextBox'></div>
       </div>
       <div className='WordleBulletinBoard' id='WordleBulletinBoard'></div>
@@ -57,7 +59,39 @@ function Wordle(){
     if (currentWord !== "") document.getElementById("quickRestartButton").onclick = function(){startWordleGame()};
   }
   function printWordleGameBoard(){
-
+    var wordsToPrint = [];
+    for (let i = 0 ; i < guesses.length; i++){
+      var letters = [];
+      for (let x = 0; x < guesses[i].length; i++){
+        letters.push(<div className='WordleMiniBox' key={x}>{guesses[i][x]}</div>)
+      }
+      wordsToPrint.push(
+        (
+          <div className='WordleBoxesHolder' key={i}>
+            {letters}
+          </div>
+        )
+      )
+    }
+    if (wordsToPrint.length < 5){
+      var letters2 = [];
+      for (let i = 0; i < wordLength; i++){
+        letters2.push(<div className='WordleMiniBox' key={i}></div>)
+      }
+    }
+    while (wordsToPrint.length < 5) wordsToPrint.push(
+        (
+        <div className='WordleBoxesHolder' key={wordsToPrint.length}>
+          {letters2}
+        </div>
+        )
+      )
+    document.getElementById('guessBoxes').innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+      <h2>Guesses</h2>
+      {wordsToPrint}
+      </>
+    )
   }
   function printWordleTextBox(message = ""){
 
