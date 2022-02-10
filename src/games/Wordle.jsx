@@ -94,10 +94,42 @@ function Wordle(){
     )
   }
   function printWordleTextBox(message = ""){
-
+    var letterBoxes = [];
+    for (let i = 0; i < currentGuess.length; i++){
+      letterBoxes.push(<div className='WordleMiniBox' key={i}>{currentGuess[i]}</div>)
+    }
+    while (letterBoxes.length < wordLength){
+      letterBoxes.push(<div className='WordleMiniBox' key={letterBoxes.length}></div>)
+    }
+    document.getElementById('WordleTextBox').innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+        <h4>Your Current Guess</h4>
+        <div className='WordleBoxesHolder'>
+          <Button id='wordleClearButton'>Clear</Button>
+          {letterBoxes}
+          <Button id='wordleSubmitButton'>Submit</Button>
+        </div>
+      </>
+    );
+    document.getElementById('wordleSubmitButton').onclick = function(){submitGuess()};
+    document.getElementById('wordleClearButton').onclick = function(){currentGuess = ""; printWordleTextBox()};
   }
   //KeyLogging
-  function detectKeyPress(key){
+  function detectKeyPress(button){
+    if (button.keyCode >= 65 && button.keyCode <= 90){
+      if (currentGuess.length < wordLength){
+        currentGuess += button.key;
+      }
+    }else if (button.keyCode === 13){ //Enter Button
+      submitGuess();
+    }else if (button.keyCode === 8){ //Backspace Button
+      if (currentGuess.length > 0){
+        currentGuess = currentGuess.slice(0,-1);
+      }
+    }
+    printWordleTextBox();
+  }
+  function submitGuess(){
 
   }
   //Pages
