@@ -4,7 +4,8 @@ import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 //import loginFunctionality from "../loginFunctionality/loginFunctionality"
-import "./css/Wordle.css"
+import produceWord from "../helpers/produceWord";
+import "./css/Wordle.css";
 require('dotenv').config();
 
 //gameScreen consists of psudeo input text box with blocks, game board with current guesses, and the score board
@@ -59,11 +60,30 @@ function Wordle(){
     if (currentWord !== "") document.getElementById("quickRestartButton").onclick = function(){startWordleGame()};
   }
   function printWordleGameBoard(){
+    //console.log(currentWord);
     var wordsToPrint = [];
     for (let i = 0 ; i < guesses.length; i++){
       var letters = [];
-      for (let x = 0; x < guesses[i].length; i++){
-        letters.push(<div className='WordleMiniBox' key={x}>{guesses[i][x]}</div>)
+      var copyOfWord = [];
+      for (let y = 0; y < currentWord.length; y++){
+        copyOfWord.push(currentWord[y]);
+      }
+      for (let x = 0; x < guesses[i].length; x++){
+        if (guesses[i][x].toUpperCase() === currentWord[x].toUpperCase()){
+          letters.push(<div className='WordleGreenBox' key={x}>{guesses[i][x].toUpperCase()}</div>);
+          copyOfWord[x] = '_';
+        }else{
+          var found = false;
+          for (let t = 0; t < copyOfWord.length; t++){
+            if (copyOfWord[t].toUpperCase() === guesses[i][x].toUpperCase()){
+              found = true;
+              letters.push(<div className='WordleYellowBox' key={x}>{guesses[i][x].toUpperCase()}</div>);
+              copyOfWord[t] = '_';
+              break;
+            }
+          }
+          if (!found) letters.push(<div className='WordleMiniBox' key={x}>{guesses[i][x].toUpperCase()}</div>);
+        }
       }
       wordsToPrint.push(
         (
@@ -130,13 +150,32 @@ function Wordle(){
     printWordleTextBox();
   }
   function submitGuess(){
+    if (currentGuess.length !== wordLength);
+    else{
+      if (currentGuess.toLowerCase() === currentWord.toLowerCase()){
+
+      }else{
+        guesses.push(currentGuess);
+        if (guesses.length === 5){
+          //showLossScreen();
+        }else{
+          currentGuess = "";
+          printWordleGameBoard();
+          printWordleBulletinBoard();
+          printWordleTextBox();
+        }
+      }
+    }
+  }
+  //Loss screen
+  function showLossScreen(){
 
   }
   //Pages
   function startWordleGame(){
     score = 0;
     wordLength = 3;
-    currentWord = "";
+    currentWord = produceWord(wordLength);
     currentGuess = "";
     guesses = [];
     printInitialContent();

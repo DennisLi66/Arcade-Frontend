@@ -38,12 +38,25 @@
   position: relative;
   padding: 3px
 }
-
 .WordleMiniBox{
   border: 1px solid black;
   height: 48px;
   width: 48px;
   background-color: white;
+  float: left;
+}
+.WordleGreenBox{
+  border: 1px solid black;
+  height: 48px;
+  width: 48px;
+  background-color: green;
+  float: left;
+}
+.WordleYellowBox{
+  border: 1px solid black;
+  height: 48px;
+  width: 48px;
+  background-color: yellow;
   float: left;
 }
 .WordleBoxesHolder{
@@ -55,6 +68,6 @@
   display: inline-block;
   text-align: center;
   display: flex;
-justify-content: center;
+  justify-content: center;
   /* position: relative; */
 }
