@@ -206,7 +206,7 @@ function Tetris(){
       var currentRow = Math.floor(currentPieceOccupyingSpaces[i] / 12);
       if (currentRow !== lastRow){
         var allBlocked = true;
-        for (let t = 0; t < 12; t++){
+        for (let t = 1; t < 11; t++){
           if (gameBoard[currentRow * 12 + t] === '0' || gameBoard[currentRow * 12 + t] === 'X'){
             allBlocked = false;
             break;

@@ -4,7 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 //import loginFunctionality from "../loginFunctionality/loginFunctionality"
-import produceWord from "../helpers/produceWord";
+import produceWord from "../helpers/produceWord.ts";
 import "./css/Wordle.css";
 require('dotenv').config();
 
