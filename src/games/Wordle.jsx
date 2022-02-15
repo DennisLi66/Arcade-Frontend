@@ -43,10 +43,26 @@ function Wordle(){
     var quickRestartButton;
     if (currentWord !== ""){
       middleText = (" Score: " + score + " ");
-      quickRestartButton = (<Button id="quickRestartButton">Restart</Button>)
+      quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
     }else{
       middleText = (" Type a letter to begin. ")
     }
+    document.getElementById("WordleBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      (
+        <>
+          {text}
+          {middleText}
+          {quickRestartButton}
+        </>
+      )
+    );
+    document.getElementById("returnButton").onclick = function(){getWordleFrontPage()};
+    if (currentWord !== "") document.getElementById("quickRestartButton").onclick = function(){startWordleGame()};
+  }
+  function printWordleLossBulletinBoard(){
+    var text = (<Button id='returnButton'>Main Menu</Button>);
+    var middleText = (" Final Score: " + score + " ");
+    var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
     document.getElementById("WordleBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
       (
         <>
@@ -113,7 +129,7 @@ function Wordle(){
       </>
     )
   }
-  function printWordleTextBox(message = ""){
+  function printWordleTextBox(){
     var letterBoxes = [];
     for (let i = 0; i < currentGuess.length; i++){
       letterBoxes.push(<div className='WordleMiniBox' key={i}>{currentGuess[i]}</div>)
@@ -134,6 +150,20 @@ function Wordle(){
     document.getElementById('wordleSubmitButton').onclick = function(){submitGuess()};
     document.getElementById('wordleClearButton').onclick = function(){currentGuess = ""; printWordleTextBox()};
   }
+  function printWordleLossTextBox(){
+    var letterBoxes = [];
+    for (let i = 0; i < currentWord.length; i++){
+      letterBoxes.push(<div className='WordleMiniBox' key={i}>{currentWord[i]}</div>)
+    };
+    document.getElementById('WordleTextBox').innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+        <h4>The Actual Word</h4>
+        <div className='WordleBoxesHolder'>
+          {letterBoxes}
+        </div>
+      </>
+    );
+  }
   //KeyLogging
   function detectKeyPress(button){
     if (button.keyCode >= 65 && button.keyCode <= 90){
@@ -149,6 +179,9 @@ function Wordle(){
     }
     printWordleTextBox();
   }
+  function detectOnlyRestart(button){
+    if (button.keyCode === 82) startWordleGame();
+  }
   function submitGuess(){
     if (currentGuess.length !== wordLength);
     else{
@@ -157,7 +190,7 @@ function Wordle(){
       }else{
         guesses.push(currentGuess);
         if (guesses.length === 5){
-          //showLossScreen();
+          showLossScreen();
         }else{
           currentGuess = "";
           printWordleGameBoard();
@@ -169,7 +202,11 @@ function Wordle(){
   }
   //Loss screen
   function showLossScreen(){
-
+    document.removeEventListener('keydown',detectKeyPress);
+    document.addEventListener('keydown',detectOnlyRestart);
+    printWordleGameBoard();
+    printWordleLossTextBox();
+    printWordleLossBulletinBoard();
   }
   //Pages
   function startWordleGame(){
@@ -179,7 +216,8 @@ function Wordle(){
     currentGuess = "";
     guesses = [];
     printInitialContent();
-    document.addEventListener('keydown',detectKeyPress)
+    document.removeEventListener('keydown',detectOnlyRestart);
+    document.addEventListener('keydown',detectKeyPress);
   }
   function readWordleInstructions(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
