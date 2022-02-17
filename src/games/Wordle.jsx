@@ -73,7 +73,35 @@ function Wordle(){
       )
     );
     document.getElementById("returnButton").onclick = function(){getWordleFrontPage()};
-    if (currentWord !== "") document.getElementById("quickRestartButton").onclick = function(){startWordleGame()};
+    document.getElementById("quickRestartButton").onclick = function(){startWordleGame()};
+  }
+  function printWordleWinBulletinBoard(){
+    var text = (<Button id='returnButton'>Main Menu</Button>);
+    var middleText = (" Final Score: " + score + " ");
+    var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
+    var advanceLengthButton;
+    if (wordLength < 8) advanceLengthButton = (<Button id='advanceLengthButton'>Increase Word Length</Button>);
+    var decreaseLengthButton;
+    if (wordLength > 3) decreaseLengthButton = (<Button id='decreaseLengthButton'>Decrease Word Length</Button>);
+    var submitAndQuitButton = (<Button id='submitAndQuitButton'>Submit Score and End Game</Button>);
+    var continueButton = (<Button id='continueButton'>Continue</Button>)
+    document.getElementById("WordleBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+        {text}
+        {decreaseLengthButton}
+        {middleText}
+        {continueButton}
+        {advanceLengthButton}
+        {quickRestartButton}
+        {submitAndQuitButton}
+      </>
+    );
+    document.getElementById("returnButton").onclick = function(){getWordleFrontPage()};
+    document.getElementById("quickRestartButton").onclick = function(){startWordleGame()};
+    if (wordLength < 8) document.getElementById("advanceLengthButton").onclick = function(){increaseWordLength()};
+    if (wordLength > 3) document.getElementById("decreaseLengthButton").onclick = function(){decreaseWordLength()};
+    document.getElementById("submitAndQuitButton").onclick = function(){submitScoreAndEndGame()};
+    document.getElementById("continueButton").onclick = function(){nextWordStage()}
   }
   function printWordleGameBoard(){
     //console.log(currentWord);
@@ -186,7 +214,7 @@ function Wordle(){
     if (currentGuess.length !== wordLength);
     else{
       if (currentGuess.toLowerCase() === currentWord.toLowerCase()){
-
+        showVictoryScreen();
       }else{
         guesses.push(currentGuess);
         if (guesses.length === 5){
@@ -200,13 +228,38 @@ function Wordle(){
       }
     }
   }
-  //Loss screen
+  //Loss and Victory screens
+  function showVictoryScreen(){
+    //add score based on amount of guesses
+    //can submit score and quit
+    //can increase word length and point gain
+    document.removeEventListener('keydown',detectKeyPress);
+    const guessRatio = [15,10,6,3,1];
+    score += guessRatio[guesses.length];
+    guesses.push(currentGuess);
+    printWordleGameBoard();
+    printWordleTextBox();
+    printWordleWinBulletinBoard();
+  }
   function showLossScreen(){
     document.removeEventListener('keydown',detectKeyPress);
     document.addEventListener('keydown',detectOnlyRestart);
     printWordleGameBoard();
     printWordleLossTextBox();
     printWordleLossBulletinBoard();
+  }
+  function submitScoreAndEndGame(){
+
+  }
+  //Advancement
+  function nextWordStage(){
+
+  }
+  function increaseWordLength(){
+
+  }
+  function decreaseWordLength(){
+
   }
   //Pages
   function startWordleGame(){
