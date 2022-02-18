@@ -8,6 +8,7 @@ import produceWord from "../helpers/produceWord.ts";
 import "./css/Wordle.css";
 require('dotenv').config();
 
+//Add score submission
 //gameScreen consists of psudeo input text box with blocks, game board with current guesses, and the score board
 
 function Wordle(){
@@ -98,8 +99,8 @@ function Wordle(){
     );
     document.getElementById("returnButton").onclick = function(){getWordleFrontPage()};
     document.getElementById("quickRestartButton").onclick = function(){startWordleGame()};
-    if (wordLength < 8) document.getElementById("advanceLengthButton").onclick = function(){increaseWordLength()};
-    if (wordLength > 3) document.getElementById("decreaseLengthButton").onclick = function(){decreaseWordLength()};
+    if (wordLength < 8) document.getElementById("advanceLengthButton").onclick = function(){nextWordStage(1)};
+    if (wordLength > 3) document.getElementById("decreaseLengthButton").onclick = function(){nextWordStage(-1)};
     document.getElementById("submitAndQuitButton").onclick = function(){submitScoreAndEndGame()};
     document.getElementById("continueButton").onclick = function(){nextWordStage()}
   }
@@ -252,14 +253,13 @@ function Wordle(){
 
   }
   //Advancement
-  function nextWordStage(){
-
-  }
-  function increaseWordLength(){
-
-  }
-  function decreaseWordLength(){
-
+  function nextWordStage(increment = 0){
+    wordLength += increment;
+    currentWord = produceWord(wordLength);
+    currentGuess = "";
+    guesses = [];
+    printInitialContent();
+    document.addEventListener('keydown',detectKeyPress);
   }
   //Pages
   function startWordleGame(){
