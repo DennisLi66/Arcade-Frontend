@@ -527,7 +527,7 @@ function Tetris(){
         })
     }else{
       document.getElementById('gameScreen').innerHTML = ReactDOMServer(
-        loginFunctionality({score: score, timeInMilliseconds: endingTime, gameID: 1})
+        loginFunctionality({score: score, timeInMilliseconds: endingTime, gameID: 2})
       )
       //ask that the user logs in FIX THIS
       // pass a dictionary to a new object in a new file

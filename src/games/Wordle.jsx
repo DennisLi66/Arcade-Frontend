@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button'
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
-//import loginFunctionality from "../loginFunctionality/loginFunctionality"
+import loginFunctionality from "../loginFunctionality/loginFunctionality"
 import produceWord from "../helpers/produceWord.ts";
 import "./css/Wordle.css";
 require('dotenv').config();
@@ -64,17 +64,20 @@ function Wordle(){
     var text = (<Button id='returnButton'>Main Menu</Button>);
     var middleText = (" Final Score: " + score + " ");
     var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
+    var submitAndQuitButton = (<Button id='submitAndQuitButton'>Submit Score</Button>);
     document.getElementById("WordleBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
       (
         <>
           {text}
           {middleText}
+          {submitAndQuitButton}
           {quickRestartButton}
         </>
       )
     );
     document.getElementById("returnButton").onclick = function(){getWordleFrontPage()};
     document.getElementById("quickRestartButton").onclick = function(){startWordleGame()};
+    document.getElementById("submitAndQuitButton").onclick = function(){submitScoreAndEndGame()}
   }
   function printWordleWinBulletinBoard(){
     var text = (<Button id='returnButton'>Main Menu</Button>);
@@ -250,7 +253,33 @@ function Wordle(){
     printWordleLossBulletinBoard();
   }
   function submitScoreAndEndGame(){
-
+    // console.log(cookies.get("id"));
+    // console.log(cookies.get("sessionID"));
+    if (cookies.get("id")){
+      const requestSetup = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({userID:cookies.get("id"),score:score,gameID:3
+        ,
+        sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
+      }
+      fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          if (data.status === -1){
+            printWordleGameBoard(data.message);
+          }else{
+            getWordleScores("Your score has been submitted.")
+          }
+        })
+    }else{
+      document.getElementById('gameScreen').innerHTML = ReactDOMServer(
+        loginFunctionality({score: score, gameID: 3})
+      )
+      //ask that the user logs in FIX THIS
+      // pass a dictionary to a new object in a new file
+    }
   }
   //Advancement
   function nextWordStage(increment = 0){
