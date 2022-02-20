@@ -22,6 +22,6 @@ function getWord(wordLength: number) : string{
   else if (wordLength === 5) return listOfFiveLetterWords[Math.floor(Math.random() * listOfFiveLetterWords.length)]
   else if (wordLength === 6) return listOfSixLetterWords[Math.floor(Math.random() * listOfSixLetterWords.length)]
   else if (wordLength === 7) return listOfSevenLetterWords[Math.floor(Math.random() * listOfSevenLetterWords.length)]
-  else if (wordLength === 8) return listOfEightLetterWords[Math.floor(Math.random() * listOfEightLetterWords.length)]
+  else return listOfEightLetterWords[Math.floor(Math.random() * listOfEightLetterWords.length)]
 }
 export default getWord;

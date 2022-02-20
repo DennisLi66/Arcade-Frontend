@@ -10,12 +10,15 @@ require('dotenv').config();
 
 //Add score submission
 //gameScreen consists of psudeo input text box with blocks, game board with current guesses, and the score board
+//things to add - prevent using non accepted words
+  //prevent putting in the same word again
+
 
 function Wordle(){
   //VARIABLES
   const cookies = new Cookies();
   var score = 0;
-  var wordLength = 3;
+  var wordLength = 5;
   var currentWord = "";
   var currentGuess = "";
   var guesses = [];
@@ -80,9 +83,7 @@ function Wordle(){
     document.getElementById("submitAndQuitButton").onclick = function(){submitScoreAndEndGame()}
   }
   function printWordleWinBulletinBoard(){
-    var text = (<Button id='returnButton'>Main Menu</Button>);
-    var middleText = (" Final Score: " + score + " ");
-    var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
+    var middleText = (" Current Score: " + score + " ");
     var advanceLengthButton;
     if (wordLength < 8) advanceLengthButton = (<Button id='advanceLengthButton'>Increase Word Length</Button>);
     var decreaseLengthButton;
@@ -91,17 +92,13 @@ function Wordle(){
     var continueButton = (<Button id='continueButton'>Continue</Button>)
     document.getElementById("WordleBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
-        {text}
-        {decreaseLengthButton}
         {middleText}
+        {decreaseLengthButton}
         {continueButton}
         {advanceLengthButton}
-        {quickRestartButton}
         {submitAndQuitButton}
       </>
     );
-    document.getElementById("returnButton").onclick = function(){getWordleFrontPage()};
-    document.getElementById("quickRestartButton").onclick = function(){startWordleGame()};
     if (wordLength < 8) document.getElementById("advanceLengthButton").onclick = function(){nextWordStage(1)};
     if (wordLength > 3) document.getElementById("decreaseLengthButton").onclick = function(){nextWordStage(-1)};
     document.getElementById("submitAndQuitButton").onclick = function(){submitScoreAndEndGame()};
@@ -141,13 +138,13 @@ function Wordle(){
         )
       )
     }
-    if (wordsToPrint.length < 5){
+    if (wordsToPrint.length < 6){
       var letters2 = [];
       for (let i = 0; i < wordLength; i++){
         letters2.push(<div className='WordleMiniBox' key={i}></div>)
       }
     }
-    while (wordsToPrint.length < 5) wordsToPrint.push(
+    while (wordsToPrint.length < 6) wordsToPrint.push(
         (
         <div className='WordleBoxesHolder' key={wordsToPrint.length}>
           {letters2}
@@ -164,7 +161,7 @@ function Wordle(){
   function printWordleTextBox(){
     var letterBoxes = [];
     for (let i = 0; i < currentGuess.length; i++){
-      letterBoxes.push(<div className='WordleMiniBox' key={i}>{currentGuess[i]}</div>)
+      letterBoxes.push(<div className='WordleMiniBox' key={i}>{currentGuess[i].toUpperCase()}</div>)
     }
     while (letterBoxes.length < wordLength){
       letterBoxes.push(<div className='WordleMiniBox' key={letterBoxes.length}></div>)
@@ -185,7 +182,7 @@ function Wordle(){
   function printWordleLossTextBox(){
     var letterBoxes = [];
     for (let i = 0; i < currentWord.length; i++){
-      letterBoxes.push(<div className='WordleMiniBox' key={i}>{currentWord[i]}</div>)
+      letterBoxes.push(<div className='WordleMiniBox' key={i}>{currentWord[i].toUpperCase()}</div>)
     };
     document.getElementById('WordleTextBox').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
@@ -201,15 +198,16 @@ function Wordle(){
     if (button.keyCode >= 65 && button.keyCode <= 90){
       if (currentGuess.length < wordLength){
         currentGuess += button.key;
+        printWordleTextBox();
       }
     }else if (button.keyCode === 13){ //Enter Button
       submitGuess();
     }else if (button.keyCode === 8){ //Backspace Button
       if (currentGuess.length > 0){
         currentGuess = currentGuess.slice(0,-1);
+        printWordleTextBox();
       }
     }
-    printWordleTextBox();
   }
   function detectOnlyRestart(button){
     if (button.keyCode === 82) startWordleGame();
@@ -221,7 +219,8 @@ function Wordle(){
         showVictoryScreen();
       }else{
         guesses.push(currentGuess);
-        if (guesses.length === 5){
+        if (guesses.length === 6){
+          currentGuess = "";
           showLossScreen();
         }else{
           currentGuess = "";
@@ -238,8 +237,8 @@ function Wordle(){
     //can submit score and quit
     //can increase word length and point gain
     document.removeEventListener('keydown',detectKeyPress);
-    const guessRatio = [15,10,6,3,1];
-    score += guessRatio[guesses.length];
+    const guessRatio = [25,15,10,6,3,1];
+    score += guessRatio[guesses.length] * (1 + Math.abs(5-wordLength));
     guesses.push(currentGuess);
     printWordleGameBoard();
     printWordleTextBox();
@@ -293,7 +292,7 @@ function Wordle(){
   //Pages
   function startWordleGame(){
     score = 0;
-    wordLength = 3;
+    wordLength = 5;
     currentWord = produceWord(wordLength);
     currentGuess = "";
     guesses = [];
