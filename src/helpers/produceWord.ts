@@ -24,4 +24,14 @@ function getWord(wordLength: number) : string{
   else if (wordLength === 7) return listOfSevenLetterWords[Math.floor(Math.random() * listOfSevenLetterWords.length)]
   else return listOfEightLetterWords[Math.floor(Math.random() * listOfEightLetterWords.length)]
 }
-export default getWord;
+
+function checkWordValid(word: string) : boolean{
+  if (word.length === 3) return listOfThreeLetterWords.indexOf(word.toLowerCase()) !== -1;
+  else if (word.length === 4) return listOfFourLetterWords.indexOf(word.toLowerCase()) !== -1;
+  else if (word.length === 5) return listOfFiveLetterWords.indexOf(word.toLowerCase()) !== -1;
+  else if (word.length === 6) return listOfSixLetterWords.indexOf(word.toLowerCase()) !== -1;
+  else if (word.length === 7) return listOfSevenLetterWords.indexOf(word.toLowerCase()) !== -1;
+  else return listOfEightLetterWords.indexOf(word.toLowerCase()) !== -1; 
+}
+
+export default {getWord, checkWordValid};

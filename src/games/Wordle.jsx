@@ -4,7 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
-import produceWord from "../helpers/produceWord.ts";
+import {produceWord, checkWordValid} from "../helpers/produceWord.ts";
 import "./css/Wordle.css";
 require('dotenv').config();
 
@@ -158,7 +158,7 @@ function Wordle(){
       </>
     )
   }
-  function printWordleTextBox(){
+  function printWordleTextBox(message = ""){
     var letterBoxes = [];
     for (let i = 0; i < currentGuess.length; i++){
       letterBoxes.push(<div className='WordleMiniBox' key={i}>{currentGuess[i].toUpperCase()}</div>)
@@ -169,6 +169,7 @@ function Wordle(){
     document.getElementById('WordleTextBox').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
         <h4>Your Current Guess</h4>
+        <h5> {message} </h5>
         <div className='WordleBoxesHolder'>
           <Button id='wordleClearButton'>Clear</Button>
           {letterBoxes}
@@ -214,10 +215,12 @@ function Wordle(){
   }
   function submitGuess(){
     if (currentGuess.length !== wordLength);
+    else if (checkPreviouslyUsed()){
+      printWordleLossTextBox("You've already typed that word!");
+    }else if (!checkWordValid(currentGuess)){
+      printWordleLossTextBox("That's not a word we recognize, sorry.");
+    }else if (currentGuess.toLowerCase() === currentWord.toLowerCase()) showVictoryScreen();
     else{
-      if (currentGuess.toLowerCase() === currentWord.toLowerCase()){
-        showVictoryScreen();
-      }else{
         guesses.push(currentGuess);
         if (guesses.length === 6){
           currentGuess = "";
@@ -229,7 +232,6 @@ function Wordle(){
           printWordleTextBox();
         }
       }
-    }
   }
   //Loss and Victory screens
   function showVictoryScreen(){
@@ -279,6 +281,16 @@ function Wordle(){
       //ask that the user logs in FIX THIS
       // pass a dictionary to a new object in a new file
     }
+  }
+  //Checking For Validity
+  function checkPreviouslyUsed(){
+    //return true if current word has been previously used
+    for (let i = 0; i < guesses.length; i++){
+      if (guesses[i].toUpperCase() === currentGuess.toUpperCase()){
+        return true;
+      }
+    }
+    return false;
   }
   //Advancement
   function nextWordStage(increment = 0){
