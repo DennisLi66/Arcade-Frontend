@@ -4,7 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
-import {produceWord, checkWordValid} from "../helpers/produceWord.ts";
+import produceWord from "../helpers/produceWord.ts";
 import "./css/Wordle.css";
 require('dotenv').config();
 
@@ -18,9 +18,9 @@ function Wordle(){
   //VARIABLES
   const cookies = new Cookies();
   var score = 0;
-  var wordLength = 5;
   var currentWord = "";
   var currentGuess = "";
+  var wordLength = 5;
   var guesses = [];
   //Printers
   function printInitialContent(){
@@ -105,7 +105,6 @@ function Wordle(){
     document.getElementById("continueButton").onclick = function(){nextWordStage()}
   }
   function printWordleGameBoard(){
-    //console.log(currentWord);
     var wordsToPrint = [];
     for (let i = 0 ; i < guesses.length; i++){
       var letters = [];
@@ -216,9 +215,7 @@ function Wordle(){
   function submitGuess(){
     if (currentGuess.length !== wordLength);
     else if (checkPreviouslyUsed()){
-      printWordleLossTextBox("You've already typed that word!");
-    }else if (!checkWordValid(currentGuess)){
-      printWordleLossTextBox("That's not a word we recognize, sorry.");
+      printWordleTextBox("You've already typed that word!");
     }else if (currentGuess.toLowerCase() === currentWord.toLowerCase()) showVictoryScreen();
     else{
         guesses.push(currentGuess);
