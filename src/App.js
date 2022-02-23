@@ -7,10 +7,13 @@ import Cookies from 'universal-cookie';
 import Snake from './games/Snake';
 import Tetris from './games/Tetris';
 import Wordle from './games/Wordle';
+import snakeImage from "./images/SnakeGameImage.jpg";
+import tetrisImage from "./images/TetrisGameImage.jpg";
+import wordleImage from "./images/WordleGameImage.jpg";
 require('dotenv').config();
 
 //COuld do puyo puyo or match 3
-
+//Maybe add pausing to the real time games
 //logout causes crash?
 //Update adding timeduration to Login
 //login needs to set a redirection then reload
@@ -367,9 +370,15 @@ function App() {
             <h1>Welcome to Dennis' Arcade!</h1>
             <div>
               <div className="gameBox">
-                <Button onClick={() => {openGame("Snake")}}>Play Snake</Button><br></br>
-                <Button onClick={() => {openGame("Tetris")}}>Play Tetris</Button><br></br>
-                <Button onClick={() => {openGame("Wordle")}}>Play Wordle</Button><br></br>
+                <div>
+                  <img src={snakeImage} alt="Play Snake Button"></img>
+                  <Button className='gameImageButton' onClick={() => {openGame("Snake")}}>Play Snake</Button></div>
+                <div>
+                  <img src={tetrisImage} alt="Play Tetris Button"></img>
+                  <Button className='gameImageButton' onClick={() => {openGame("Tetris")}}>Play Tetris</Button></div>
+                <div>
+                <img src={wordleImage} alt="Play Wordle Button"></img>
+                <Button className='gameImageButton' onClick={() => {openGame("Wordle")}}>Play Wordle</Button></div>
               </div>
             </div>
           </div>

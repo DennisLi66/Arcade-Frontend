@@ -10,9 +10,6 @@ require('dotenv').config();
 
 //Add score submission
 //gameScreen consists of psudeo input text box with blocks, game board with current guesses, and the score board
-//things to add - prevent using non accepted words
-  //prevent putting in the same word again
-
 
 function Wordle(){
   //VARIABLES
