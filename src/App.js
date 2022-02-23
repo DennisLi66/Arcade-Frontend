@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import React from "react";
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
@@ -28,6 +28,21 @@ function App() {
 
   const getHome = React.useCallback(
     (confMsg = "") => {
+      //Visual Stuff
+      function hoverImage(imageName){
+        if (imageName === 'snake'){
+          document.getElementById("snakeWords").style.visibility = 'visible';
+        } else if (imageName === 'wordle'){
+          document.getElementById("wordleWords").style.visibility = 'visible';
+        } else if (imageName === 'tetris'){
+          document.getElementById("tetrisWords").style.visibility = 'visible';
+        }
+      }
+      function hoverOff(){
+        document.getElementById("snakeWords").style.visibility = 'hidden';
+        document.getElementById("wordleWords").style.visibility = 'hidden';
+        document.getElementById("tetrisWords").style.visibility = 'hidden';
+      }
       //Nav Changers
       function changeNavbarToLoggedIn(){
         changeNavbar(
@@ -370,15 +385,14 @@ function App() {
             <h1>Welcome to Dennis' Arcade!</h1>
             <div>
               <div className="gameBox">
-                <div>
-                  <img src={snakeImage} alt="Play Snake Button"></img>
-                  <Button className='gameImageButton' onClick={() => {openGame("Snake")}}>Play Snake</Button></div>
-                <div>
-                  <img src={tetrisImage} alt="Play Tetris Button"></img>
-                  <Button className='gameImageButton' onClick={() => {openGame("Tetris")}}>Play Tetris</Button></div>
-                <div>
-                <img src={wordleImage} alt="Play Wordle Button"></img>
-                <Button className='gameImageButton' onClick={() => {openGame("Wordle")}}>Play Wordle</Button></div>
+                  <img className="gameImage snake" src={snakeImage} alt="Play Snake Button" onMouseOver={()=>{hoverImage("snake")}}></img>
+                  <div className='gameImage snake' id='snakeWords' onMouseOut={()=>{hoverOff()}} onClick={() => {openGame("Snake")}}><h1>Snake</h1></div>
+
+                  <img className="gameImage tetris" src={tetrisImage} alt="Play Tetris Button" onMouseOver={()=>{hoverImage("tetris")}}></img>
+                  <div className='gameImage tetris' id='tetrisWords' onMouseOut={()=>{hoverOff()}} onClick={() => {openGame("Tetris")}}><h1>Tetris</h1></div>
+
+                  <img className="gameImage wordle" src={wordleImage} alt="Play Wordle Button" onMouseOver={()=>{hoverImage("wordle")}}></img>
+                  <div className='gameImage wordle' id='wordleWords' onMouseOut={()=>{hoverOff()}} onClick={() => {openGame("Wordle")}}><h1>Wordle</h1></div>
               </div>
             </div>
           </div>
