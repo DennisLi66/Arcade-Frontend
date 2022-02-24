@@ -23,6 +23,8 @@ function Snake() {
   var currentDirection = false;
   var snakePositions = []; //is a stack
   var endingTime = 0;
+  var setTime = 0;
+  var paused = false;
   //Helper Functions
   function moveToSpace(space){
     if (space < 42 || space > (42*42-42) ||  space % 42 === 41 || space % 42 === 0 || snakePositions.slice(1).indexOf(space) !== -1 ){//snake collides onto wall or body part that is not tail
@@ -65,6 +67,7 @@ function Snake() {
     snakePositions = [];
     gameBoard = [];
     score = 0;
+    paused = false;
     document.removeEventListener('keydown',detectOnlyRestart);
     //Actual Function
     var borderRow = [];
@@ -111,12 +114,11 @@ function Snake() {
   function detectDirectionalKeyDown(key){
     //left: 37, up: 38, right: 39, down: 40
     key = key.keyCode;
-    // console.log(key);
     if ((key === 37 || key === '37') && currentDirection !== "right"){
       if (!direction){
         direction = "left";
         startingTime = Date.now();
-        intervalID = setInterval(runGame, 125);
+        intervalID = setTimeout(runGame, 125);
         printInfoRow();
       }
       direction = "left";
@@ -124,7 +126,7 @@ function Snake() {
       if (!direction){
         direction = "up";
         startingTime = Date.now();
-        intervalID = setInterval(runGame, 125);
+        intervalID = setTimeout(runGame, 125);
         printInfoRow();
       }
       direction = "up";
@@ -132,7 +134,7 @@ function Snake() {
       if (!direction){
         direction = "right";
         startingTime = Date.now();
-        intervalID = setInterval(runGame, 125);
+        intervalID = setTimeout(runGame, 125);
         printInfoRow();
       }
       direction = "right";
@@ -141,13 +143,18 @@ function Snake() {
         direction = "down";
       }
     }
-    else if ((key === 82 || key === "82")){ //R
+    else if ((key === 32) || key === "32"){
+      pauseGame();
+    }else if ((key === 82 || key === "82")){ //R
       startSnakeGame();
     }
   }
   function detectOnlyRestart(key){
     key = key.keyCode;
     if (key === 82 || key === "82") startSnakeGame();
+  }
+  function detectOnlyPauseOrRestart(key){
+
   }
   function runGame(){ //constantly check state of game
     if (direction === "up"){
@@ -162,6 +169,25 @@ function Snake() {
     }else if (direction === "down"){
       currentDirection = direction;
       moveToSpace(snakePositions[snakePositions.length - 1] + 42)
+    }
+    if (!(direction === 'end')){
+      setTime = Date.now();
+      intervalID = setTimeout(runGame, 125);
+    }
+  }
+  function pauseGame(){
+    if (paused){
+      var placeholder = paused;
+      paused = false;
+      setTime = Date.now();
+      setTimeout(placeholder);
+      document.removeEventListener('keydown',detectOnlyPauseOrRestart);
+      document.addEventListener('keydown',detectOnlyRestart);
+    }else{
+      clearTimeout(intervalID);
+      paused = Date.now() - setTime;
+      document.removeEventListener('keydown',detectDirectionalKeyDown);
+      document.addEventListener('keydown',detectOnlyPauseOrRestart);
     }
   }
   //Printers
@@ -394,8 +420,8 @@ function Snake() {
     }
   }
   function displayEndingScreen(){ //Display Score and Time Elapsed, Restart Button, Submit Score Button
-    //document.removeEventListener('keydown',detectDirectionalKeyDown);
-    document.addEventListener('keydown',detectOnlyRestart)
+    document.removeEventListener('keydown',detectDirectionalKeyDown);
+    document.addEventListener('keydown',detectOnlyRestart);
     var scoreInformation = (" Score: " + score + " Time Elapsed: " + endingTime / 1000 + " seconds ");
     var returnButton = (<Button id="returnButton">Main Menu</Button>)
     var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);

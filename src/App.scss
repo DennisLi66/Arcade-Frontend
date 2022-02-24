@@ -14,33 +14,31 @@
   width: 350px;
   height: 250px;
   border: 10px solid black;
+  background-color: black;
   &.snake{
-    background-color: black;
     grid-area: 1 / 1 / 2 / 2;
     &#snakeWords{
       color: white;
-      padding-top: 20%;
+      padding-top: 75px;
       opacity: 80%;
       visibility: hidden;
     }
   }
   &.tetris{
-    background-color: black;
     grid-area: 1 / 2 / 2 / 3;
     &#tetrisWords{
       color: white;
-      padding-top: 20%;
+      padding-top: 75px;
       opacity: 80%;
       visibility: hidden;
     }
   }
   &.wordle{
-    background-color: black;
     grid-area: 2 / 1 / 3 / 2;
     &#wordleWords{
       color: white;
       opacity: 80%;
-      padding-top: 20%;
+      padding-top: 75px;
       visibility: hidden;
     }
   }
