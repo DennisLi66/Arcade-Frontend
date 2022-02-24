@@ -64,6 +64,7 @@ function Snake() {
     intervalID = "";
     validSquares = [];
     direction = false;
+    setTime = 0;
     snakePositions = [];
     gameBoard = [];
     score = 0;
@@ -154,7 +155,9 @@ function Snake() {
     if (key === 82 || key === "82") startSnakeGame();
   }
   function detectOnlyPauseOrRestart(key){
-
+    key = key.keyCode;
+    if (key === 82 || key === "82") startSnakeGame();
+    else if ((key === 32) || key === "32") pauseGame();
   }
   function runGame(){ //constantly check state of game
     if (direction === "up"){
@@ -272,6 +275,7 @@ function Snake() {
           itself, and will need your help to do so.
 
           Use the arrow keys to navigate the snake towards the dot.
+          Press the spacebar to pause the game as needed.
           Press R to quickly restart the game if necessary.
         </div>
       </div>

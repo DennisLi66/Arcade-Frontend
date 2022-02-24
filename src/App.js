@@ -17,7 +17,7 @@ require('dotenv').config();
 //logout causes crash?
 //Update adding timeduration to Login
 //login needs to set a redirection then reload
-//make the hub screen pictures of the games instead
+//Convert css to sass to make everything more compact
 function App() {
   const [navBar,changeNavbar] = React.useState(
     <Navbar bg='light' expand="lg" className='loggedOutBar'>

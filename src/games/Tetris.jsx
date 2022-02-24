@@ -19,6 +19,8 @@ function Tetris(){
   var pieceQueue = [];
   var score, startingTime, currentPieceOrientation, endingTime = 0;
   var intervalID = "";
+  var setTime = 0;
+  var paused = false;
   var currentPiece, storedPiece, recentlyStored = false; //will also tell us if gamestarted
   var maxTimeTilDescent = 1000;
   //Board Manipulation
@@ -331,11 +333,34 @@ function Tetris(){
     }
     else if ((key === 32 || key === "32")){ //spacebar
       storePiece();
+    }else if ((key === 87 || key === "87")){ //W
+      startGame();
     }
+  }
+  function detectOnlyPauseOrRestart(key){
+    key = key.keyCode;
+    if (key === 82 || key === "82") startGame();
+    else if ((key === 87) || key === "87") pauseGame();
   }
   function detectOnlyRestart(key){
     key = key.keyCode;
     if (key === 82 || key === "82") startGame();
+  }
+  //pausing
+  function pauseGame(){
+    if (paused){
+    var placeholder = paused;
+    paused = false;
+    setTime = Date.now();
+    setTimeout(placeholder);
+    document.removeEventListener('keydown',detectOnlyPauseOrRestart);
+    document.addEventListener('keydown',detectOnlyRestart);
+  }else{
+    clearTimeout(intervalID);
+    paused = Date.now() - setTime;
+    document.removeEventListener('keydown',detectDirectionalKeyDown);
+    document.addEventListener('keydown',detectOnlyPauseOrRestart);
+  }
   }
   //Printing
   function printInitialContent(){
@@ -560,6 +585,7 @@ function Tetris(){
           to lose a small amount of points each usage.
           If you are currently storing a piece, pressing the spacebar once again will make it your next piece, pushing the upcoming pieces
           back.
+          Press the W button to pause the game if needed, and w to unpause.
           Press the R button to quickly restart the game if needed.
 
         </div>
