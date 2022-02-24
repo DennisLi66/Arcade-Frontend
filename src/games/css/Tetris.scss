@@ -49,60 +49,38 @@
   display: inline-block;
   margin:0;
 }
-.tetrisMiniEmptyBlock{
+.tetrisMiniBlock{
+  margin: 0;
+  padding: 0;
   border: 1px solid black;
   float:left;
   width: 30.7px;
   height: 30.7px;
-  background-color: white;
-  margin: 0;
-  padding: 0;
+  &.tetrisMiniEmptyBlock{
+    background-color: white;
+  }
+  &.tetrisMiniFilledBlock{
+    background-color: lightblue;
+  }
 }
-.tetrisMiniFilledBlock{
-  border: 1px solid black;
-  float:left;
-  width: 30.7px;
-  height: 30.7px;
-  background-color: lightblue;
-  margin: 0;
-  padding: 0;
-}
-.tetrisEmptySquare{
+.tetrisSquare{
   border: 1px solid black;
   float:left;
   width: 33px;
   height: 33px;
-  background-color: white;
   margin: 0;
   padding: 0;
-  /* clear: both; */
-}
-.tetrisBorderSquare{
-  border: 1px solid black;
-  float:left;
-  width: 33px;
-  height: 33px;
-  background-color: black;
-  margin: 0;
-  padding: 0;
-}
-.tetrisBlockSquare{
-  border: 1px solid black;
-  float:left;
-  width: 33px;
-  height: 33px;
-  background-color: gray;
-  margin: 0;
-  padding: 0;
-  /* clear: both; */
-}
-.tetrisActiveSquare{
-  border: 1px solid black;
-  float:left;
-  width: 33px;
-  height: 33px;
-  background-color: red;
-  margin: 0;
-  padding: 0;
-  /* clear: both; */
+  &.tetrisEmptySquare{
+    background-color: white;
+  }
+  &.tetrisBorderSquare{
+    background-color: black;
+  }
+  &.tetrisBlockSquare{
+    background-color: gray;
+  }
+  &.tetrisActiveSquare{
+    background-color: red;
+  }
+
 }

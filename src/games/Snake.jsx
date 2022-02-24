@@ -1,7 +1,7 @@
 import React from "react";
 import Button from 'react-bootstrap/Button'
 import Table from 'react-bootstrap/Table'
-import "./css/Snake.css"
+import "./css/Snake.scss"
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
@@ -9,7 +9,6 @@ require('dotenv').config();
 //Could Add Difficuly FIX THIS, like faster or constantly increasing
 //Add seeing scores FIX THIS
 //Add score submission FIX THIS
-//FIX THIS ADD instructions
 
 function Snake() {
   const cookies = new Cookies();

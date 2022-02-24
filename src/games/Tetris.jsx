@@ -4,7 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
-import "./css/Tetris.css"
+import "./css/Tetris.scss"
 require('dotenv').config();
 
 //FIX THIS: runTime interval - clear it and reinclude it if rushed down
