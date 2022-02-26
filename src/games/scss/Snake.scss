@@ -1,15 +1,29 @@
 /* Board Squares */
-.gameBoard{
-  line-height: 0;
+.snakeScreen{
+  display: grid;
+  padding-left: 20%
+}
+%snakeScreenElements{
   border: 1px solid black;
-  background-color: beige;
   height: 590px;
   width: 590px;
+  grid-area: 1 / 1 / 2 / 2;
+}
+.gameBoard{
+  @extend %snakeScreenElements;
+  line-height: 0;
+  background-color: beige;
   display: inline-block;
   margin:0;
 }
+.pauseScreen{
+  @extend %snakeScreenElements;
+  background-color: black;
+  color: white;
+  padding-top: 30%;
+  visibility: hidden;
+}
 .bulletinBoard{
-  /* line-height: 0; */
   border: 1px solid black;
   background-color: beige;
   width: 100%;
@@ -18,7 +32,6 @@
   height: 50px;
   bottom: 0;
   position: relative;
-
 }
 .gameScreen{
   border: 3px solid black;

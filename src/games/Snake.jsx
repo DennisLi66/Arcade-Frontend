@@ -184,56 +184,52 @@ function Snake() {
       setTimeout(runGame,placeholder);
       document.removeEventListener('keydown',detectOnlyPauseOrRestart);
       document.addEventListener('keydown',detectDirectionalKeyDown);
+      document.getElementById("pauseScreen").style.visibility = 'hidden';
     }else{
       clearTimeout(intervalID);
       paused = Date.now() - setTime;
       document.removeEventListener('keydown',detectDirectionalKeyDown);
       document.addEventListener('keydown',detectOnlyPauseOrRestart);
+      document.getElementById("pauseScreen").style.visibility = 'visible';
     }
   }
   //Printers
   function printInitialContent(){
-    var toPrint = "<h1>Snake</h1><div class='gameBoard' id='gameBoard'>";
-    toPrint += "</div>";
-    toPrint += "<div class='bulletinBoard' id='bulletinBoard'></div>";
-    document.getElementById("gameScreen").innerHTML = toPrint;
+    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+      <h1>Snake</h1>
+      <div className = 'snakeScreen' id='snakeScreen'>
+        <div className='gameBoard' id='gameBoard'></div>
+        <div className='pauseScreen' id='pauseScreen'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div>
+      </div>
+      <div className='bulletinBoard' id='bulletinBoard'></div>
+      </>
+    );
     printSnakeBoard();
     printInfoRow();
   }
   function printSnakeBoard(message = ""){
-    var toPrint = "";
-    if (message !== ""){
-      toPrint += "<div class='errMsg'>" + message + "</div>"
-    }
-    for (let row = 0; row < 42; row++){
-      for (let col = 0; col < 42; col++){
-        if (gameBoard[row * 42 + col] === '0'){
-          toPrint += "<div class='boardSquare'>" // + (row * 42 + col)
-           + "</div>"
-        }else if (gameBoard[row * 42 + col] === 'X'){
-          toPrint += "<div class='borderSquare'>"
-          // + (row * 42 + col)
-           + "</div>"
-        }else if (gameBoard[row * 42 + col] === "S"){
-          // console.log(row, " " , col ," ", row * 42 + col);
-          toPrint += "<div class='simpleSnake'>"
-           // + (row * 42 + col)
-           + "</div>"
-        }else if (gameBoard[row * 42 + col] === "H"){
-                    // console.log(row * 42 + col);
-          toPrint += "<div class='simpleSnake'>"
-          // + (row * 42 + col)
-           + "</div>"
-        }
-        else if (gameBoard[row * 42 + col] === "P"){
-          toPrint += "<div class='simplePrize'>"
-          // + (row * 42 + col)
-           + "</div>"
-        }
+    var squareList = [];
+    for (let i = 0; i < gameBoard.length; i++){
+        if (gameBoard[i] === '0'){
+           squareList.push(<div key={i} className='boardSquare'></div>);
+        }else if (gameBoard[i] === 'X'){
+           squareList.push(<div key={i} className='borderSquare'></div>);
+        }else if (gameBoard[i] === "S"){
+           squareList.push(<div key={i} className='simpleSnake'></div>);
+        }else if (gameBoard[i] === "H"){
+           squareList.push(<div key={i} className='simpleSnake'></div>);
+        }else if (gameBoard[i] === "P"){
+          squareList.push(<div key={i} className='simplePrize'></div>);
       }
-      toPrint += "<br></br>"
     }
-    document.getElementById("gameBoard").innerHTML = toPrint;
+    var reactString = (
+      <>
+        <div className='errMsg'>{message}</div>
+        {squareList}
+      </>
+    )
+    document.getElementById("gameBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
   }
   function printInfoRow(){
     var text = (<Button id='returnButton'>Main Menu</Button>);
