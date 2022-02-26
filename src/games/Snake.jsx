@@ -1,7 +1,6 @@
 import React from "react";
 import Button from 'react-bootstrap/Button'
 import Table from 'react-bootstrap/Table'
-import "./css/Snake.scss"
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
@@ -143,7 +142,7 @@ function Snake() {
         direction = "down";
       }
     }
-    else if ((key === 32) || key === "32"){
+    else if ((key === 32 || key === "32")  && direction ){
       pauseGame();
     }else if ((key === 82 || key === "82")){ //R
       startSnakeGame();
@@ -156,7 +155,7 @@ function Snake() {
   function detectOnlyPauseOrRestart(key){
     key = key.keyCode;
     if (key === 82 || key === "82") startSnakeGame();
-    else if ((key === 32) || key === "32") pauseGame();
+    else if ((key === 32 || key === "32")) pauseGame();
   }
   function runGame(){ //constantly check state of game
     if (direction === "up"){
@@ -182,9 +181,9 @@ function Snake() {
       var placeholder = paused;
       paused = false;
       setTime = Date.now();
-      setTimeout(placeholder);
+      setTimeout(runGame,placeholder);
       document.removeEventListener('keydown',detectOnlyPauseOrRestart);
-      document.addEventListener('keydown',detectOnlyRestart);
+      document.addEventListener('keydown',detectDirectionalKeyDown);
     }else{
       clearTimeout(intervalID);
       paused = Date.now() - setTime;

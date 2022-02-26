@@ -49,38 +49,43 @@
   display: inline-block;
   margin:0;
 }
-.tetrisMiniBlock{
+%tetrisMiniBlock{
   margin: 0;
   padding: 0;
   border: 1px solid black;
   float:left;
   width: 30.7px;
   height: 30.7px;
-  &.tetrisMiniEmptyBlock{
-    background-color: white;
-  }
-  &.tetrisMiniFilledBlock{
-    background-color: lightblue;
-  }
 }
-.tetrisSquare{
+.tetrisMiniEmptyBlock{
+  @extend %tetrisMiniBlock;
+  background-color: white;
+}
+.tetrisMiniFilledBlock{
+  @extend %tetrisMiniBlock;
+  background-color: lightblue;
+}
+%tetrisSquare{
   border: 1px solid black;
   float:left;
   width: 33px;
   height: 33px;
   margin: 0;
   padding: 0;
-  &.tetrisEmptySquare{
-    background-color: white;
-  }
-  &.tetrisBorderSquare{
-    background-color: black;
-  }
-  &.tetrisBlockSquare{
-    background-color: gray;
-  }
-  &.tetrisActiveSquare{
-    background-color: red;
-  }
-
+}
+.tetrisEmptySquare{
+  @extend %tetrisSquare;
+  background-color: white;
+}
+.tetrisBorderSquare{
+  @extend %tetrisSquare;
+  background-color: black;
+}
+.tetrisBlockSquare{
+  @extend %tetrisSquare;
+  background-color: gray;
+}
+.tetrisActiveSquare{
+  @extend %tetrisSquare;
+  background-color: red;
 }

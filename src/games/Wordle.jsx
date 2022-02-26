@@ -5,7 +5,6 @@ import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
 import produceWord from "../helpers/produceWord.ts";
-import "./css/Wordle.scss";
 require('dotenv').config();
 
 //Add score submission

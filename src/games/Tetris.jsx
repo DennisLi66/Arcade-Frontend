@@ -4,7 +4,6 @@ import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
-import "./css/Tetris.scss"
 require('dotenv').config();
 
 //FIX THIS: runTime interval - clear it and reinclude it if rushed down
@@ -334,7 +333,7 @@ function Tetris(){
     else if ((key === 32 || key === "32")){ //spacebar
       storePiece();
     }else if ((key === 87 || key === "87")){ //W
-      startGame();
+      pauseGame();
     }
   }
   function detectOnlyPauseOrRestart(key){
@@ -349,18 +348,18 @@ function Tetris(){
   //pausing
   function pauseGame(){
     if (paused){
-    var placeholder = paused;
-    paused = false;
-    setTime = Date.now();
-    setTimeout(placeholder);
-    document.removeEventListener('keydown',detectOnlyPauseOrRestart);
-    document.addEventListener('keydown',detectOnlyRestart);
-  }else{
-    clearTimeout(intervalID);
-    paused = Date.now() - setTime;
-    document.removeEventListener('keydown',detectDirectionalKeyDown);
-    document.addEventListener('keydown',detectOnlyPauseOrRestart);
-  }
+      var placeholder = paused;
+      paused = false;
+      setTime = Date.now();
+      setTimeout(updateDescent,placeholder);
+      document.removeEventListener('keydown',detectOnlyPauseOrRestart);
+      document.addEventListener('keydown',detectDirectionalKeyDown);
+    }else{
+      clearTimeout(intervalID);
+      paused = Date.now() - setTime;
+      document.removeEventListener('keydown',detectDirectionalKeyDown);
+      document.addEventListener('keydown',detectOnlyPauseOrRestart);
+    }
   }
   //Printing
   function printInitialContent(){

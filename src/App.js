@@ -1,4 +1,7 @@
 import './App.scss';
+import './games/scss/Snake.scss';
+import './games/scss/Tetris.scss';
+import './games/scss/Wordle.scss';
 import React from "react";
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'

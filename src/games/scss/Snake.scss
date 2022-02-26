@@ -26,23 +26,27 @@
   background-color: gray;
   padding:0;
 }
-.square{
+%square{
   border: 1px solid black;
   float:left;
   width: 14px;
   height: 14px;
   margin: 0;
   padding: 0;
-  &.boardSquare{
-    background-color: white;
-  }
-  &.borderSquare{
-    background-color: black;
-  }
-  &.simpleSnake{
-    background-color: green;
-  }
-  &.simplePrize{
-    background-color: red;
-  }
+}
+.boardSquare{
+  @extend %square;
+  background-color: white;
+}
+.borderSquare{
+  @extend %square;
+  background-color: black;
+}
+.simpleSnake{
+  @extend %square;
+  background-color: green;
+}
+.simplePrize{
+  @extend %square;
+  background-color: red;
 }

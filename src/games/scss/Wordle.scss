@@ -42,18 +42,21 @@
   display: flex;
   justify-content: center;
 }
-.WordleBox{
+%WordleBox{
   border: 1px solid black;
   height: 48px;
   width: 48px;
   float: left;
-  &.WordleMiniBox{
-    background-color: white;
-  }
-  &.WordleGreenBox{
-    background-color: green;
-  }
-  &.WordleYellowBox{
-    background-color: yellow;
-  }
+}
+.WordleMiniBox{
+  @extend %WordleBox;
+  background-color: white;
+}
+.WordleGreenBox{
+  @extend %WordleBox;
+  background-color: green;
+}
+.WordleYellowBox{
+  @extend %WordleBox;
+  background-color: yellow;
 }
