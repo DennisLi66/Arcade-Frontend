@@ -332,7 +332,7 @@ function Tetris(){
     }
     else if ((key === 32 || key === "32")){ //spacebar
       storePiece();
-    }else if ((key === 87 || key === "87")){ //W
+    }else if ((key === 87 || key === "87") && currentPiece){ //W
       pauseGame();
     }
   }
@@ -354,11 +354,15 @@ function Tetris(){
       setTimeout(updateDescent,placeholder);
       document.removeEventListener('keydown',detectOnlyPauseOrRestart);
       document.addEventListener('keydown',detectDirectionalKeyDown);
+      document.getElementById("tetrisSideDisplayPauseScreen").style.visibility = 'hidden';
+      document.getElementById("tetrisBoardPauseScreen").style.visibility = "hidden";
     }else{
       clearTimeout(intervalID);
       paused = Date.now() - setTime;
       document.removeEventListener('keydown',detectDirectionalKeyDown);
       document.addEventListener('keydown',detectOnlyPauseOrRestart);
+      document.getElementById("tetrisSideDisplayPauseScreen").style.visibility = 'visible';
+      document.getElementById("tetrisBoardPauseScreen").style.visibility = "visible";
     }
   }
   //Printing
@@ -368,15 +372,15 @@ function Tetris(){
         <h2>Tetris</h2>
         <div className='tetrisSideBySide'>
         <div className='tetrisBoard' id='tetrisBoard'></div>
+        <div className='tetrisBoardPauseScreen' id='tetrisBoardPauseScreen'><h1>Paused</h1><h3>Press W to unpause.</h3></div>
         <div className='tetrisSideDisplay' id='tetrisSideDisplay'></div>
+        <div className='tetrisSideDisplayPauseScreen' id='tetrisSideDisplayPauseScreen'></div>
         </div>
         <div className='tetrisBulletinBoard' id='tetrisBulletinBoard'></div>
         </>
     );
     document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(reactScript);
-    printTetrisBoard();
-    printInfoRow();
-    printSideDisplay();
+    printAllContent();
   }
   function printAllContent(){
     printTetrisBoard();

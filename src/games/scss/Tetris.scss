@@ -20,24 +20,45 @@
   bottom: 0;
   position: relative;
 }
-.tetrisBoard{
-  line-height: 0;
+%tetrisBoardTemplate{
   border: 1px solid black;
-  background-color: beige;
   height: 725px;
   width: 398px;
-  display: inline-block;
   margin:0;
+  grid-area: 1 / 1 / 2 / 2;
 }
-.tetrisSideDisplay{
-  float:right;
+.tetrisBoard{
+  @extend %tetrisBoardTemplate;
   line-height: 0;
-  border: 1px solid black;
   background-color: beige;
+  display: inline-block;
+}
+.tetrisBoardPauseScreen{
+  @extend %tetrisBoardTemplate;
+  background-color: black;
+  color: white;
+  visibility: hidden;
+  padding-top: 250px;
+}
+%tetrisSideDisplayTemplate{
+  float:right;
+  border: 1px solid black;
   height: 725px;
   width: 150px;
   text-align: center;
   margin: 0;
+  grid-area: 1 / 2 / 2 / 3;
+}
+.tetrisSideDisplay{
+  @extend %tetrisSideDisplayTemplate;
+  line-height: 0;
+  background-color: beige;
+}
+.tetrisSideDisplayPauseScreen{
+  @extend %tetrisSideDisplayTemplate;
+  background-color: black;
+  color: white;
+  visibility: hidden;
 }
 .tetrisSideDisplayPieceHolders{
   height: 125px;
