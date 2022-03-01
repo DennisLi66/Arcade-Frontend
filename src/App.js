@@ -2,6 +2,7 @@ import './App.scss';
 import './games/scss/Snake.scss';
 import './games/scss/Tetris.scss';
 import './games/scss/Wordle.scss';
+import './games/scss/MineSweeper.jsx'
 import React from "react";
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
@@ -10,6 +11,7 @@ import Cookies from 'universal-cookie';
 import Snake from './games/Snake';
 import Tetris from './games/Tetris';
 import Wordle from './games/Wordle';
+import MineSweeper from './games/MineSweeper';
 import snakeImage from "./images/SnakeGameImage.jpg";
 import tetrisImage from "./images/TetrisGameImage.jpg";
 import wordleImage from "./images/WordleGameImage.jpg";
