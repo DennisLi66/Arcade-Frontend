@@ -11,10 +11,12 @@ function MineSweeper(){
   var minesweeperBoard = []; //14 high by 18 wide
   const mines = 40;
   var startingTime, endingTime = 0;
+  var flagsPlaced = 0;
 
   function setBoard(){//randomly place mines
     var randomMines = [];
     minesweeperBoard = [];
+    flagsPlaced = 0;
     for (let i = 0; i < 14*18; i++){
       randomMines.push(i);
       minesweeperBoard.push(0);
@@ -43,7 +45,28 @@ function MineSweeper(){
     // }
   }
   function printMineSweeperScoreBoard(){
-
+    document.getElementById('mineSweeperScoreBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+        <Button id='mainMenuButton'>Main Menu</Button>
+        Flags Placed: {flagsPlaced} Total Mines: {mines}
+        <Button id='quickRestartButton'>Restart</Button>
+      </>
+    )
+    document.getElementById('mainMenuButton').onclick = function(){getMineSweeperMainMenu()};
+    document.getElementById('quickRestartButton').onclick = function(){startMineSweeperGame()};
+  }
+  function getMineSweeperMainMenu(){
+    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+      <h1> Tetris </h1>
+      <Button id='startGameButton'>Start Game</Button><br></br>
+      <Button id='instructionsButton'>Read Instructions</Button><br></br>
+      <Button id='scoresButton'>Scores</Button><br></br>
+      </>
+    );
+    document.getElementById('startGameButton').onclick = function(){startMineSweeperGame()};
+    document.getElementById('instructionsButton').onclick = function(){readMineSweeperInstructions()};
+    document.getElementById('scoresButton').onclick = function(){getMineSweeperScoresPage()};
   }
   function readMineSweeperInstructions(){
 
