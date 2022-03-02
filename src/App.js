@@ -2,7 +2,7 @@ import './App.scss';
 import './games/scss/Snake.scss';
 import './games/scss/Tetris.scss';
 import './games/scss/Wordle.scss';
-import './games/scss/MineSweeper.jsx'
+import './games/scss/MineSweeper.scss'
 import React from "react";
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
@@ -357,6 +357,8 @@ function App() {
           changeBody(Tetris());
         }else if (gameTitle === "Wordle"){
           changeBody(Wordle());
+        }else if (gameTitle === "MineSweeper"){
+          changeBody(MineSweeper());
         }
       }
       //Detect Stuff Here
@@ -398,6 +400,8 @@ function App() {
 
                   <img className="gameImage wordle" src={wordleImage} alt="Play Wordle Button" onMouseOver={()=>{hoverImage("wordle")}}></img>
                   <div className='gameImage wordle' id='wordleWords' onMouseOut={()=>{hoverOff()}} onClick={() => {openGame("Wordle")}}><h1>Wordle</h1></div>
+
+                  <Button onClick={()=>{openGame("MineSweeper")}}>Minesweeper</Button>
               </div>
             </div>
           </div>
