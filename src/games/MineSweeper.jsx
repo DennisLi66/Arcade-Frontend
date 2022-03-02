@@ -65,7 +65,7 @@ function MineSweeper(){
     printMineSweeperBoard();
     printMineSweeperScoreBoard();
   }
-  function printMineSweeperBoard(){
+  function printMineSweeperBoard(end=false){
     var board = [];
     for (let i = 0; i < minesweeperBoard.length; i++){
       if (revealedBoard[i] === 0) board.push(<div className='mineSweeperUnknownSquare' id={'square' + i} key={i}></div>);
@@ -101,6 +101,14 @@ function MineSweeper(){
         {board}
       </>
     )
+    if (!end){
+      for (let i = 0; i < 14*18; i++){
+        document.getElementById('square' + i).oncontextmenu = function(){
+          markSquare(i);
+          return false;
+        }
+      }
+    }
   }
   function printMineSweeperScoreBoard(){
     document.getElementById('mineSweeperScoreBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
@@ -113,6 +121,20 @@ function MineSweeper(){
     document.getElementById('mainMenuButton').onclick = function(){getMineSweeperMainMenu()};
     document.getElementById('quickRestartButton').onclick = function(){startMineSweeperGame()};
   }
+  //Actions
+  function markSquare(square){
+    if (!startingTime) startingTime = Date.now();
+    if (revealedBoard[square] === -1){
+      revealedBoard[square] = 0;
+      flagsPlaced--;
+    }else if (revealedBoard[square] === 0) {
+      revealedBoard[square] = -1;
+      flagsPlaced++;
+    }
+    printMineSweeperBoard();
+    printMineSweeperScoreBoard();
+  }
+  //Get Pages
   function getMineSweeperMainMenu(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
