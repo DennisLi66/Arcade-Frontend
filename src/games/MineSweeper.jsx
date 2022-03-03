@@ -110,11 +110,13 @@ function MineSweeper(){
       }
     }
   }
-  function printMineSweeperScoreBoard(){
+  function printMineSweeperScoreBoard(end=false){
+    var middleText = (<> You've Lost. </>);
+    if (!end) middleText = (<>Flags Placed: {flagsPlaced} Total Mines: {mines}</>)
     document.getElementById('mineSweeperScoreBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
         <Button id='mainMenuButton'>Main Menu</Button>
-        Flags Placed: {flagsPlaced} Total Mines: {mines}
+        {middleText}
         <Button id='quickRestartButton'>Restart</Button>
       </>
     )
@@ -133,6 +135,23 @@ function MineSweeper(){
     }
     printMineSweeperBoard();
     printMineSweeperScoreBoard();
+  }
+  function revealSquare(square){
+
+  }
+  //Victory and Loss
+  function detectVictory(){
+    for (let i = 0; i < minesweeperBoard.length; i++){
+      if (revealedBoard[i] === 0 && minesweeperBoard[i] !== -1) return false;
+    }
+    return true;
+  }
+  function showLossScreen(){
+    for (let i = 0; i < revealedBoard.length; i++){
+      revealedBoard[i] = 1;
+    }
+    printMineSweeperBoard(true);
+    printMineSweeperBoard(true);
   }
   //Get Pages
   function getMineSweeperMainMenu(){
