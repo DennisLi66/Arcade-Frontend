@@ -112,7 +112,8 @@ function MineSweeper(){
   }
   function printMineSweeperScoreBoard(end=false){
     var middleText = (<> You've Lost. </>);
-    if (!end) middleText = (<>Flags Placed: {flagsPlaced} Total Mines: {mines}</>)
+    if (!end) middleText = (<>Flags Placed: {flagsPlaced} Total Mines: {mines}</>);
+    else if (end && end === "Victory") middleText = (<>Completed in {endingTime} milliseconds. <Button id='submitButton'>Submit Score</Button></>);
     document.getElementById('mineSweeperScoreBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
         <Button id='mainMenuButton'>Main Menu</Button>
@@ -122,6 +123,7 @@ function MineSweeper(){
     )
     document.getElementById('mainMenuButton').onclick = function(){getMineSweeperMainMenu()};
     document.getElementById('quickRestartButton').onclick = function(){startMineSweeperGame()};
+    if(end && end === "Victory") document.getElementById('submitButton').onclick = function(){submitMinesweeperScore()}
   }
   //Actions
   function markSquare(square){
@@ -137,7 +139,7 @@ function MineSweeper(){
     printMineSweeperScoreBoard();
   }
   function revealSquare(square){
-
+    if (!startingTime) startingTime = Date.now();
   }
   //Victory and Loss
   function detectVictory(){
@@ -146,12 +148,23 @@ function MineSweeper(){
     }
     return true;
   }
+  function showVictoryScreen(){
+    endingTime = Date.now() - startingTime;
+    for (let i = 0; i < revealedBoard.length; i++){
+      revealedBoard[i] = 1;
+    }
+    printMineSweeperBoard(true);
+    printMineSweeperScoreBoard("Victory");
+  }
   function showLossScreen(){
     for (let i = 0; i < revealedBoard.length; i++){
       revealedBoard[i] = 1;
     }
     printMineSweeperBoard(true);
-    printMineSweeperBoard(true);
+    printMineSweeperScoreBoard("Victory");
+  }
+  function submitMinesweeperScore(){
+    var scoreFGH;
   }
   //Get Pages
   function getMineSweeperMainMenu(){
