@@ -106,7 +106,8 @@ function MineSweeper(){
         document.getElementById('square' + i).oncontextmenu = function(){
           markSquare(i);
           return false;
-        }
+        };
+        document.getElementById('square' + i).onclick = function(){revealSquare(i)}
       }
     }
   }
@@ -140,6 +141,49 @@ function MineSweeper(){
   }
   function revealSquare(square){
     if (!startingTime) startingTime = Date.now();
+    revealedBoard[square] = 1;
+    if (minesweeperBoard[square] === -1) showLossScreen();
+    else if (minesweeperBoard[square] !== -1){
+      if (minesweeperBoard[square] === 0){
+        revealSurroundings(square);
+      }
+      detectVictory();
+    }
+  }
+  function revealSurroundings(i){
+    revealedBoard[i] = 1;
+    if (i - 18 >= 0 && minesweeperBoard[i - 18] !== -1 && revealedBoard[i - 18] === 0) { //Above
+      revealedBoard[i - 18] = 1;
+      if (minesweeperBoard[i - 18] === 0) revealSurroundings(i - 18);
+    }
+    if (i + 18 < 14*18 && minesweeperBoard[i + 18] !== -1){ //Below
+      revealedBoard[i + 18] = 1;
+      if (minesweeperBoard[i + 18] === 0) revealSurroundings(i + 18);
+    }
+    if (i % 18 !== 0 && minesweeperBoard[i - 1] !== -1){ //Left
+      revealedBoard[i - 1] = 1;
+      if (minesweeperBoard[i - 1] === 0) revealSurroundings(i - 1);
+    }
+    if ((i + 1) % 18 !== 0 && minesweeperBoard[i + 1] !== -1){ //Right
+      revealedBoard[i + 1] = 1;
+      if (minesweeperBoard[i + 1] === 0) revealSurroundings(i + 1);
+    }
+    if ( (i % 18 !== 0) && i - 19 >= 0 && minesweeperBoard[i - 19] !== -1){ //Above Left
+      revealedBoard[i - 19] = 1;
+      if (minesweeperBoard[i - 19] === 0) revealSurroundings(i + 19);
+    }
+    if ( (i % 18 !== 0) && (i + 17 < 14*18) && (minesweeperBoard[i + 17] !== -1)){//Below Left
+      revealedBoard[i + 17] = 1;
+      if (minesweeperBoard[i + 17] === 0) revealSurroundings(i + 17);
+    }
+    if ( ((i + 1) % 18 !== 0) && i - 17 >= 0 && minesweeperBoard[i - 17] !== -1) { //Above Right
+      revealedBoard[i - 17] = 1;
+      if (minesweeperBoard[i - 17] === 0) revealSurroundings(i - 17);
+    }
+    if ( ((i + 1) % 18 !== 0) && (i + 19 < 14*18) && minesweeperBoard[i + 19] !== -1){//Below Right
+      revealedBoard[i + 19] = 1;
+      if (minesweeperBoard[i + 19] === 0) revealSurroundings(i + 19);
+    }
   }
   //Victory and Loss
   function detectVictory(){
