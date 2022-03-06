@@ -62,6 +62,7 @@ function MineSweeper(){
     )
   }
   function startMineSweeperGame(){
+    document.addEventListener('keydown',detectRestart)
     setBoard();
     printMineSweeperBoard();
     printMineSweeperScoreBoard();
@@ -195,7 +196,11 @@ function MineSweeper(){
     }
     return true;
   }
+  function detectRestart(key){
+    if (key.keyCode === 82) startMineSweeperGame();
+  }
   function showVictoryScreen(){
+    document.removeEventListener('keydown',detectRestart);
     endingTime = Date.now() - startingTime;
     for (let i = 0; i < revealedBoard.length; i++){
       revealedBoard[i] = 1;
@@ -251,7 +256,22 @@ function MineSweeper(){
     document.getElementById('scoresButton').onclick = function(){getMineSweeperScoresPage()};
   }
   function readMineSweeperInstructions(){
-    const instructions = 0;
+    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+        <Button id='backButton'>Back</Button><br></br>
+        <h1> Instructions </h1>
+        <div>
+          In Minesweeper, your objective is to reveal all the tiles on the board that are not mines. Clicking on a mine will cause you to lose the game,
+          while clicking on a tile without a mine will reveal the tile and the tiles near it that are not mines.
+
+          Controls:
+          Click on a tile to reveal it.
+          Right click on a tile to mark it as a mine. Right click on a tile again to remove that mark if needed.
+          Press the R button to quickly restart the game if needed.
+        </div>
+      </>
+    )
+    document.getElementById("backButton").onclick = function(){getMineSweeperMainMenu()};
   }
   function getMineSweeperScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
     var fetchString;
