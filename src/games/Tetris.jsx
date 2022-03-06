@@ -6,8 +6,6 @@ import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
 require('dotenv').config();
 
-//FIX THIS: runTime interval - clear it and reinclude it if rushed down
-//FIX THIS: Write Instructions
 //FIX THIS: Mid secion topple may cause issues, check periodically
 function Tetris(){
    //10 wide, 20 high inner board

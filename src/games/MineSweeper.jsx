@@ -19,6 +19,7 @@ import death from './minesweeperImages/death.png'
 require('dotenv').config();
 
 function MineSweeper(){
+  const cookies = new Cookies();
   var minesweeperBoard = []; //14 high by 18 wide
   var revealedBoard = [];
   const mines = 40;
@@ -111,10 +112,10 @@ function MineSweeper(){
       }
     }
   }
-  function printMineSweeperScoreBoard(end=false){
+  function printMineSweeperScoreBoard(end=false,message= false){
     var middleText = (<> You've Lost. </>);
     if (!end) middleText = (<>Flags Placed: {flagsPlaced} Total Mines: {mines}</>);
-    else if (end && end === "Victory") middleText = (<>Completed in {endingTime} milliseconds. <Button id='submitButton'>Submit Score</Button></>);
+    else if (end && end === "Victory") middleText = (<><div className='errMsg'>{message}</div> Completed in {endingTime} milliseconds. <Button id='submitButton'>Submit Score</Button></>);
     document.getElementById('mineSweeperScoreBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
         <Button id='mainMenuButton'>Main Menu</Button>
@@ -147,7 +148,9 @@ function MineSweeper(){
       if (minesweeperBoard[square] === 0){
         revealSurroundings(square);
       }
-      detectVictory();
+      if (detectVictory()){
+        showVictoryScreen();
+      }
     }
   }
   function revealSurroundings(i){
@@ -208,7 +211,30 @@ function MineSweeper(){
     printMineSweeperScoreBoard("Victory");
   }
   function submitMinesweeperScore(){
-    var scoreFGH;
+    if (cookies.get("id")){
+      const requestSetup = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({userID:cookies.get("id"),gameID:1,
+        timeInMilliseconds: endingTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
+      }
+      fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          if (data.status === -1){
+            printMineSweeperScoreBoard("Victory",data.message);
+          }else{
+            getMineSweeperScoresPage("Your score has been submitted.")
+          }
+        })
+    }else{
+      document.getElementById('gameScreen').innerHTML = ReactDOMServer(
+        loginFunctionality({timeInMilliseconds: endingTime, gameID: 1})
+      )
+      //ask that the user logs in FIX THIS
+      // pass a dictionary to a new object in a new file
+    }
   }
   //Get Pages
   function getMineSweeperMainMenu(){
@@ -225,10 +251,104 @@ function MineSweeper(){
     document.getElementById('scoresButton').onclick = function(){getMineSweeperScoresPage()};
   }
   function readMineSweeperInstructions(){
-
+    const instructions = 0;
   }
-  function getMineSweeperScoresPage(){
-
+  function getMineSweeperScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
+    var fetchString;
+    var scoreTitle;
+    if (rule === "" || rule === "best"){//Get the best
+      fetchString = "/scoreswithtimes?sortBy=top";
+      scoreTitle = "Top Scores";
+    }else if (rule === "recent"){
+      fetchString = "/scoreswithtimes?sortBy=recent"
+      scoreTitle = "Recent Scores";
+    }else if (rule === "mybest"){
+      fetchString = "/scoreswithtimes?sortBy=top&userID="  + cookies.get("id");
+      scoreTitle = "Your Top Scores";
+    }else if (rule === "myrecent"){
+      fetchString = "scoreswithtimes?sortBy=recent&userID=" + cookies.get("id");
+      scoreTitle = "Your Recent Scores";
+    }
+    if (results.length === 0){
+      fetch(process.env.REACT_APP_SERVERLOCATION + fetchString + '&gameID=4')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.results);
+          if (data.status === -1){
+            // do nothing... FIX THIS
+            console.log(data.message);
+          }else{
+            scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
+          }
+        })
+    }else{ //use results instead
+      scoresHelperFunction(message,rule,results,start,end,scoreTitle);
+    }
+  }
+  function scoresHelperFunction(message,rule,results,start,end,scoreTitle){
+    var listOfElements = [];
+    for (let i = start; i < Math.min(results.length,end); i++){
+      listOfElements.push(<tr key = {i}><td>{i + 1}</td> <td> {results[i][0]} </td> <td> {results[i][1]} </td> <td> {results[i][2]}</td> <td> {results[i][3]}</td> </tr>)
+    }
+    var otherMetricButton;
+    var personalScoresSwitchButton;
+    if (rule === "myrecent"){
+      otherMetricButton = (<Button id='otherMetricButton'> My Best Scores </Button>)
+      personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Recent Scores </Button>)
+    }else if (rule === "mybest"){
+      otherMetricButton = (<Button id='otherMetricButton'> My Recent Scores </Button>)
+      personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Best Scores </Button>)
+    }else if (rule === "recent"){
+      if (cookies.get("id")){
+        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
+      }
+      otherMetricButton =  (<Button id='otherMetricButton'> All Best Scores </Button>)
+    }else if (rule === "best" || rule === ""){
+      if (cookies.get("id")){
+        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
+      }
+      otherMetricButton =  (<Button id='otherMetricButton'> All Recent Scores </Button>)
+    }
+    var nextButton, prevButton;
+    if (end < results.length){
+      nextButton = (<Button onClick={getMineSweeperScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
+    }
+    if (start > 0){
+      prevButton = (<Button onClick={getMineSweeperScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
+    }
+    var reactString = (
+      <>
+        <h1> {scoreTitle} </h1>
+        <div><Button id='backButton'>Main Menu</Button></div>
+        <div> {otherMetricButton} {personalScoresSwitchButton} </div>
+        <Table>
+        <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
+        <tbody>
+        {listOfElements}
+        </tbody>
+        </Table>
+        <div>{prevButton}{nextButton}</div>
+      </>
+    );
+    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
+    document.getElementById('backButton').onclick = function(){getMineSweeperMainMenu()};
+    if (rule === "myrecent"){
+      document.getElementById("personalScoresSwitch").onclick = function(){getMineSweeperScoresPage("","recent")};
+      document.getElementById("otherMetricButton").onclick = function(){getMineSweeperScoresPage("","mybest")};
+    }else if (rule === "mybest"){
+      document.getElementById("personalScoresSwitch").onclick = function(){getMineSweeperScoresPage("","best")};
+      document.getElementById("otherMetricButton").onclick = function(){getMineSweeperScoresPage("","myrecent")};
+    }else if (rule === "recent"){
+      if (cookies.get("id")){
+        document.getElementById("personalScoresSwitch").onclick = function(){getMineSweeperScoresPage("","myrecent")};
+      }
+      document.getElementById("otherMetricButton").onclick = function(){getMineSweeperScoresPage("","best")};
+    }else if (rule === "best" || rule === ""){
+      if (cookies.get("id")){
+        document.getElementById("personalScoresSwitch").onclick = function(){getMineSweeperScoresPage("","mybest")};
+      }
+      document.getElementById("otherMetricButton").onclick = function(){getMineSweeperScoresPage("","recent")};
+    }
   }
   return (
     <div className='gameScreen' id='gameScreen'>

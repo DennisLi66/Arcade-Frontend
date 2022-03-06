@@ -17,6 +17,7 @@ import tetrisImage from "./images/TetrisGameImage.jpg";
 import wordleImage from "./images/WordleGameImage.jpg";
 require('dotenv').config();
 
+//Convert submitting scores to its own module
 //COuld do puyo puyo or match 3
 //Maybe add pausing to the real time games
 //logout causes crash?
