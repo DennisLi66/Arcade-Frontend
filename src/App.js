@@ -15,15 +15,13 @@ import MineSweeper from './games/MineSweeper';
 import snakeImage from "./images/SnakeGameImage.jpg";
 import tetrisImage from "./images/TetrisGameImage.jpg";
 import wordleImage from "./images/WordleGameImage.jpg";
+import mineImage from "./images/MinesweeperGameImage.JPG";
 require('dotenv').config();
 
-//Convert submitting scores to its own module
 //COuld do puyo puyo or match 3
-//Maybe add pausing to the real time games
 //logout causes crash?
 //Update adding timeduration to Login
 //login needs to set a redirection then reload
-//Convert css to sass to make everything more compact
 function App() {
   const [navBar,changeNavbar] = React.useState(
     <Navbar bg='light' expand="lg" className='loggedOutBar'>
@@ -43,11 +41,15 @@ function App() {
         } else if (imageName === 'tetris'){
           document.getElementById("tetrisWords").style.visibility = 'visible';
         }
+        else if (imageName === "minesweeper"){
+          document.getElementById("mineWords").style.visibility = "visible";
+        }
       }
       function hoverOff(){
         document.getElementById("snakeWords").style.visibility = 'hidden';
         document.getElementById("wordleWords").style.visibility = 'hidden';
         document.getElementById("tetrisWords").style.visibility = 'hidden';
+        document.getElementById("mineWords").style.visibility = "hidden";
       }
       //Nav Changers
       function changeNavbarToLoggedIn(){
@@ -402,7 +404,8 @@ function App() {
                   <img className="gameImage wordle" src={wordleImage} alt="Play Wordle Button" onMouseOver={()=>{hoverImage("wordle")}}></img>
                   <div className='gameImage wordle' id='wordleWords' onMouseOut={()=>{hoverOff()}} onClick={() => {openGame("Wordle")}}><h1>Wordle</h1></div>
 
-                  <Button onClick={()=>{openGame("MineSweeper")}}>Minesweeper</Button>
+                  <img className='gameImage minesweeper' src={mineImage} alt="Play Minesweeper Button" onMouseOver={()=>{hoverImage("minesweeper")}}></img>
+                  <div className='gameImage minesweeper' id='mineWords' onMouseOut={()=>{hoverOff()}} onClick={()=>{openGame('MineSweeper')}}><h1>Minesweeper</h1></div>
               </div>
             </div>
           </div>

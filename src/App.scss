@@ -9,6 +9,12 @@
   width: 100%;
   padding-left: 15%
 }
+%blackBox{
+  color: white;
+  padding-top: 75px;
+  opacity: 80%;
+  visibility: hidden;
+}
 .gameImage{
   position: relative;
   width: 350px;
@@ -18,28 +24,25 @@
   &.snake{
     grid-area: 1 / 1 / 2 / 2;
     &#snakeWords{
-      color: white;
-      padding-top: 75px;
-      opacity: 80%;
-      visibility: hidden;
+      @extend %blackBox;
     }
   }
   &.tetris{
     grid-area: 1 / 2 / 2 / 3;
     &#tetrisWords{
-      color: white;
-      padding-top: 75px;
-      opacity: 80%;
-      visibility: hidden;
+      @extend %blackBox;
     }
   }
   &.wordle{
     grid-area: 2 / 1 / 3 / 2;
     &#wordleWords{
-      color: white;
-      opacity: 80%;
-      padding-top: 75px;
-      visibility: hidden;
+      @extend %blackBox;
+    }
+  }
+  &.minesweeper{
+    grid-area: 2 / 2 / 3 / 3;
+    &#mineWords{
+      @extend %blackBox;
     }
   }
 }
