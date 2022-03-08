@@ -13,10 +13,64 @@ function Frogger(){
   var startTime, endingTime = 0;
   var intervalID = "";
   var currentDirection = false;
+  var frogPosition = false;
   var paused = false;
-  var height = 20;
-  var width = 15;
+  var tileBoard = [];
+  var obstacleBoard = [];
 
+  function startFroggerGame(){
+    createFroggerBoard();
+    printInitialContent();
+    document.addEventListener('keydown',detectDirectionalKeyDown);
+  }
+  function createFroggerBoard(){ //height 20 width 15
+    //Obstacles include water, cars, rocks
+    //tiles include road, land, water
+    //hero includes frogger
+    score = 0;
+    for (let y = 0; y < 20; y++){
+      for (let x = 0; x < 15; x++){
+        if (y === 0) tileBoard.push("L");
+        else if (y === 1){
+
+        }else if (y === 2){
+
+        }
+      }
+    }
+  }
+  //Printers
+  function printFroggerBoard(){
+
+  }
+  function printFroggerScoreBoard(){
+
+  }
+  function printInitialContent(){
+    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+      <h1>Frogger</h1>
+      <div className = 'froggerScreen' id='froggerScreen'>
+        <div className='froggerBoard' id='froggerBoard'></div>
+        <div className='pauseScreen' id='pauseScreen'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div>
+      </div>
+      <div className='bulletinBoard' id='bulletinBoard'></div>
+      </>
+    )
+    printFroggerBoard();
+    printFroggerScoreBoard();
+  }
+  //Key Detection
+  function detectDirectionalKeyDown(){
+
+  }
+  function detectOnlyRestart(){
+
+  }
+  function detectOnlyPauseOrRestart(){
+
+  }
+  //Pages
   function getFroggerMainMenu(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
@@ -29,9 +83,6 @@ function Frogger(){
     document.getElementById('startFroggerButton').onclick = function(){startFroggerGame()};
     document.getElementById('froggerInstructionsButton').onclick = function(){readFroggerInstructions()};
     document.getElementById('froggerScoresButton').onclick = function(){getFroggerScoresPage()};
-  }
-  function startFroggerGame(){
-
   }
   function readFroggerInstructions(){
     const b = 0;

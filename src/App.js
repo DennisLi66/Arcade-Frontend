@@ -3,6 +3,7 @@ import './games/scss/Snake.scss';
 import './games/scss/Tetris.scss';
 import './games/scss/Wordle.scss';
 import './games/scss/MineSweeper.scss'
+import './games/scss/Frogger.scss'
 import React from "react";
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
@@ -12,6 +13,7 @@ import Snake from './games/Snake';
 import Tetris from './games/Tetris';
 import Wordle from './games/Wordle';
 import MineSweeper from './games/MineSweeper';
+import Frogger from './games/Frogger'
 import snakeImage from "./images/SnakeGameImage.jpg";
 import tetrisImage from "./images/TetrisGameImage.jpg";
 import wordleImage from "./images/WordleGameImage.jpg";
@@ -40,9 +42,10 @@ function App() {
           document.getElementById("wordleWords").style.visibility = 'visible';
         } else if (imageName === 'tetris'){
           document.getElementById("tetrisWords").style.visibility = 'visible';
-        }
-        else if (imageName === "minesweeper"){
+        }else if (imageName === "minesweeper"){
           document.getElementById("mineWords").style.visibility = "visible";
+        }else if (imageName === "frogger"){
+          document.getElementById("froggerWords").style.visibility = "visible";
         }
       }
       function hoverOff(){
@@ -50,6 +53,7 @@ function App() {
         document.getElementById("wordleWords").style.visibility = 'hidden';
         document.getElementById("tetrisWords").style.visibility = 'hidden';
         document.getElementById("mineWords").style.visibility = "hidden";
+        document.getElementById("froggerWords").style.visibility = "hidden";
       }
       //Nav Changers
       function changeNavbarToLoggedIn(){
@@ -362,6 +366,8 @@ function App() {
           changeBody(Wordle());
         }else if (gameTitle === "MineSweeper"){
           changeBody(MineSweeper());
+        }else if (gameTitle === "Frogger"){
+          changeBody(Frogger())
         }
       }
       //Detect Stuff Here
@@ -406,6 +412,9 @@ function App() {
 
                   <img className='gameImage minesweeper' src={mineImage} alt="Play Minesweeper Button" onMouseOver={()=>{hoverImage("minesweeper")}}></img>
                   <div className='gameImage minesweeper' id='mineWords' onMouseOut={()=>{hoverOff()}} onClick={()=>{openGame('MineSweeper')}}><h1>Minesweeper</h1></div>
+
+                  <img className='gameImage frogger' src={mineImage} alt="Play Frogger Button" onMouseOver={()=>{hoverImage("frogger")}}></img>
+                  <div className='gameImage frogger' id='froggerWords' onMouseOut={()=>{hoverOff()}} onClick={()=>{openGame("Frogger")}}><h1>Frogger</h1></div>
               </div>
             </div>
           </div>
