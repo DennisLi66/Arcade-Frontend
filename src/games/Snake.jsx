@@ -410,7 +410,7 @@ function Snake() {
           }
         })
     }else{
-      document.getElementById('gameScreen').innerHTML = ReactDOMServer(
+      document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
         loginFunctionality({score: score, timeInMilliseconds: endingTime, gameID: 1})
       )
       //ask that the user logs in FIX THIS

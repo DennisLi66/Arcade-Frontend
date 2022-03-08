@@ -268,7 +268,7 @@ function Wordle(){
           }
         })
     }else{
-      document.getElementById('gameScreen').innerHTML = ReactDOMServer(
+      document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
         loginFunctionality({score: score, gameID: 3})
       )
       //ask that the user logs in FIX THIS
