@@ -16,7 +16,7 @@ function Frogger(){
   var frogPosition = false;
   var paused = false;
   var tileBoard = [];
-  var obstacleBoard = [];
+  var objectBoard = [];
 
   function startFroggerGame(){
     createFroggerBoard();
@@ -30,17 +30,30 @@ function Frogger(){
     score = 0;
     for (let y = 0; y < 20; y++){
       for (let x = 0; x < 15; x++){
-        if (y === 0) tileBoard.push("L");
+        if (y === 0 || y === 9 || y === 19) tileBoard.push("L");
         else if (y === 1){
-
-        }else if (y === 2){
-
-        }
+          if (x === 2 || x === 5 || x === 7 || x === 9 || x === 12) tileBoard.push("W")
+          else tileBoard.push("L");
+        }else if (y >= 2 && y <= 8) tileBoard.push("W");
+        else if (y >= 10 || y <= 18) tileBoard.push("R");
       }
     }
   }
   //Printers
   function printFroggerBoard(){
+    var tiles = [];
+    for (let i = 0; i < tileBoard.length; i++){
+      if (tileBoard[i] === 'L'){
+        tiles.push(<div key={i} className='froggerLandTile'></div>)
+      }else if (tileBoard[i] === 'W'){
+        tiles.push(<div key={i} className='froggerWaterTile'></div>)
+      }else if (tileBoard[i] === 'R'){
+        tiles.push(<div key={i} className='froggerRoadTile'></div>)
+      }else{
+        tiles.push(<div key={i} className='froggerTile'></div>);
+      }
+    }
+    document.getElementById('froggerTileBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(tiles);
 
   }
   function printFroggerScoreBoard(){
@@ -51,8 +64,9 @@ function Frogger(){
       <>
       <h1>Frogger</h1>
       <div className = 'froggerScreen' id='froggerScreen'>
-        <div className='froggerBoard' id='froggerBoard'></div>
-        <div className='pauseScreen' id='pauseScreen'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div>
+        <div className='froggerTileBoard' id='froggerTileBoard'></div>
+        <div className='froggerObjBoard' id='froggerObjBoard'></div>
+        <div className='froggerPauseScreen' id='froggerPauseScreen'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div>
       </div>
       <div className='bulletinBoard' id='bulletinBoard'></div>
       </>

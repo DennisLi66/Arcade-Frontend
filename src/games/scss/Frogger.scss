@@ -1,5 +1,41 @@
-.froggerBoard{
+.froggerScreen{
+  display: grid;
   border: solid 1px black;
-  height: 200px
+  // padding-left:
+  height: 600px
   width 200px;
+}
+.froggerTileBoard{
+  @extend .froggerScreen;
+  background-color: white;
+  display: inline-block;
+  margin:0;
+  width: 602px;
+}
+.froggerPauseScreen{
+  @extend .froggerScreen;
+  background-color: black;
+  color: white;
+  visibility: hidden;
+}
+
+
+
+.froggerTile{
+  height: 40px;
+  width: 40px;
+  background-color: yellow;
+  float: left;
+}
+.froggerLandTile{
+  @extend .froggerTile;
+  background-color: brown;
+}
+.froggerWaterTile{
+  @extend .froggerTile;
+  background-color: blue;
+}
+.froggerRoadTile{
+  @extend .froggerTile;
+  background-color: gray;
 }
