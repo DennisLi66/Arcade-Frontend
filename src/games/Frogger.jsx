@@ -13,10 +13,11 @@ function Frogger(){
   var startTime, endingTime = 0;
   var intervalID = "";
   var currentDirection = false;
-  var frogPosition = false;
   var paused = false;
   var tileBoard = [];
   var objectBoard = [];
+  var frogBoard = [];
+  var frogPosition = [7,19]
 
   function startFroggerGame(){
     createFroggerBoard();
@@ -30,18 +31,21 @@ function Frogger(){
     score = 0;
     for (let y = 0; y < 20; y++){
       for (let x = 0; x < 15; x++){
+        frogBoard.push(0)
         if (y === 0 || y === 9 || y === 19) tileBoard.push("L");
         else if (y === 1){
           if (x === 2 || x === 5 || x === 7 || x === 9 || x === 12) tileBoard.push("W")
-          else tileBoard.push("L");
-        }else if (y >= 2 && y <= 8) tileBoard.push("W");
+          else tileBoard.push("L");}
+        else if (y >= 2 && y <= 8) tileBoard.push("W");
         else if (y >= 10 || y <= 18) tileBoard.push("R");
       }
     }
+    frogBoard[20*15 - 8] = 1;
   }
   //Printers
   function printFroggerBoard(){
     var tiles = [];
+    var frog = [];
     for (let i = 0; i < tileBoard.length; i++){
       if (tileBoard[i] === 'L'){
         tiles.push(<div key={i} className='froggerLandTile'></div>)
@@ -52,9 +56,14 @@ function Frogger(){
       }else{
         tiles.push(<div key={i} className='froggerTile'></div>);
       }
+      if (frogBoard[i] === 0){
+        frog.push(<div className='froggerTile'></div>)
+      }else{
+        frog.push(<div className='froggerFrog'></div>)
+      }
     }
     document.getElementById('froggerTileBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(tiles);
-
+    document.getElementById('froggerFrogBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(frog);
   }
   function printFroggerScoreBoard(){
 
@@ -65,6 +74,7 @@ function Frogger(){
       <h1>Frogger</h1>
       <div className = 'froggerScreen' id='froggerScreen'>
         <div className='froggerTileBoard' id='froggerTileBoard'></div>
+        <div className='froggerFrogBoard' id='froggerFrogBoard'></div>
         <div className='froggerObjBoard' id='froggerObjBoard'></div>
         <div className='froggerPauseScreen' id='froggerPauseScreen'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div>
       </div>
@@ -73,10 +83,38 @@ function Frogger(){
     )
     printFroggerBoard();
     printFroggerScoreBoard();
+    document.addEventListener('keydown',detectDirectionalKeyDown)
   }
   //Key Detection
-  function detectDirectionalKeyDown(){
-
+  function detectDirectionalKeyDown(key){
+    console.log(key.key)
+    if (key.key === "ArrowLeft"){
+      if (frogPosition[0] > 0){
+        frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
+        frogPosition[0] = frogPosition[0] - 1;
+        frogBoard[15*frogPosition[1] + frogPosition[0]] = 1;
+      }
+    }else if (key.key === "ArrowRight"){
+      if (frogPosition[0] < 14){
+        frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
+        frogPosition[0] = frogPosition[0] + 1;
+        frogBoard[15*frogPosition[1] + frogPosition[0]] = 1;
+      }
+    }else if (key.key === "ArrowDown"){
+      if (frogPosition[1] < 19){
+        frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
+        frogPosition[1] = frogPosition[1] + 1;
+        frogBoard[15*frogPosition[1] + frogPosition[0]] = 1;
+      }
+    }else if (key.key === "ArrowUp"){
+      if (frogPosition[1] > 0){
+        frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
+        frogPosition[1] = frogPosition[1] - 1;
+        frogBoard[15*frogPosition[1] + frogPosition[0]] = 1;
+      }
+    }
+    console.log(15*frogPosition[1] + frogPosition[0])
+    printFroggerBoard();
   }
   function detectOnlyRestart(){
 

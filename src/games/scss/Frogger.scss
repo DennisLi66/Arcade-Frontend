@@ -11,6 +11,15 @@
   display: inline-block;
   margin:0;
   width: 602px;
+  grid-area: 1 / 2 / 2 / 3;
+}
+.froggerFrogBoard{
+  @extend .froggerScreen;
+  // background-color: white;
+  display: inline-block;
+  margin:0;
+  width: 602px;
+  grid-area: 1 / 2 / 2 / 3;
 }
 .froggerPauseScreen{
   @extend .froggerScreen;
@@ -18,13 +27,10 @@
   color: white;
   visibility: hidden;
 }
-
-
-
 .froggerTile{
   height: 40px;
   width: 40px;
-  background-color: yellow;
+  // background-color: yellow;
   float: left;
 }
 .froggerLandTile{
@@ -38,4 +44,8 @@
 .froggerRoadTile{
   @extend .froggerTile;
   background-color: gray;
+}
+.froggerFrog{
+  @extend .froggerTile;
+  background-color: pink;
 }
