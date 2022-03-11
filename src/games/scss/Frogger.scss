@@ -21,6 +21,14 @@
   width: 602px;
   grid-area: 1 / 2 / 2 / 3;
 }
+.froggerObjBoard{
+  @extend .froggerScreen;
+  // background-color: white;
+  display: inline-block;
+  margin:0;
+  width: 602px;
+  grid-area: 1 / 2 / 2 / 3;
+}
 .froggerPauseScreen{
   @extend .froggerScreen;
   background-color: black;
@@ -44,6 +52,10 @@
 .froggerRoadTile{
   @extend .froggerTile;
   background-color: gray;
+}
+.froggerRockTile{
+  @extend .froggerTile;
+  background-color: orange;
 }
 .froggerFrog{
   @extend .froggerTile;

@@ -32,12 +32,32 @@ function Frogger(){
     for (let y = 0; y < 20; y++){
       for (let x = 0; x < 15; x++){
         frogBoard.push(0)
-        if (y === 0 || y === 9 || y === 19) tileBoard.push("L");
+        if (y === 0){
+          tileBoard.push("L");
+          objectBoard.push("R");
+        }
+        else if (y === 9 || y === 19) {
+          tileBoard.push("L")
+          objectBoard.push(0);
+        }
         else if (y === 1){
-          if (x === 2 || x === 5 || x === 7 || x === 9 || x === 12) tileBoard.push("W")
-          else tileBoard.push("L");}
-        else if (y >= 2 && y <= 8) tileBoard.push("W");
-        else if (y >= 10 || y <= 18) tileBoard.push("R");
+          if (x === 2 || x === 5 || x === 7 || x === 9 || x === 12) {
+            tileBoard.push("W")
+            objectBoard.push(0);
+          }
+          else {
+            tileBoard.push("L");
+            objectBoard.push("R");
+          }
+        }
+        else if (y >= 2 && y <= 8) {
+          tileBoard.push("W");
+          objectBoard.push(0);
+        }
+        else if (y >= 10 || y <= 18) {
+          tileBoard.push("R");
+          objectBoard.push(0);
+        }
       }
     }
     frogBoard[20*15 - 8] = 1;
@@ -46,6 +66,7 @@ function Frogger(){
   function printFroggerBoard(){
     var tiles = [];
     var frog = [];
+    var objs = [];
     for (let i = 0; i < tileBoard.length; i++){
       if (tileBoard[i] === 'L'){
         tiles.push(<div key={i} className='froggerLandTile'></div>)
@@ -61,9 +82,15 @@ function Frogger(){
       }else{
         frog.push(<div className='froggerFrog'></div>)
       }
+      if (objectBoard[i] === 'R'){
+        objs.push(<div className='froggerRockTile'></div>)
+      }else{
+        objs.push(<div className='froggerTile'></div>)
+      }
     }
     document.getElementById('froggerTileBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(tiles);
     document.getElementById('froggerFrogBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(frog);
+    document.getElementById('froggerObjBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(objs)
   }
   function printFroggerScoreBoard(){
 
@@ -88,26 +115,26 @@ function Frogger(){
   //Key Detection
   function detectDirectionalKeyDown(key){
     console.log(key.key)
-    if (key.key === "ArrowLeft"){
-      if (frogPosition[0] > 0){
+    if (key.key === "ArrowLeft" ){
+      if (frogPosition[0] > 0 && objectBoard[15*frogPosition[1] + frogPosition[0] - 1] === 0){
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
         frogPosition[0] = frogPosition[0] - 1;
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 1;
       }
     }else if (key.key === "ArrowRight"){
-      if (frogPosition[0] < 14){
+      if (frogPosition[0] < 14 && objectBoard[15*frogPosition[1] + frogPosition[0] + 1] === 0){
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
         frogPosition[0] = frogPosition[0] + 1;
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 1;
       }
-    }else if (key.key === "ArrowDown"){
-      if (frogPosition[1] < 19){
+    }else if (key.key === "ArrowDown" ){
+      if (frogPosition[1] < 19 && objectBoard[15*frogPosition[1] + frogPosition[0] + 15] === 0 ){
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
         frogPosition[1] = frogPosition[1] + 1;
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 1;
       }
     }else if (key.key === "ArrowUp"){
-      if (frogPosition[1] > 0){
+      if (frogPosition[1] > 0 && objectBoard[15*frogPosition[1] + frogPosition[0] - 15] === 0){
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
         frogPosition[1] = frogPosition[1] - 1;
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 1;
