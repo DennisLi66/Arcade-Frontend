@@ -114,39 +114,63 @@ function Frogger(){
   }
   //Key Detection
   function detectDirectionalKeyDown(key){
-    console.log(key.key)
+    //console.log(key.key)
     if (key.key === "ArrowLeft" ){
       if (frogPosition[0] > 0 && objectBoard[15*frogPosition[1] + frogPosition[0] - 1] === 0){
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
         frogPosition[0] = frogPosition[0] - 1;
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 1;
+        currentDirection = "left";
       }
     }else if (key.key === "ArrowRight"){
       if (frogPosition[0] < 14 && objectBoard[15*frogPosition[1] + frogPosition[0] + 1] === 0){
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
         frogPosition[0] = frogPosition[0] + 1;
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 1;
+        currentDirection = "right";
       }
     }else if (key.key === "ArrowDown" ){
       if (frogPosition[1] < 19 && objectBoard[15*frogPosition[1] + frogPosition[0] + 15] === 0 ){
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
         frogPosition[1] = frogPosition[1] + 1;
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 1;
+        currentDirection = "down";
       }
     }else if (key.key === "ArrowUp"){
       if (frogPosition[1] > 0 && objectBoard[15*frogPosition[1] + frogPosition[0] - 15] === 0){
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
         frogPosition[1] = frogPosition[1] - 1;
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 1;
+        currentDirection = "up";
       }
     }
-    console.log(15*frogPosition[1] + frogPosition[0])
+    else if (key.keyCode === 82) startFroggerGame();
+    //console.log(15*frogPosition[1] + frogPosition[0])
+    else if (key.keyCode === 32) pauseGame();
     printFroggerBoard();
   }
-  function detectOnlyRestart(){
-
+  function detectOnlyRestart(key){
+    if (key.keyCode === 82) startFroggerGame();
   }
-  function detectOnlyPauseOrRestart(){
+  function detectOnlyPauseOrRestart(key){
+    if (key.keyCode === 82) startFroggerGame();
+    else if (key.keyCode === 32) pauseGame();
+  }
+  function pauseGame(){
+    if (paused){
+      paused = false;
+      document.removeEventListener('keyDown',detectDirectionalKeyDown);
+      document.addEventListener('keyDown',detectOnlyPauseOrRestart);
+      document.getElementById("pauseScreen").style.visibility = 'hidden';
+    }else{
+      paused = true;
+      document.addEventListener('keyDown',detectDirectionalKeyDown);
+      document.removeEventListener('keyDown',detectOnlyPauseOrRestart);
+      document.getElementById("pauseScreen").style.visibility = 'visible';
+    }
+  }
+  //EndGame
+  function displayLossScreen(){
 
   }
   //Pages
