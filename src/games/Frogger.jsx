@@ -147,7 +147,11 @@ function Frogger(){
     else if (key.keyCode === 82) startFroggerGame();
     //console.log(15*frogPosition[1] + frogPosition[0])
     else if (key.keyCode === 32) pauseGame();
-    printFroggerBoard();
+    if (detectInWater() || detectRunOver()){
+      displayLossScreen();
+    }else{
+      printFroggerBoard();
+    }
   }
   function detectOnlyRestart(key){
     if (key.keyCode === 82) startFroggerGame();
@@ -169,9 +173,18 @@ function Frogger(){
       document.getElementById("pauseScreen").style.visibility = 'visible';
     }
   }
+  function detectInWater(){
+    if (tileBoard[frogPosition[0] + frogPosition[1] * 15] ===  "W" && objectBoard[frogPosition[0] + frogPosition[1] * 15] !== "L") return true;
+    return false;
+  }
+  function detectRunOver(){
+    if (objectBoard[frogPosition[0] + frogPosition[1] * 15] === "C") return true;
+    return false;
+  }
   //EndGame
   function displayLossScreen(){
-
+    document.removeEventListener('keydown',detectDirectionalKeyDown);
+    document.addEventListener('keydown',detectOnlyRestart);
   }
   //Pages
   function getFroggerMainMenu(){
