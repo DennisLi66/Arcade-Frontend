@@ -48,6 +48,10 @@
   @extend .froggerTile;
   background-color: orange;
 }
+.froggerLilyPad{
+  @extend .froggerTile;
+  background-color: green;
+}
 .froggerFrog{
   @extend .froggerTile;
   background-color: pink;
