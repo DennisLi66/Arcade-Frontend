@@ -1,36 +1,27 @@
 .froggerScreen{
   display: grid;
-  border: solid 1px black;
   // padding-left:
-  height: 600px
-  width 200px;
+  // height: 600px
+  // width 200px;
+  line-height: 0;
+}
+.froggerBoards{
+  display: inline-block;
+  margin:0;
+  width: 602px;
+  grid-area: 1 / 2 / 2 / 3;
+  border: solid 1px black;
 }
 .froggerTileBoard{
-  @extend .froggerScreen;
-  background-color: white;
-  display: inline-block;
-  margin:0;
-  width: 602px;
-  grid-area: 1 / 2 / 2 / 3;
+  @extend .froggerBoards;
 }
 .froggerFrogBoard{
-  @extend .froggerScreen;
-  // background-color: white;
-  display: inline-block;
-  margin:0;
-  width: 602px;
-  grid-area: 1 / 2 / 2 / 3;
+  @extend .froggerBoards;
 }
 .froggerObjBoard{
-  @extend .froggerScreen;
-  // background-color: white;
-  display: inline-block;
-  margin:0;
-  width: 602px;
-  grid-area: 1 / 2 / 2 / 3;
+  @extend .froggerBoards;
 }
 .froggerPauseScreen{
-  @extend .froggerScreen;
   background-color: black;
   color: white;
   visibility: hidden;

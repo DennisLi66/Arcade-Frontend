@@ -29,6 +29,15 @@ function Frogger(){
     //tiles include road, land, water
     //hero includes frogger
     score = 0;
+    startTime = 0;
+    endingTime = 0;
+    intervalID = "";
+    currentDirection = false;
+    paused = false;
+    tileBoard = [];
+    objectBoard = [];
+    frogBoard = [];
+    frogPosition = [7,19]
     for (let y = 0; y < 20; y++){
       for (let x = 0; x < 15; x++){
         frogBoard.push(0)
@@ -92,13 +101,25 @@ function Frogger(){
     document.getElementById('froggerFrogBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(frog);
     document.getElementById('froggerObjBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(objs)
   }
-  function printFroggerScoreBoard(){
-
+  function printFroggerScoreBoard(ended=false,message = ""){
+    var text;
+    if (ended === "Loss"){ //Final Score and Time
+      text = (<>{message}<Button id='mainMenuButton'>Main Menu</Button> Final Score: {score} Final Time: {endingTime}<Button id='submitScoreButton'>Submit Score</Button><Button id='restartButton'>Restart</Button></>)
+    }else{
+      text = (<>{message}<Button id='mainMenuButton'>Main Menu</Button> Current Score: {score} <Button id='restartButton'>Restart</Button></>)
+    }
+    document.getElementById("bulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+      {text}
+      </>
+    )
+    document.getElementById("mainMenuButton").onclick = function(){getFroggerMainMenu()}
+    document.getElementById("restartButton").onclick = function(){startFroggerGame()}
+    if ( ended === "Loss" ) document.getElementById("submitScoreButton").onclick = function(){submitFroggerScore(ended)}
   }
   function printInitialContent(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
-      <h1>Frogger</h1>
       <div className = 'froggerScreen' id='froggerScreen'>
         <div className='froggerTileBoard' id='froggerTileBoard'></div>
         <div className='froggerFrogBoard' id='froggerFrogBoard'></div>
@@ -116,6 +137,7 @@ function Frogger(){
   function detectDirectionalKeyDown(key){
     //console.log(key.key)
     if (key.key === "ArrowLeft" ){
+      if (startTime === 0){startTime = Date.now()}
       if (frogPosition[0] > 0 && objectBoard[15*frogPosition[1] + frogPosition[0] - 1] === 0){
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
         frogPosition[0] = frogPosition[0] - 1;
@@ -123,6 +145,7 @@ function Frogger(){
         currentDirection = "left";
       }
     }else if (key.key === "ArrowRight"){
+      if (startTime === 0){startTime = Date.now()}
       if (frogPosition[0] < 14 && objectBoard[15*frogPosition[1] + frogPosition[0] + 1] === 0){
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
         frogPosition[0] = frogPosition[0] + 1;
@@ -130,6 +153,7 @@ function Frogger(){
         currentDirection = "right";
       }
     }else if (key.key === "ArrowDown" ){
+      if (startTime === 0){startTime = Date.now()}
       if (frogPosition[1] < 19 && objectBoard[15*frogPosition[1] + frogPosition[0] + 15] === 0 ){
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
         frogPosition[1] = frogPosition[1] + 1;
@@ -137,6 +161,7 @@ function Frogger(){
         currentDirection = "down";
       }
     }else if (key.key === "ArrowUp"){
+      if (startTime === 0){startTime = Date.now()}
       if (frogPosition[1] > 0 && objectBoard[15*frogPosition[1] + frogPosition[0] - 15] === 0){
         frogBoard[15*frogPosition[1] + frogPosition[0]] = 0;
         frogPosition[1] = frogPosition[1] - 1;
@@ -183,8 +208,36 @@ function Frogger(){
   }
   //EndGame
   function displayLossScreen(){
+    endingTime = Date.now() - startTime;
     document.removeEventListener('keydown',detectDirectionalKeyDown);
     document.addEventListener('keydown',detectOnlyRestart);
+    printFroggerScoreBoard("Loss");
+  }
+  function submitFroggerScore(end){
+    if (cookies.get("id")){
+      const requestSetup = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({userID:cookies.get("id"),gameID:1,
+        timeInMilliseconds: endingTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
+      }
+      fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          if (data.status === -1){
+            printFroggerScoreBoard(end,data.message);
+          }else{
+            getFroggerScoresPage("Your score has been submitted.")
+          }
+        })
+    }else{
+      document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+        loginFunctionality({timeInMilliseconds: endingTime, gameID: 1})
+      )
+      //ask that the user logs in FIX THIS
+      // pass a dictionary to a new object in a new file
+    }
   }
   //Pages
   function getFroggerMainMenu(){
@@ -201,10 +254,114 @@ function Frogger(){
     document.getElementById('froggerScoresButton').onclick = function(){getFroggerScoresPage()};
   }
   function readFroggerInstructions(){
-    const b = 0;
+    var instructions;
+    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+        <Button id='backButton'>Back</Button><br></br>
+        <h1> Instructions </h1>
+        <div>
+
+        </div>
+      </>
+    )
+    document.getElementById("backButton").onclick = function(){getFroggerMainMenu()};
   }
-  function getFroggerScoresPage(){
-    const a = 0;
+  function getFroggerScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
+    var fetchString;
+    var scoreTitle;
+    if (rule === "" || rule === "best"){//Get the best
+      fetchString = "/scoreswithtimes?sortBy=top";
+      scoreTitle = "Top Scores";
+    }else if (rule === "recent"){
+      fetchString = "/scoreswithtimes?sortBy=recent"
+      scoreTitle = "Recent Scores";
+    }else if (rule === "mybest"){
+      fetchString = "/scoreswithtimes?sortBy=top&userID="  + cookies.get("id");
+      scoreTitle = "Your Top Scores";
+    }else if (rule === "myrecent"){
+      fetchString = "scoreswithtimes?sortBy=recent&userID=" + cookies.get("id");
+      scoreTitle = "Your Recent Scores";
+    }
+    if (results.length === 0){
+      fetch(process.env.REACT_APP_SERVERLOCATION + fetchString + '&gameID=5')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.results);
+          if (data.status === -1){
+            // do nothing... FIX THIS
+            console.log(data.message);
+          }else{
+            scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
+          }
+        })
+    }else{ //use results instead
+      scoresHelperFunction(message,rule,results,start,end,scoreTitle);
+    }
+  }
+  function scoresHelperFunction(message,rule,results,start,end,scoreTitle){
+    var listOfElements = [];
+    for (let i = start; i < Math.min(results.length,end); i++){
+      listOfElements.push(<tr key = {i}><td>{i + 1}</td> <td> {results[i][0]} </td> <td> {results[i][1]} </td> <td> {results[i][2]}</td> <td> {results[i][3]}</td> </tr>)
+    }
+    var otherMetricButton;
+    var personalScoresSwitchButton;
+    if (rule === "myrecent"){
+      otherMetricButton = (<Button id='otherMetricButton'> My Best Scores </Button>)
+      personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Recent Scores </Button>)
+    }else if (rule === "mybest"){
+      otherMetricButton = (<Button id='otherMetricButton'> My Recent Scores </Button>)
+      personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Best Scores </Button>)
+    }else if (rule === "recent"){
+      if (cookies.get("id")){
+        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
+      }
+      otherMetricButton =  (<Button id='otherMetricButton'> All Best Scores </Button>)
+    }else if (rule === "best" || rule === ""){
+      if (cookies.get("id")){
+        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
+      }
+      otherMetricButton =  (<Button id='otherMetricButton'> All Recent Scores </Button>)
+    }
+    var nextButton, prevButton;
+    if (end < results.length){
+      nextButton = (<Button onClick={getFroggerScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
+    }
+    if (start > 0){
+      prevButton = (<Button onClick={getFroggerScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
+    }
+    var reactString = (
+      <>
+        <h1> {scoreTitle} </h1>
+        <div><Button id='backButton'>Main Menu</Button></div>
+        <div> {otherMetricButton} {personalScoresSwitchButton} </div>
+        <Table>
+        <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
+        <tbody>
+        {listOfElements}
+        </tbody>
+        </Table>
+        <div>{prevButton}{nextButton}</div>
+      </>
+    );
+    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
+    document.getElementById('backButton').onclick = function(){getFroggerMainMenu()};
+    if (rule === "myrecent"){
+      document.getElementById("personalScoresSwitch").onclick = function(){getFroggerScoresPage("","recent")};
+      document.getElementById("otherMetricButton").onclick = function(){getFroggerScoresPage("","mybest")};
+    }else if (rule === "mybest"){
+      document.getElementById("personalScoresSwitch").onclick = function(){getFroggerScoresPage("","best")};
+      document.getElementById("otherMetricButton").onclick = function(){getFroggerScoresPage("","myrecent")};
+    }else if (rule === "recent"){
+      if (cookies.get("id")){
+        document.getElementById("personalScoresSwitch").onclick = function(){getFroggerScoresPage("","myrecent")};
+      }
+      document.getElementById("otherMetricButton").onclick = function(){getFroggerScoresPage("","best")};
+    }else if (rule === "best" || rule === ""){
+      if (cookies.get("id")){
+        document.getElementById("personalScoresSwitch").onclick = function(){getFroggerScoresPage("","mybest")};
+      }
+      document.getElementById("otherMetricButton").onclick = function(){getFroggerScoresPage("","recent")};
+    }
   }
   return (
     <div className="gameScreen" id="gameScreen">
