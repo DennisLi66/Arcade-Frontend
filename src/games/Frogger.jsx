@@ -6,6 +6,8 @@ import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
 require('dotenv').config();
 
+//Reset Interval on pause FIX THIS
+
 function Frogger(){
   //Variables
   const cookies = new Cookies();
@@ -68,7 +70,11 @@ function Frogger(){
         }
         else if (y >= 10 || y <= 18) {
           tileBoard.push("R");
-          objectBoard.push(0);
+          if (y === 18 && ((x === 2) || (x === 6) || (x === 8) ||(x === 12))){
+            objectBoard.push("C");
+          }else{
+            objectBoard.push(0);
+          }
         }
       }
     }
@@ -98,6 +104,8 @@ function Frogger(){
         objs.push(<div className='froggerRockTile'></div>)
       }else if (objectBoard[i] === "P"){
         objs.push(<div className="froggerLilyPad"></div>)
+      }else if (objectBoard[i] === "C"){
+        objs.push(<div className='froggerCar'></div>)
       }else{
         objs.push(<div className='froggerTile'></div>)
       }
@@ -148,6 +156,7 @@ function Frogger(){
         frogBoard[getFrogPosition()] = 1;
         currentDirection = "left";
       }
+      if (intervalID === "") intervalID = setInterval(runBoard,1000);
     }else if (key.key === "ArrowRight"){
       if (startTime === 0){startTime = Date.now()}
       if (frogPosition[0] < 14 && objectBoard[getFrogPosition() + 1] === 0){
@@ -156,6 +165,7 @@ function Frogger(){
         frogBoard[getFrogPosition()] = 1;
         currentDirection = "right";
       }
+      if (intervalID === "") intervalID = setInterval(runBoard,1000);
     }else if (key.key === "ArrowDown" ){
       if (startTime === 0){startTime = Date.now()}
       if (frogPosition[1] < 19 && objectBoard[getFrogPosition() + 15] === 0 ){
@@ -164,6 +174,7 @@ function Frogger(){
         frogBoard[getFrogPosition()] = 1;
         currentDirection = "down";
       }
+      if (intervalID === "") intervalID = setInterval(runBoard,1000);
     }else if (key.key === "ArrowUp"){
       if (startTime === 0){startTime = Date.now()}
       if (frogPosition[1] > 0 && objectBoard[getFrogPosition() - 15] === 0){
@@ -172,6 +183,7 @@ function Frogger(){
         frogBoard[getFrogPosition()] = 1;
         currentDirection = "up";
       }
+      if (intervalID === "") intervalID = setInterval(runBoard,1000);
     }
     else if (key.keyCode === 82) startFroggerGame();
     else if (key.keyCode === 32) pauseGame();
@@ -223,19 +235,34 @@ function Frogger(){
   }
   //Runners
   function runBoard(){
-
+    runCars();
+    runLogs();
+    printFroggerBoard();
   }
-  function runCars(){
-
+  function runCars(){ //
+    for (let y = 10; y <= 18; y++){
+      var turnover = false;
+      for (let x = 0; x < 15; x++){
+        if (x === 0 && objectBoard[y*15 + x] === "C") turnover = true;
+        if (x < 14) objectBoard[y*15 + x] = objectBoard[y*15+x+1];
+        else if (turnover) objectBoard[y*15 + x] = "C";
+        else objectBoard[y*15 + x] = 0;
+      }
+    }
+    if (detectRunOver()){
+      displayLossScreen();
+    }
   }
   function runLogs(){
 
   }
   //EndGame
   function displayLossScreen(){
+    clearInterval(intervalID);
     endingTime = Date.now() - startTime;
     document.removeEventListener('keydown',detectDirectionalKeyDown);
     document.addEventListener('keydown',detectOnlyRestart);
+    printFroggerBoard();
     printFroggerScoreBoard("Loss");
   }
   function submitFroggerScore(end){
