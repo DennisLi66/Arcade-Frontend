@@ -66,7 +66,11 @@ function Frogger(){
         }
         else if (y >= 2 && y <= 8) {
           tileBoard.push("W");
-          objectBoard.push(0);
+          if ( y === 8 && (x >= 5 && x <= 9) ){
+            objectBoard.push("L");
+          }else{
+            objectBoard.push(0);
+          }
         }
         else if (y >= 10 || y <= 18) {
           tileBoard.push("R");
@@ -86,29 +90,17 @@ function Frogger(){
     var frog = [];
     var objs = [];
     for (let i = 0; i < tileBoard.length; i++){
-      if (tileBoard[i] === 'L'){
-        tiles.push(<div key={i} className='froggerLandTile'></div>)
-      }else if (tileBoard[i] === 'W'){
-        tiles.push(<div key={i} className='froggerWaterTile'></div>)
-      }else if (tileBoard[i] === 'R'){
-        tiles.push(<div key={i} className='froggerRoadTile'></div>)
-      }else{
-        tiles.push(<div key={i} className='froggerTile'></div>);
-      }
-      if (frogBoard[i] === 0){
-        frog.push(<div className='froggerTile'></div>)
-      }else{
-        frog.push(<div className='froggerFrog'></div>)
-      }
-      if (objectBoard[i] === 'R'){
-        objs.push(<div className='froggerRockTile'></div>)
-      }else if (objectBoard[i] === "P"){
-        objs.push(<div className="froggerLilyPad"></div>)
-      }else if (objectBoard[i] === "C"){
-        objs.push(<div className='froggerCar'></div>)
-      }else{
-        objs.push(<div className='froggerTile'></div>)
-      }
+      if (tileBoard[i] === 'L') tiles.push(<div key={i} className='froggerLandTile'></div>)
+      else if (tileBoard[i] === 'W') tiles.push(<div key={i} className='froggerWaterTile'></div>)
+      else if (tileBoard[i] === 'R') tiles.push(<div key={i} className='froggerRoadTile'></div>)
+      else tiles.push(<div key={i} className='froggerTile'></div>);
+      if (frogBoard[i] === 0) frog.push(<div className='froggerTile'></div>);
+      else frog.push(<div className='froggerFrog'></div>);
+      if (objectBoard[i] === 'R') objs.push(<div className='froggerRockTile'></div>);
+      else if (objectBoard[i] === "P") objs.push(<div className="froggerLilyPad"></div>);
+      else if (objectBoard[i] === "C") objs.push(<div className='froggerCar'></div>);
+      else if (objectBoard[i] === "L") objs.push(<div className='froggerLog'></div>);
+      else objs.push(<div className='froggerTile'></div>);
     }
     document.getElementById('froggerTileBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(tiles);
     document.getElementById('froggerFrogBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(frog);
@@ -149,41 +141,17 @@ function Frogger(){
   //Key Detection
   function detectDirectionalKeyDown(key){
     if (key.key === "ArrowLeft" ){
-      if (startTime === 0){startTime = Date.now()}
-      if (frogPosition[0] > 0 && objectBoard[getFrogPosition() - 1] === 0){
-        frogBoard[getFrogPosition()] = 0;
-        frogPosition[0] = frogPosition[0] - 1;
-        frogBoard[getFrogPosition()] = 1;
-        currentDirection = "left";
-      }
-      if (intervalID === "") intervalID = setInterval(runBoard,1000);
+      currentDirection = "left";
+      moveFrog("left");
     }else if (key.key === "ArrowRight"){
-      if (startTime === 0){startTime = Date.now()}
-      if (frogPosition[0] < 14 && objectBoard[getFrogPosition() + 1] === 0){
-        frogBoard[getFrogPosition()] = 0;
-        frogPosition[0] = frogPosition[0] + 1;
-        frogBoard[getFrogPosition()] = 1;
-        currentDirection = "right";
-      }
-      if (intervalID === "") intervalID = setInterval(runBoard,1000);
+      currentDirection = "right";
+      moveFrog("right");
     }else if (key.key === "ArrowDown" ){
-      if (startTime === 0){startTime = Date.now()}
-      if (frogPosition[1] < 19 && objectBoard[getFrogPosition() + 15] === 0 ){
-        frogBoard[getFrogPosition()] = 0;
-        frogPosition[1] = frogPosition[1] + 1;
-        frogBoard[getFrogPosition()] = 1;
-        currentDirection = "down";
-      }
-      if (intervalID === "") intervalID = setInterval(runBoard,1000);
+      currentDirection = "down";
+      moveFrog("down");
     }else if (key.key === "ArrowUp"){
-      if (startTime === 0){startTime = Date.now()}
-      if (frogPosition[1] > 0 && objectBoard[getFrogPosition() - 15] === 0){
-        frogBoard[getFrogPosition()] = 0;
-        frogPosition[1] = frogPosition[1] - 1;
-        frogBoard[getFrogPosition()] = 1;
-        currentDirection = "up";
-      }
-      if (intervalID === "") intervalID = setInterval(runBoard,1000);
+      currentDirection = "up";
+      moveFrog("up");
     }
     else if (key.keyCode === 82) startFroggerGame();
     else if (key.keyCode === 32) pauseGame();
@@ -216,10 +184,18 @@ function Frogger(){
     }
   }
   //Board Detections
-  function detectInWater(){
-    if (tileBoard[getFrogPosition()] ===  "W" && objectBoard[getFrogPosition()] !== "L"
-    && objectBoard[getFrogPosition()] !== "P") return true;
+  function isTileToLandOn(offset){
+    if (objectBoard[getFrogPosition() + offset] === 0) return true;
+    else if (objectBoard[getFrogPosition() + offset] === 'P') return true;
+    else if (objectBoard[getFrogPosition() + offset] === "L") return true;
     return false;
+  }
+  function detectInWater(){
+    if (tileBoard[getFrogPosition()] !== "W") return false;
+    else if (objectBoard[getFrogPosition()] === "L"
+      || (objectBoard[getFrogPosition()] === "P") ) return false;
+      console.log(objectBoard[getFrogPosition()])
+    return true;
   }
   function detectRunOver(){
     if (objectBoard[getFrogPosition()] === "C") return true;
@@ -234,13 +210,55 @@ function Frogger(){
     return false;
   }
   //Runners
+  function moveFrog(direction){
+    if (direction === "up"){
+      if (startTime === 0){startTime = Date.now()}
+      if (frogPosition[1] > 0 && isTileToLandOn(-15)){
+        frogBoard[getFrogPosition()] = 0;
+        frogPosition[1] = frogPosition[1] - 1;
+        frogBoard[getFrogPosition()] = 1;
+        currentDirection = "up";
+      }
+      if (intervalID === "") intervalID = setInterval(runBoard,1000);
+    }else if (direction === "down"){
+      if (startTime === 0){startTime = Date.now()}
+      if (frogPosition[1] < 19 && isTileToLandOn(15)){
+        frogBoard[getFrogPosition()] = 0;
+        frogPosition[1] = frogPosition[1] + 1;
+        frogBoard[getFrogPosition()] = 1;
+        currentDirection = "down";
+      }
+      if (intervalID === "") intervalID = setInterval(runBoard,1000);
+    }else if (direction === "left"){
+      if (startTime === 0){startTime = Date.now()}
+      if (frogPosition[0] > 0 && isTileToLandOn(-1)){
+        frogBoard[getFrogPosition()] = 0;
+        frogPosition[0] = frogPosition[0] - 1;
+        frogBoard[getFrogPosition()] = 1;
+        currentDirection = "left";
+      }
+      if (intervalID === "") intervalID = setInterval(runBoard,1000);
+    }else if (direction === "right"){
+      if (startTime === 0){startTime = Date.now()}
+      if (frogPosition[0] < 14 && isTileToLandOn(1)){
+        frogBoard[getFrogPosition()] = 0;
+        frogPosition[0] = frogPosition[0] + 1;
+        frogBoard[getFrogPosition()] = 1;
+        currentDirection = "right";
+      }
+      if (intervalID === "") intervalID = setInterval(runBoard,1000);
+    }
+  }
   function runBoard(){
-    runCars();
-    runLogs();
+    runCarsLeft();
+    //runCarsRight();
+    runLogsLeft();
+    //runLogsRight();
+    if (detectInWater() || detectRunOver()) displayLossScreen();
     printFroggerBoard();
   }
-  function runCars(){ //
-    for (let y = 10; y <= 18; y++){
+  function runCarsLeft(){ //
+    for (let y = 10; y <= 18; y = y + 2){
       var turnover = false;
       for (let x = 0; x < 15; x++){
         if (x === 0 && objectBoard[y*15 + x] === "C") turnover = true;
@@ -249,11 +267,23 @@ function Frogger(){
         else objectBoard[y*15 + x] = 0;
       }
     }
-    if (detectRunOver()){
-      displayLossScreen();
+  }
+  function runCarsRight(){
+
+  }
+  function runLogsLeft(){
+    for (let y = 2; y <= 8; y = y + 2){
+      var turnover = false;
+      for (let x = 0; x < 15; x++){
+        if (x === 0 && objectBoard[y*15 + x] === "L") turnover = true;
+        if (y === frogPosition[1] && x === frogPosition[0]) moveFrog("left");
+        if (x < 14) objectBoard[y*15 + x] = objectBoard[y*15+x+1];
+        else if (turnover) objectBoard[y*15 + x] = "L";
+        else objectBoard[y*15 + x] = 0;
+      }
     }
   }
-  function runLogs(){
+  function runLogsRight(){
 
   }
   //EndGame
