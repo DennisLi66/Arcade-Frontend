@@ -7,6 +7,7 @@ import loginFunctionality from "../loginFunctionality/loginFunctionality"
 require('dotenv').config();
 
 //Reset Interval on pause FIX THIS
+//make things move at different intervals
 
 function Frogger(){
   //Variables
@@ -36,6 +37,7 @@ function Frogger(){
     score = 0;
     startTime = 0;
     endingTime = 0;
+    clearInterval(intervalID);
     intervalID = "";
     currentDirection = false;
     paused = false;
@@ -66,7 +68,9 @@ function Frogger(){
         }
         else if (y >= 2 && y <= 8) {
           tileBoard.push("W");
-          if ( y === 8 && (x >= 5 && x <= 9) ){
+          if (y === 7 && (x === 1 || x === 4 || x === 13 || x === 10 || (x >= 6 && x <= 8)) ){
+            objectBoard.push("L");
+          }else if ( y === 8 && (x >= 5 && x <= 9) ){
             objectBoard.push("L");
           }else{
             objectBoard.push(0);
@@ -74,7 +78,9 @@ function Frogger(){
         }
         else if (y >= 10 || y <= 18) {
           tileBoard.push("R");
-          if (y === 18 && ((x === 2) || (x === 6) || (x === 8) ||(x === 12))){
+          if (y === 17 && ((x === 0 || x === 1 || x === 2 || x === 14 || x === 13 || x === 12 || x === 6 || x === 7 || x === 8))){
+            objectBoard.push("C");
+          }else if (y === 18 && ((x === 2) || (x === 6) || (x === 8) ||(x === 12))){
             objectBoard.push("C");
           }else{
             objectBoard.push(0);
@@ -127,8 +133,8 @@ function Frogger(){
       <>
       <div className = 'froggerScreen' id='froggerScreen'>
         <div className='froggerTileBoard' id='froggerTileBoard'></div>
-        <div className='froggerFrogBoard' id='froggerFrogBoard'></div>
         <div className='froggerObjBoard' id='froggerObjBoard'></div>
+        <div className='froggerFrogBoard' id='froggerFrogBoard'></div>
         <div className='froggerPauseScreen' id='froggerPauseScreen'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div>
       </div>
       <div className='bulletinBoard' id='bulletinBoard'></div>
@@ -251,9 +257,9 @@ function Frogger(){
   }
   function runBoard(){
     runCarsLeft();
-    //runCarsRight();
+    runCarsRight();
     runLogsLeft();
-    //runLogsRight();
+    runLogsRight();
     if (detectInWater() || detectRunOver()) displayLossScreen();
     printFroggerBoard();
   }
@@ -269,7 +275,15 @@ function Frogger(){
     }
   }
   function runCarsRight(){
-
+    for (let y = 11; y <= 18; y = y + 2){
+      var turnover = false;
+      for (let x = 14; x >= 0; x--){
+        if (x === 14 && objectBoard[y*15 + x] === "C") turnover = true;
+        if (x > 0) objectBoard[y*15 + x] = objectBoard[y*15+x-1];
+        else if (turnover) objectBoard[y*15 + x] = "C";
+        else objectBoard[y*15 + x] = 0;
+      }
+    }
   }
   function runLogsLeft(){
     for (let y = 2; y <= 8; y = y + 2){
@@ -284,7 +298,16 @@ function Frogger(){
     }
   }
   function runLogsRight(){
-
+    for (let y = 3; y <= 8; y = y + 2){
+      var turnover = false;
+      for (let x = 14; x >= 0; x--){
+        if (x === 14 && objectBoard[y*15 + x] === "L") turnover = true;
+        if (y === frogPosition[1] && x === frogPosition[0]) moveFrog("right");
+        if (x > 0) objectBoard[y*15 + x] = objectBoard[y*15+x-1];
+        else if (turnover) objectBoard[y*15 + x] = "L";
+        else objectBoard[y*15 + x] = 0;
+      }
+    }
   }
   //EndGame
   function displayLossScreen(){
