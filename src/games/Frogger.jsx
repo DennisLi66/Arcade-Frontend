@@ -21,6 +21,7 @@ function Frogger(){
   var objectBoard = [];
   var frogBoard = [];
   var frogPosition = [7,19]
+  var refreshRate = 1000;
 
   function getFrogPosition(){
     return 15*frogPosition[1] + frogPosition[0];
@@ -35,6 +36,7 @@ function Frogger(){
     //tiles include road, land, water
     //hero includes frogger
     score = 0;
+    refreshRate = 1000;
     startTime = 0;
     endingTime = 0;
     clearInterval(intervalID);
@@ -72,6 +74,16 @@ function Frogger(){
             objectBoard.push("L");
           }else if ( y === 8 && (x >= 5 && x <= 9) ){
             objectBoard.push("L");
+          }else if ( y === 6 && (x >= 11 || x <= 3 || x === 7) ){
+            objectBoard.push("L");
+          }else if ( y === 5 && ( x === 1 || x === 2  || x === 12 || x === 13 || x === 5 || x === 9) ){
+            objectBoard.push("L");
+          }else if (y === 4 && ( x % 2 === 0)){
+            objectBoard.push("L");
+          }else if (y === 2 && (x % 2 === 1)){
+            objectBoard.push("L");
+          }else if (y === 3 && (x === 3 || x === 11 || x === 4 || x === 10)){
+            objectBoard.push("L");
           }else{
             objectBoard.push(0);
           }
@@ -89,6 +101,7 @@ function Frogger(){
       }
     }
     frogBoard[20*15 - 8] = 1;
+    intervalID = setInterval(runBoard,1000);
   }
   //Printers
   function printFroggerBoard(){
@@ -209,8 +222,15 @@ function Frogger(){
   }
   function detectOnLilyPad(){
     if (objectBoard[getFrogPosition()] === "P"){
+      refreshRate = Math.max(refreshRate - 25, 500);
       objectBoard[getFrogPosition()] = 0;
+      frogBoard[getFrogPosition()] = 0;
       frogPosition = [7,19];
+      frogBoard[getFrogPosition()] = 1;
+      score++;
+      clearInterval(intervalID);
+      intervalID = setInterval(runBoard,refreshRate)
+      printFroggerScoreBoard();
       return true;
     }
     return false;
@@ -252,7 +272,6 @@ function Frogger(){
         frogBoard[getFrogPosition()] = 1;
         currentDirection = "right";
       }
-      if (intervalID === "") intervalID = setInterval(runBoard,1000);
     }
   }
   function runBoard(){
