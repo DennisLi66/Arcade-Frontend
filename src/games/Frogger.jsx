@@ -8,12 +8,13 @@ require('dotenv').config();
 
 //Reset Interval on pause FIX THIS
 //make things move at different intervals
+//need to pause timer on pause
 
 function Frogger(){
   //Variables
   const cookies = new Cookies();
   var score = 0;
-  var startTime, endingTime = 0;
+  var startTime, endingTime, totalTime = 0;
   var intervalID = "";
   var currentDirection = false;
   var paused = false;
@@ -36,6 +37,7 @@ function Frogger(){
     //tiles include road, land, water
     //hero includes frogger
     score = 0;
+    totalTime = 0;
     refreshRate = 1000;
     startTime = 0;
     endingTime = 0;
@@ -228,12 +230,24 @@ function Frogger(){
       frogPosition = [7,19];
       frogBoard[getFrogPosition()] = 1;
       score++;
+      detectAllLilyPadsGone();
       clearInterval(intervalID);
       intervalID = setInterval(runBoard,refreshRate)
       printFroggerScoreBoard();
       return true;
     }
     return false;
+  }
+  function detectAllLilyPadsGone(){
+    if (objectBoard[17] !== 0 || objectBoard[20] !== 0 || objectBoard[22] !== 0 || objectBoard[24] !== 0 || objectBoard[27] !== 0){
+      return false;
+    }
+    objectBoard[17] = 'P';
+    objectBoard[20] = 'P';
+    objectBoard[22] = 'P';
+    objectBoard[24] = 'P';
+    objectBoard[27] = 'P';
+    return true;
   }
   //Runners
   function moveFrog(direction){
@@ -378,13 +392,16 @@ function Frogger(){
     document.getElementById('froggerScoresButton').onclick = function(){getFroggerScoresPage()};
   }
   function readFroggerInstructions(){
-    var instructions;
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
         <div>
-
+          In Frogger, your objective is make it to the lilypads on the other side of the road and river without getting run
+          over by a car or falling into the river.
+          Use the arrow keys to control your frog.
+          Press the spacebar to pause the game.
+          Press the R Button to quickly restart the game.
         </div>
       </>
     )

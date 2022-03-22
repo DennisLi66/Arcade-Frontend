@@ -17,6 +17,7 @@ function Tetris(){
   var score, startingTime, currentPieceOrientation, endingTime = 0;
   var intervalID = "";
   var setTime = 0;
+  var totalTime = 0;
   var paused = false;
   var currentPiece, storedPiece, recentlyStored = false; //will also tell us if gamestarted
   var maxTimeTilDescent = 1000;
@@ -42,6 +43,7 @@ function Tetris(){
     currentPieceOccupyingSpaces = [];
     pieceQueue = [];
     score = 0;
+    totalTime = 0;
     startingTime = 0;
     currentPieceOrientation = 0;
     endingTime = 0;
