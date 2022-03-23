@@ -14,7 +14,7 @@ function Frogger(){
   //Variables
   const cookies = new Cookies();
   var score = 0;
-  var startTime, endingTime, totalTime = 0;
+  var startTime, totalTime, lastTime, remainingTime = 0;
   var intervalID = "";
   var currentDirection = false;
   var paused = false;
@@ -36,11 +36,12 @@ function Frogger(){
     //Obstacles include water, cars, rocks
     //tiles include road, land, water
     //hero includes frogger
+    lastTime = 0;
+    remainingTime = 0;
     score = 0;
     totalTime = 0;
     refreshRate = 1000;
     startTime = 0;
-    endingTime = 0;
     clearInterval(intervalID);
     intervalID = "";
     currentDirection = false;
@@ -130,7 +131,7 @@ function Frogger(){
   function printFroggerScoreBoard(ended=false,message = ""){
     var text;
     if (ended === "Loss"){ //Final Score and Time
-      text = (<>{message}<Button id='mainMenuButton'>Main Menu</Button> Final Score: {score} Final Time: {endingTime}<Button id='submitScoreButton'>Submit Score</Button><Button id='restartButton'>Restart</Button></>)
+      text = (<>{message}<Button id='mainMenuButton'>Main Menu</Button> Final Score: {score} Final Time: {totalTime}<Button id='submitScoreButton'>Submit Score</Button><Button id='restartButton'>Restart</Button></>)
     }else{
       text = (<>{message}<Button id='mainMenuButton'>Main Menu</Button> Current Score: {score} <Button id='restartButton'>Restart</Button></>)
     }
@@ -193,12 +194,21 @@ function Frogger(){
   //Paused Game
   function pauseGame(){
     if (paused){
+      startTime = Date.now();
       paused = false;
       document.removeEventListener('keyDown',detectDirectionalKeyDown);
       document.addEventListener('keyDown',detectOnlyPauseOrRestart);
       document.getElementById("pauseScreen").style.visibility = 'hidden';
+      setTimeout(function(){
+        runBoard();
+        intervalID = setInterval(runBoard,1000)
+      },refreshRate - remainingTime)
+      setInterval()
     }else{
       paused = true;
+      remainingTime = Date.now() - lastTime;
+      totalTime += Date.now() - startTime;
+      clearInterval(intervalID);
       document.addEventListener('keyDown',detectDirectionalKeyDown);
       document.removeEventListener('keyDown',detectOnlyPauseOrRestart);
       document.getElementById("pauseScreen").style.visibility = 'visible';
@@ -289,6 +299,7 @@ function Frogger(){
     }
   }
   function runBoard(){
+    lastTime = Date.now();
     runCarsLeft();
     runCarsRight();
     runLogsLeft();
@@ -345,7 +356,7 @@ function Frogger(){
   //EndGame
   function displayLossScreen(){
     clearInterval(intervalID);
-    endingTime = Date.now() - startTime;
+    totalTime += Date.now() - startTime;
     document.removeEventListener('keydown',detectDirectionalKeyDown);
     document.addEventListener('keydown',detectOnlyRestart);
     printFroggerBoard();
@@ -357,7 +368,7 @@ function Frogger(){
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({userID:cookies.get("id"),gameID:1,
-        timeInMilliseconds: endingTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
+        timeInMilliseconds: totalTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
       }
       fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
         .then(response => response.json())
@@ -371,7 +382,7 @@ function Frogger(){
         })
     }else{
       document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-        loginFunctionality({timeInMilliseconds: endingTime, gameID: 1})
+        loginFunctionality({timeInMilliseconds: totalTime, gameID: 1})
       )
       //ask that the user logs in FIX THIS
       // pass a dictionary to a new object in a new file
