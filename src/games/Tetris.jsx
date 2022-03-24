@@ -14,7 +14,7 @@ function Tetris(){
   var gameBoard = [];
   var currentPieceOccupyingSpaces = [];
   var pieceQueue = [];
-  var score, startingTime, currentPieceOrientation, endingTime = 0;
+  var score, startingTime, currentPieceOrientation = 0;
   var intervalID = "";
   var setTime = 0;
   var totalTime = 0;
@@ -46,7 +46,6 @@ function Tetris(){
     totalTime = 0;
     startingTime = 0;
     currentPieceOrientation = 0;
-    endingTime = 0;
     currentPiece = false; //will also tell us if gamestarted
     storedPiece = false;
     recentlyStored = false;
@@ -289,10 +288,7 @@ function Tetris(){
       }
     }
     printTetrisBoard();
-    if (!endingTime){
-      clearInterval(intervalID);
-      intervalID = setInterval(updateDescent,maxTimeTilDescent);
-    }
+    intervalID = setTimeout(updateDescent,maxTimeTilDescent);
   }
   function detectDirectionalKeyDown(key){
     //left: 37, up: 38, right: 39, down: 40
@@ -348,7 +344,8 @@ function Tetris(){
   //pausing
   function pauseGame(){
     if (paused){
-      var placeholder = paused;
+      var placeholder = paused
+      startingTime = Date.now();
       paused = false;
       setTime = Date.now();
       setTimeout(updateDescent,placeholder);
@@ -357,6 +354,7 @@ function Tetris(){
       document.getElementById("tetrisSideDisplayPauseScreen").style.visibility = 'hidden';
       document.getElementById("tetrisBoardPauseScreen").style.visibility = "hidden";
     }else{
+      totalTime = Date.now() - startingTime;
       clearTimeout(intervalID);
       paused = Date.now() - setTime;
       document.removeEventListener('keydown',detectDirectionalKeyDown);
@@ -505,7 +503,7 @@ function Tetris(){
     if (isLoss) showLossScreen();
   }
   function showLossScreen(){
-    endingTime = Date.now() - startingTime;
+    totalTime += Date.now() - startingTime;
     //remove event handler
     document.removeEventListener('keydown',detectDirectionalKeyDown);
     document.addEventListener('keydown',detectOnlyRestart);
@@ -513,7 +511,7 @@ function Tetris(){
     clearInterval(intervalID);
     //change infoRow
     var returnButtonText = (<Button id='returnButton'>Main Menu</Button>);
-    var middleText = " Score: " + score + " Elapsed Time: " + endingTime + " ";
+    var middleText = " Score: " + score + " Elapsed Time: " + totalTime + " ";
     var restartAndSubmitButton =
     (
       <>
@@ -541,7 +539,7 @@ function Tetris(){
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({userID:cookies.get("id"),score:score,gameID:2
         ,
-        timeInMilliseconds: endingTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
+        timeInMilliseconds: totalTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
       }
       fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
         .then(response => response.json())
@@ -555,7 +553,7 @@ function Tetris(){
         })
     }else{
       document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-        loginFunctionality({score: score, timeInMilliseconds: endingTime, gameID: 2})
+        loginFunctionality({score: score, timeInMilliseconds: totalTime, gameID: 2})
       )
       //ask that the user logs in FIX THIS
       // pass a dictionary to a new object in a new file
