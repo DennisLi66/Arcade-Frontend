@@ -4,6 +4,11 @@ import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
+
+import FrogImageNorth from './froggerImages/frogNorth.png'
+import FrogImageSouth from './froggerImages/frogSouth.png'
+import FrogImageWest from './froggerImages/frogWest.png'
+import FrogImageEast from './froggerImages/frogEast.png'
 require('dotenv').config();
 
 //Reset Interval on pause FIX THIS
@@ -117,7 +122,10 @@ function Frogger(){
       else if (tileBoard[i] === 'R') tiles.push(<div key={i} className='froggerRoadTile'></div>)
       else tiles.push(<div key={i} className='froggerTile'></div>);
       if (frogBoard[i] === 0) frog.push(<div className='froggerTile'></div>);
-      else frog.push(<div className='froggerFrog'></div>);
+      else if (currentDirection === "up" || !currentDirection) frog.push(<img className='froggerFrog' alt='Frog' src={FrogImageNorth}></img>);
+      else if (currentDirection === "left") frog.push(<img className='froggerFrog' alt='Frog' src={FrogImageWest}></img>);
+      else if (currentDirection === "right") frog.push(<img className='froggerFrog' alt='Frog' src={FrogImageEast}></img>);
+      else  frog.push(<img className='froggerFrog' alt='Frog' src={FrogImageSouth}></img>);
       if (objectBoard[i] === 'R') objs.push(<div className='froggerRockTile'></div>);
       else if (objectBoard[i] === "P") objs.push(<div className="froggerLilyPad"></div>);
       else if (objectBoard[i] === "C") objs.push(<div className='froggerCar'></div>);

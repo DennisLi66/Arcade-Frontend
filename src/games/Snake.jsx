@@ -20,14 +20,13 @@ function Snake() {
   var direction = false; //will also tell us if gamestarted
   var currentDirection = false;
   var snakePositions = []; //is a stack
-  var endingTime = 0;
+  var totalTime = 0;
   var setTime = 0;
   var paused = false;
   //Helper Functions
   function moveToSpace(space){
     if (space < 42 || space > (42*42-42) ||  space % 42 === 41 || space % 42 === 0 || snakePositions.slice(1).indexOf(space) !== -1 ){//snake collides onto wall or body part that is not tail
       direction = "end";
-      endingTime = Date.now() - startingTime;
       clearInterval(intervalID);
       displayEndingScreen();
     }else{
@@ -63,6 +62,7 @@ function Snake() {
     validSquares = [];
     direction = false;
     setTime = 0;
+    totalTime = 0;
     snakePositions = [];
     gameBoard = [];
     score = 0;
@@ -178,6 +178,7 @@ function Snake() {
   }
   function pauseGame(){
     if (paused){
+      startingTime = Date.now();
       var placeholder = paused;
       paused = false;
       setTime = Date.now();
@@ -186,6 +187,7 @@ function Snake() {
       document.addEventListener('keydown',detectDirectionalKeyDown);
       document.getElementById("pauseScreen").style.visibility = 'hidden';
     }else{
+      totalTime += Date.now() - startingTime;
       clearTimeout(intervalID);
       paused = Date.now() - setTime;
       document.removeEventListener('keydown',detectDirectionalKeyDown);
@@ -397,7 +399,7 @@ function Snake() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({userID:cookies.get("id"),score:score,gameID:1,
-        timeInMilliseconds: endingTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
+        timeInMilliseconds: totalTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
       }
       fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
         .then(response => response.json())
@@ -411,16 +413,17 @@ function Snake() {
         })
     }else{
       document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-        loginFunctionality({score: score, timeInMilliseconds: endingTime, gameID: 1})
+        loginFunctionality({score: score, timeInMilliseconds: totalTime, gameID: 1})
       )
       //ask that the user logs in FIX THIS
       // pass a dictionary to a new object in a new file
     }
   }
   function displayEndingScreen(){ //Display Score and Time Elapsed, Restart Button, Submit Score Button
+    totalTime += Date.now - startingTime;
     document.removeEventListener('keydown',detectDirectionalKeyDown);
     document.addEventListener('keydown',detectOnlyRestart);
-    var scoreInformation = (" Score: " + score + " Time Elapsed: " + endingTime / 1000 + " seconds ");
+    var scoreInformation = (" Score: " + score + " Time Elapsed: " + totalTime / 1000 + " seconds ");
     var returnButton = (<Button id="returnButton">Main Menu</Button>)
     var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
     var submitScoreButton = (<Button id='submitScoreButton'>Submit Score</Button>)
