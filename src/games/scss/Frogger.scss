@@ -50,7 +50,6 @@
 }
 .froggerLilyPad{
   @extend .froggerTile;
-  background-color: green;
 }
 .froggerLog{
   @extend .froggerTile;
@@ -58,7 +57,6 @@
 }
 .froggerCar{
   @extend .froggerTile;
-  background-color: black;
 }
 .froggerFrog{
   @extend .froggerTile;

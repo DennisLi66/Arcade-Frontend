@@ -9,6 +9,9 @@ import FrogImageNorth from './froggerImages/frogNorth.png'
 import FrogImageSouth from './froggerImages/frogSouth.png'
 import FrogImageWest from './froggerImages/frogWest.png'
 import FrogImageEast from './froggerImages/frogEast.png'
+import TruckWest from './froggerImages/truckWest.png'
+import TruckEast from './froggerImages/truckEast.png'
+import LilyPad from './froggerImages/lilypad.png'
 require('dotenv').config();
 
 //Reset Interval on pause FIX THIS
@@ -127,8 +130,9 @@ function Frogger(){
       else if (currentDirection === "right") frog.push(<img className='froggerFrog' alt='Frog' src={FrogImageEast}></img>);
       else  frog.push(<img className='froggerFrog' alt='Frog' src={FrogImageSouth}></img>);
       if (objectBoard[i] === 'R') objs.push(<div className='froggerRockTile'></div>);
-      else if (objectBoard[i] === "P") objs.push(<div className="froggerLilyPad"></div>);
-      else if (objectBoard[i] === "C") objs.push(<div className='froggerCar'></div>);
+      else if (objectBoard[i] === "P") objs.push(<img className='froggerLilyPad' alt='Lilypad' src={LilyPad}></img>);
+      else if (objectBoard[i] === "C" && Math.floor( i / 15) % 2 === 0) objs.push(<img className='froggerCar' alt='Car' src={TruckWest}></img>);
+      else if (objectBoard[i] === "C") objs.push(<img className='froggerCar' alt='Car' src={TruckEast}></img>)
       else if (objectBoard[i] === "L") objs.push(<div className='froggerLog'></div>);
       else objs.push(<div className='froggerTile'></div>);
     }
