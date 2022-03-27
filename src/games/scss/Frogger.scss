@@ -34,7 +34,7 @@
 }
 .froggerLandTile{
   @extend .froggerTile;
-  background-color: brown;
+  background-color: #8B4513;
 }
 .froggerWaterTile{
   @extend .froggerTile;
@@ -53,7 +53,6 @@
 }
 .froggerLog{
   @extend .froggerTile;
-  background-color: beige;
 }
 .froggerCar{
   @extend .froggerTile;

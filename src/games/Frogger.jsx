@@ -12,6 +12,9 @@ import FrogImageEast from './froggerImages/frogEast.png'
 import TruckWest from './froggerImages/truckWest.png'
 import TruckEast from './froggerImages/truckEast.png'
 import LilyPad from './froggerImages/lilypad.png'
+import TreeTile from './froggerImages/tree.png'
+import LogWest from './froggerImages/logWest.png'
+import LogEast from './froggerImages/logEast.png'
 require('dotenv').config();
 
 //Reset Interval on pause FIX THIS
@@ -129,11 +132,12 @@ function Frogger(){
       else if (currentDirection === "left") frog.push(<img className='froggerFrog' alt='Frog' src={FrogImageWest}></img>);
       else if (currentDirection === "right") frog.push(<img className='froggerFrog' alt='Frog' src={FrogImageEast}></img>);
       else  frog.push(<img className='froggerFrog' alt='Frog' src={FrogImageSouth}></img>);
-      if (objectBoard[i] === 'R') objs.push(<div className='froggerRockTile'></div>);
+      if (objectBoard[i] === 'R') objs.push(<img className='froggerRockTile' alt='Tree' src={TreeTile}></img>);
       else if (objectBoard[i] === "P") objs.push(<img className='froggerLilyPad' alt='Lilypad' src={LilyPad}></img>);
       else if (objectBoard[i] === "C" && Math.floor( i / 15) % 2 === 0) objs.push(<img className='froggerCar' alt='Car' src={TruckWest}></img>);
       else if (objectBoard[i] === "C") objs.push(<img className='froggerCar' alt='Car' src={TruckEast}></img>)
-      else if (objectBoard[i] === "L") objs.push(<div className='froggerLog'></div>);
+      else if (objectBoard[i] === "L" && Math.floor( i / 15) % 2 === 0) objs.push(<img className='froggerLog' alt='Log' src={LogWest}></img>);
+      else if (objectBoard[i] === "L") objs.push(<img className='froggerLog' alt='Log' src={LogEast}></img>);
       else objs.push(<div className='froggerTile'></div>);
     }
     document.getElementById('froggerTileBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(tiles);
