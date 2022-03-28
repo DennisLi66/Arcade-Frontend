@@ -19,7 +19,6 @@ require('dotenv').config();
 
 //Reset Interval on pause FIX THIS
 //make things move at different intervals
-//need to pause timer on pause
 
 function Frogger(){
   //Variables
@@ -84,7 +83,7 @@ function Frogger(){
         }
         else if (y >= 2 && y <= 8) {
           tileBoard.push("W");
-          if (y === 7 && (x === 1 || x === 4 || x === 13 || x === 10 || (x >= 6 && x <= 8)) ){
+          if (y === 7 && (x <= 1 || x === 4 || x >= 13 || x === 10 || (x >= 6 && x <= 8)) ){
             objectBoard.push("L");
           }else if ( y === 8 && (x >= 5 && x <= 9) ){
             objectBoard.push("L");
@@ -92,11 +91,11 @@ function Frogger(){
             objectBoard.push("L");
           }else if ( y === 5 && ( x === 1 || x === 2  || x === 12 || x === 13 || x === 5 || x === 9) ){
             objectBoard.push("L");
-          }else if (y === 4 && ( x % 2 === 0)){
+          }else if (y === 4 && ( x % 2 === 0 || x === 1 || x === 7)){
             objectBoard.push("L");
-          }else if (y === 2 && (x % 2 === 1)){
+          }else if (y === 2 && (x % 2 === 1 || x === 2 || x === 8)){
             objectBoard.push("L");
-          }else if (y === 3 && (x === 3 || x === 11 || x === 4 || x === 10)){
+          }else if (y === 3 && (x === 3 || x === 11 || x === 4 || x === 10 || x === 7 || x === 8)){
             objectBoard.push("L");
           }else{
             objectBoard.push(0);
@@ -108,6 +107,8 @@ function Frogger(){
             objectBoard.push("C");
           }else if (y === 18 && ((x === 2) || (x === 6) || (x === 8) ||(x === 12))){
             objectBoard.push("C");
+          }else if (y === 16){
+
           }else{
             objectBoard.push(0);
           }
@@ -250,7 +251,7 @@ function Frogger(){
   }
   function detectOnLilyPad(){
     if (objectBoard[getFrogPosition()] === "P"){
-      refreshRate = Math.max(refreshRate - 25, 500);
+      refreshRate = Math.max(refreshRate - 50, 500);
       objectBoard[getFrogPosition()] = 0;
       frogBoard[getFrogPosition()] = 0;
       frogPosition = [7,19];
@@ -406,9 +407,10 @@ function Frogger(){
   }
   //Pages
   function getFroggerMainMenu(){
+    clearInterval(intervalID);
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
-      <h1>Snake</h1>
+      <h1>Frogger</h1>
       <Button id='startFroggerButton'>Play Frogger</Button><br></br>
       <Button id='froggerInstructionsButton'>Read Instructions</Button><br></br>
       <Button id='froggerScoresButton'>Scores</Button><br></br>

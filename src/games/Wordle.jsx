@@ -105,25 +105,34 @@ function Wordle(){
     for (let i = 0 ; i < guesses.length; i++){
       var letters = [];
       var copyOfWord = [];
+      var colors = [];
       for (let y = 0; y < currentWord.length; y++){
         copyOfWord.push(currentWord[y]);
+        colors.push("white");
       }
       for (let x = 0; x < guesses[i].length; x++){
         if (guesses[i][x].toUpperCase() === currentWord[x].toUpperCase()){
-          letters.push(<div className='WordleGreenBox' key={x}>{guesses[i][x].toUpperCase()}</div>);
+          colors[x] = "green";
           copyOfWord[x] = '_';
-        }else{
-          var found = false;
+        }
+      }
+      for (let x = 0; x < colors.length; x++){
+        if (colors[x] === 'green') continue;
+        else{
           for (let t = 0; t < copyOfWord.length; t++){
             if (copyOfWord[t].toUpperCase() === guesses[i][x].toUpperCase()){
-              found = true;
-              letters.push(<div className='WordleYellowBox' key={x}>{guesses[i][x].toUpperCase()}</div>);
+              colors[x] = 'yellow';
               copyOfWord[t] = '_';
               break;
             }
           }
-          if (!found) letters.push(<div className='WordleMiniBox' key={x}>{guesses[i][x].toUpperCase()}</div>);
         }
+      }
+      console.log(colors);
+      for (let g = 0; g < colors.length; g++){
+          if (colors[g] === "white") letters.push(<div className='WordleMiniBox' key={g}>{guesses[i][g].toUpperCase()}</div>);
+          else if (colors[g] === "green") letters.push(<div className='WordleGreenBox' key={g}>{guesses[i][g].toUpperCase()}</div>);
+          else letters.push(<div className='WordleYellowBox' key={g}>{guesses[i][g].toUpperCase()}</div>);
       }
       wordsToPrint.push(
         (
