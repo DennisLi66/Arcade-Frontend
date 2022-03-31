@@ -22,6 +22,7 @@
   @extend .froggerBoards;
 }
 .froggerPauseScreen{
+  @extend .froggerBoards;
   background-color: black;
   color: white;
   visibility: hidden;

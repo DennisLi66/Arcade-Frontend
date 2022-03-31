@@ -45,7 +45,7 @@ function Frogger(){
     //Obstacles include water, cars, rocks
     //tiles include road, land, water
     //hero includes frogger
-    lastTime = 0;
+    lastTime = Date.now();
     remainingTime = 0;
     score = 0;
     totalTime = 0;
@@ -186,7 +186,6 @@ function Frogger(){
     )
     printFroggerBoard();
     printFroggerScoreBoard();
-    document.addEventListener('keydown',detectDirectionalKeyDown)
   }
   //Key Detection
   function detectDirectionalKeyDown(key){
@@ -222,24 +221,24 @@ function Frogger(){
   //Paused Game
   function pauseGame(){
     if (paused){
+      lastTime = Date.now();
       startTime = Date.now();
       paused = false;
-      document.removeEventListener('keyDown',detectDirectionalKeyDown);
-      document.addEventListener('keyDown',detectOnlyPauseOrRestart);
-      document.getElementById("pauseScreen").style.visibility = 'hidden';
-      setTimeout(function(){
+      document.addEventListener('keydown',detectDirectionalKeyDown);
+      document.removeEventListener('keydown',detectOnlyPauseOrRestart);
+      document.getElementById("froggerPauseScreen").style.visibility = 'hidden';
+      intervalID = setTimeout(function(){
         runBoard();
-        intervalID = setInterval(runBoard,1000)
+        intervalID = setInterval(runBoard,refreshRate)
       },refreshRate - remainingTime)
-      setInterval()
     }else{
       paused = true;
       remainingTime = Date.now() - lastTime;
       totalTime += Date.now() - startTime;
       clearInterval(intervalID);
-      document.addEventListener('keyDown',detectDirectionalKeyDown);
-      document.removeEventListener('keyDown',detectOnlyPauseOrRestart);
-      document.getElementById("pauseScreen").style.visibility = 'visible';
+      document.removeEventListener('keydown',detectDirectionalKeyDown);
+      document.addEventListener('keydown',detectOnlyPauseOrRestart);
+      document.getElementById("froggerPauseScreen").style.visibility = 'visible';
     }
   }
   //Board Detections

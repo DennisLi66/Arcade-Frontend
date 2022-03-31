@@ -10,14 +10,16 @@ require('dotenv').config();
 function Two048(){
   //Values
   const cookies = new Cookies();
+  var gameBoard = [];
+  var score, startTime = 0;
   //Menus
   function get2048MainMenu(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
       <h1>2048</h1>
-      <Button id='startFroggerButton'>Play Frogger</Button><br></br>
-      <Button id='froggerInstructionsButton'>Read Instructions</Button><br></br>
-      <Button id='froggerScoresButton'>Scores</Button><br></br>
+      <Button id='start2048Button'>Play 2048</Button><br></br>
+      <Button id='two048InstructionsButton'>Read Instructions</Button><br></br>
+      <Button id='two048ScoresButton'>Scores</Button><br></br>
       </>
     );
     document.getElementById('start2048Button').onclick = function(){start2048Game()};
@@ -131,7 +133,19 @@ function Two048(){
   }
   //Game Start
   function create2048Board(){
-    
+    gameBoard = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    score = 0;
+    startTime = 0;
+    gameBoard[randomlyPickFreeSquare()] = 2;
+    gameBoard[randomlyPickFreeSquare()] = 2;
+  }
+  //Algorithms
+  function randomlyPickFreeSquare(){
+    var emptySlots = [];
+    for (let i = 0; i < gameBoard.length; i++){
+      if (gameBoard[i] === 0) emptySlots.push(i);
+    }
+    return emptySlots[ Math.floor(Math.random() * (emptySlots.length + 1))]
   }
   //Detection
   function detectDirectionalKeyDown(){
@@ -139,7 +153,23 @@ function Two048(){
   }
   //Printers
   function printInitialContent(){
-    var initial;
+    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+      <div className = 'two048Screen' id='two048Screen'>
+        <div className='two048GameBoard' id='two048GameBoard'></div>
+        <div className='two048PauseScreen' id='two048PauseScreen'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div>
+      </div>
+      <div className='bulletinBoard' id='bulletinBoard'></div>
+      </>
+    )
+    print2048Board();
+    print2048ScoreBoard();
+  }
+  function print2048Board(){
+
+  }
+  function print2048ScoreBoard(){
+
   }
   return (
     <div className="gameScreen" id="gameScreen">

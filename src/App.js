@@ -4,6 +4,7 @@ import './games/scss/Tetris.scss';
 import './games/scss/Wordle.scss';
 import './games/scss/MineSweeper.scss'
 import './games/scss/Frogger.scss'
+import './games/scss/2048.scss'
 import React from "react";
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
@@ -65,7 +66,7 @@ function App() {
         changeNavbar(
           (
             <Navbar key='out' bg='light' expand="lg" className='loggedOutBar'>
-            <Navbar.Brand>QuickiePost</Navbar.Brand>
+            <Navbar.Brand>Dennis' Arcade</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
             <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
@@ -81,7 +82,7 @@ function App() {
         changeNavbar(
           (
             <Navbar key='in' bg='light' expand="lg" className='loggedOutBar'>
-            <Navbar.Brand>QuickiePost</Navbar.Brand>
+            <Navbar.Brand>Dennis' Arcade</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
             <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
@@ -424,7 +425,7 @@ function App() {
                   <div className='gameImage frogger' id='froggerWords' onMouseOut={()=>{hoverOff()}} onClick={()=>{openGame("Frogger")}}><h1>Frogger</h1></div>
 
                   <img className='gameImage two048' src={froggerImage} alt="Play 2048 Button" onMouseOver={()=>{hoverImage("two048")}}></img>
-                  <div className='gameImage two048' id='two048Words' onMouseOut={()=>{hoverOff()}} onClick={()=>{openGame("Two048")}}><h1>Frogger</h1></div>
+                  <div className='gameImage two048' id='two048Words' onMouseOut={()=>{hoverOff()}} onClick={()=>{openGame("2048")}}><h1>2048</h1></div>
               </div>
             </div>
           </div>

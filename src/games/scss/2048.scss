@@ -1,0 +1,20 @@
+.two048Screen{
+  display: grid;
+  // padding-left:
+  // height: 600px
+  // width 200px;
+  line-height: 0;
+}
+.two048GameBoard{
+  display: inline-block;
+  margin:0;
+  height: 602px;
+  width: 602px;
+  grid-area: 1 / 2 / 2 / 3;
+  border: solid 1px black;
+}
+.two048PauseScreen{
+  background-color: black;
+  color: white;
+  visibility: hidden;
+}
