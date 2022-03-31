@@ -14,6 +14,7 @@ import Tetris from './games/Tetris';
 import Wordle from './games/Wordle';
 import MineSweeper from './games/MineSweeper';
 import Frogger from './games/Frogger'
+import Two048 from './games/2048'
 import snakeImage from "./images/SnakeGameImage.jpg";
 import tetrisImage from "./images/TetrisGameImage.jpg";
 import wordleImage from "./images/WordleGameImage.jpg";
@@ -47,6 +48,8 @@ function App() {
           document.getElementById("mineWords").style.visibility = "visible";
         }else if (imageName === "frogger"){
           document.getElementById("froggerWords").style.visibility = "visible";
+        }else if (imageName === "two048"){
+          document.getElementById("two048Words").style.visibility = "visible";
         }
       }
       function hoverOff(){
@@ -55,6 +58,7 @@ function App() {
         document.getElementById("tetrisWords").style.visibility = 'hidden';
         document.getElementById("mineWords").style.visibility = "hidden";
         document.getElementById("froggerWords").style.visibility = "hidden";
+        document.getElementById("two048Words").style.visibility = "hidden";
       }
       //Nav Changers
       function changeNavbarToLoggedIn(){
@@ -369,6 +373,8 @@ function App() {
           changeBody(MineSweeper());
         }else if (gameTitle === "Frogger"){
           changeBody(Frogger())
+        }else if (gameTitle === "2048"){
+          changeBody(Two048());
         }
       }
       //Detect Stuff Here
@@ -416,6 +422,9 @@ function App() {
 
                   <img className='gameImage frogger' src={froggerImage} alt="Play Frogger Button" onMouseOver={()=>{hoverImage("frogger")}}></img>
                   <div className='gameImage frogger' id='froggerWords' onMouseOut={()=>{hoverOff()}} onClick={()=>{openGame("Frogger")}}><h1>Frogger</h1></div>
+
+                  <img className='gameImage two048' src={froggerImage} alt="Play 2048 Button" onMouseOver={()=>{hoverImage("two048")}}></img>
+                  <div className='gameImage two048' id='two048Words' onMouseOut={()=>{hoverOff()}} onClick={()=>{openGame("Two048")}}><h1>Frogger</h1></div>
               </div>
             </div>
           </div>

@@ -17,8 +17,7 @@ import LogWest from './froggerImages/logWest.png'
 import LogEast from './froggerImages/logEast.png'
 require('dotenv').config();
 
-//Reset Interval on pause FIX THIS
-//make things move at different intervals
+//make things move at different intervals?
 
 function Frogger(){
   //Variables
