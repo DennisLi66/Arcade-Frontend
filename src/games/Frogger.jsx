@@ -103,12 +103,24 @@ function Frogger(){
         }
         else if (y >= 10 || y <= 18) {
           tileBoard.push("R");
-          if (y === 17 && ((x === 0 || x === 1 || x === 2 || x === 14 || x === 13 || x === 12 || x === 6 || x === 7 || x === 8))){
+          if (y === 17 && (( x === 1 || x === 2  || x === 13 || x === 12 ||  x === 7 || x === 4 || x === 10))){
             objectBoard.push("C");
           }else if (y === 18 && ((x === 2) || (x === 6) || (x === 8) ||(x === 12))){
             objectBoard.push("C");
-          }else if (y === 16){
-
+          }else if (y === 16 && (x <= 4 || x >= 10) && (x !== 0 && x !== 14) && (x !== 12 && x !== 2)){
+            objectBoard.push("C")
+          }else if (y === 15 && (((x <= 3 || x >= 11) && x !== 2 && x !== 12) || ( x === 8 || x === 6))){
+            objectBoard.push("C")
+          }else if (y === 14 && (x >= 5 && x <= 9)){
+            objectBoard.push("C")
+          }else if (y === 13 && (x === 2 || x === 1 || x === 13 || x === 12 || x === 7 || x === 9 || x === 5)){
+            objectBoard.push("C")
+          }else if (y === 12 && (x === 4 || x === 10 || x <= 1 || x >= 13)){
+            objectBoard.push("C")
+          }else if (y === 11 && ((x >= 2 && x <= 4) || (x <= 12 && x >= 10) || (x === 6 || x === 8))){
+            objectBoard.push("C")
+          }else if (y === 10 && (x === 2 || x === 3 || x === 12|| x === 11 || x === 7 || x === 9 || x === 5)){
+            objectBoard.push("C")
           }else{
             objectBoard.push(0);
           }
@@ -384,7 +396,7 @@ function Frogger(){
       const requestSetup = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({userID:cookies.get("id"),gameID:1,
+        body: JSON.stringify({userID:cookies.get("id"),gameID: 6, score: score,
         timeInMilliseconds: totalTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
       }
       fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
@@ -399,7 +411,7 @@ function Frogger(){
         })
     }else{
       document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-        loginFunctionality({timeInMilliseconds: totalTime, gameID: 1})
+        loginFunctionality({timeInMilliseconds: totalTime, gameID: 6, score: score})
       )
       //ask that the user logs in FIX THIS
       // pass a dictionary to a new object in a new file

@@ -18,6 +18,7 @@ import snakeImage from "./images/SnakeGameImage.jpg";
 import tetrisImage from "./images/TetrisGameImage.jpg";
 import wordleImage from "./images/WordleGameImage.jpg";
 import mineImage from "./images/MinesweeperGameImage.JPG";
+import froggerImage from "./images/FroggerGameImage.JPG"
 require('dotenv').config();
 
 //COuld do puyo puyo or match 3
@@ -413,7 +414,7 @@ function App() {
                   <img className='gameImage minesweeper' src={mineImage} alt="Play Minesweeper Button" onMouseOver={()=>{hoverImage("minesweeper")}}></img>
                   <div className='gameImage minesweeper' id='mineWords' onMouseOut={()=>{hoverOff()}} onClick={()=>{openGame('MineSweeper')}}><h1>Minesweeper</h1></div>
 
-                  <img className='gameImage frogger' src={mineImage} alt="Play Frogger Button" onMouseOver={()=>{hoverImage("frogger")}}></img>
+                  <img className='gameImage frogger' src={froggerImage} alt="Play Frogger Button" onMouseOver={()=>{hoverImage("frogger")}}></img>
                   <div className='gameImage frogger' id='froggerWords' onMouseOut={()=>{hoverOff()}} onClick={()=>{openGame("Frogger")}}><h1>Frogger</h1></div>
               </div>
             </div>
