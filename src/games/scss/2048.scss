@@ -12,9 +12,18 @@
   width: 602px;
   grid-area: 1 / 2 / 2 / 3;
   border: solid 1px black;
+  background-color: red;
 }
 .two048PauseScreen{
   background-color: black;
   color: white;
   visibility: hidden;
+}
+.two048Tile{
+  float: left;
+  width: 150px;
+  height: 150px;
+  padding-top: 7%;
+  border: solid 1px black;
+  color: white
 }

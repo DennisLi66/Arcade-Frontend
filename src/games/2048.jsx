@@ -11,7 +11,7 @@ function Two048(){
   //Values
   const cookies = new Cookies();
   var gameBoard = [];
-  var score, startTime = 0;
+  var score, startTime, totalTime = 0;
   //Menus
   function get2048MainMenu(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
@@ -25,11 +25,6 @@ function Two048(){
     document.getElementById('start2048Button').onclick = function(){start2048Game()};
     document.getElementById('two048InstructionsButton').onclick = function(){read2048Instructions()};
     document.getElementById('two048ScoresButton').onclick = function(){get2048ScoresPage()};
-  }
-  function start2048Game(){
-    create2048Board();
-    printInitialContent();
-    document.addEventListener('keydown',detectDirectionalKeyDown);
   }
   function read2048Instructions(){
     var instructions;
@@ -132,6 +127,11 @@ function Two048(){
     }
   }
   //Game Start
+  function start2048Game(){
+    create2048Board();
+    printInitialContent();
+    document.addEventListener('keydown',detectDirectionalKeyDown);
+  }
   function create2048Board(){
     gameBoard = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     score = 0;
@@ -145,11 +145,28 @@ function Two048(){
     for (let i = 0; i < gameBoard.length; i++){
       if (gameBoard[i] === 0) emptySlots.push(i);
     }
-    return emptySlots[ Math.floor(Math.random() * (emptySlots.length + 1))]
+    return emptySlots[Math.floor(Math.random() * (emptySlots.length + 1))]
+  }
+  function generateStyleForSquare(number){
+
   }
   //Detection
-  function detectDirectionalKeyDown(){
-
+  function detectDirectionalKeyDown(key){
+    if (key.key === "ArrowLeft" ){
+      shiftContents("left");
+      startTime = Date.now();
+    }else if (key.key === "ArrowRight"){
+      shiftContents("right");
+      startTime = Date.now();
+    }else if (key.key === "ArrowDown" ){
+      shiftContents("down");
+      startTime = Date.now();
+    }else if (key.key === "ArrowUp"){
+      shiftContents("up");
+      startTime = Date.now();
+    }
+    else if (key.keyCode === 82) start2048Game();
+    else if (key.keyCode === 32) pauseGame();
   }
   //Printers
   function printInitialContent(){
@@ -166,10 +183,25 @@ function Two048(){
     print2048ScoreBoard();
   }
   function print2048Board(){
-
+    var squares = [];
+    for (let i = 0; i < gameBoard.length; i++){
+      squares.push(<div className='two048Tile' key={i}><h1>{gameBoard[i] === 0 ? "" : gameBoard[i]}</h1></div>)
+    }
+    document.getElementById("two048GameBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <div>
+      {squares}
+      </div>
+    )
   }
   function print2048ScoreBoard(){
 
+  }
+  //Player Actions
+  function pauseGame(){
+    var pause;
+  }
+  function shiftContents(direction){
+    var cintents;
   }
   return (
     <div className="gameScreen" id="gameScreen">
