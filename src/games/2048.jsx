@@ -29,6 +29,10 @@ function Two048(){
   function read2048Instructions(){
     var instructions;
   }
+  //Scores
+  function submitScore(){
+    var submission;
+  }
   function get2048ScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
     var fetchString;
     var scoreTitle;
@@ -193,8 +197,19 @@ function Two048(){
       </div>
     )
   }
-  function print2048ScoreBoard(){
-
+  function print2048ScoreBoard(end=false){
+    document.getElementById().innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <div>
+      <Button id='mainMenuButton'>Main Menu</Button>
+      Score: {score}
+      {end ? "Total Time: " + totalTime : ""}
+      <Button id='restartButton'>Restart</Button>
+      {end ? (<Button>Submit Score</Button>) : (<div></div>)}
+      </div>
+    )
+    document.getElementById('restartButton').onclick = function(){start2048Game()}
+    document.getElementById('mainMenuButton').onclick = function(){get2048MainMenu()}
+    if (end) document.getElementById('submitButton').onclick = function(){submitScore()}
   }
   //Player Actions
   function pauseGame(){
