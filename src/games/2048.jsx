@@ -157,10 +157,17 @@ function Two048(){
     }
     return true;
   }
-  function generateStyleForSquare(number){
-
+  function anyMovesRemaining(){
+    for (let i = 0; i < gameBoard.length; i++){
+      if (gameBoard[i] === 0) return true;
+      if (i >= 4 && gameBoard[i] === gameBoard[i-4]) return true;
+      if (i <= 11 && gameBoard[i] === gameBoard[i+4]) return true;
+      if (i % 4 !== 0 && gameBoard[i] === gameBoard[i-1]) return true;
+      if ((i + 1) % 4 !== 0 && gameBoard[i] === gameBoard[i+1]) return true;
+    }
+    return false;
   }
-  function moveCanBeMade(){
+  function generateStyleForSquare(number){
 
   }
   function randomNumberSelect(){
@@ -211,11 +218,13 @@ function Two048(){
     )
   }
   function print2048ScoreBoard(end=false){
+    if (end) totalTime = Date.now() - startTime;
     document.getElementById('bulletinBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <div>
       <Button id='mainMenuButton'>Main Menu</Button>
       Score: {score}
-      {end ? "Total Time: " + totalTime : ""}
+      {end ? " Total Time: " + totalTime : ""}
+      {end ? " Total Moves " + moves : ""}
       <Button id='restartButton'>Restart</Button>
       {end ? (<Button>Submit Score</Button>) : (<div></div>)}
       </div>
@@ -297,11 +306,13 @@ function Two048(){
       }
     }
     if (!areBoardsSame(prevBoardState,gameBoard)){
+      if (!startTime) startTime = Date.now();
       moves++;
       gameBoard[randomlyPickFreeSquare()] = randomNumberSelect();
     }
     print2048Board();
-    print2048ScoreBoard();
+    if (!anyMovesRemaining()) print2048ScoreBoard("lose");
+    else print2048ScoreBoard();
   }
   return (
     <div className="gameScreen" id="gameScreen">
