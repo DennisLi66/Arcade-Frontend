@@ -11,7 +11,7 @@ function Two048(){
   //Values
   const cookies = new Cookies();
   var gameBoard = [];
-  var score, startTime, totalTime = 0;
+  var score, startTime, totalTime, moves = 0;
   //Menus
   function get2048MainMenu(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
@@ -151,8 +151,21 @@ function Two048(){
     }
     return emptySlots[Math.floor(Math.random() * (emptySlots.length + 1))]
   }
+  function areBoardsSame(x,y){
+    for (let i = 0; i < x.length; i++){
+      if (x[i] !== y[i]) return false;
+    }
+    return true;
+  }
   function generateStyleForSquare(number){
 
+  }
+  function moveCanBeMade(){
+
+  }
+  function randomNumberSelect(){
+    var randomNumber;
+    return 2;
   }
   //Detection
   function detectDirectionalKeyDown(key){
@@ -198,7 +211,7 @@ function Two048(){
     )
   }
   function print2048ScoreBoard(end=false){
-    document.getElementById().innerHTML = ReactDOMServer.renderToStaticMarkup(
+    document.getElementById('bulletinBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <div>
       <Button id='mainMenuButton'>Main Menu</Button>
       Score: {score}
@@ -216,7 +229,79 @@ function Two048(){
     var pause;
   }
   function shiftContents(direction){
-    var cintents;
+    var blocked = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    var prevBoardState = [...gameBoard];
+    if (direction === "left"){
+      for (let i = 0; i < gameBoard.length; i++){
+        var newf = i;
+        while (newf % 4 !== 0){
+          if (gameBoard[newf - 1] === 0){
+            gameBoard[newf - 1] = gameBoard[newf];
+            gameBoard[newf] = 0;
+            newf--;
+          }else if (gameBoard[newf - 1] === gameBoard[newf] && !blocked[newf-1]){
+            gameBoard[newf-1] = gameBoard[newf-1]*2;
+            gameBoard[newf] = 0;
+            newf--;
+            blocked[newf] = true;
+          }else break;
+        }
+      }
+    }else if (direction === "right"){
+      for (let i = gameBoard.length - 1; i >= 0; i--){
+        var newg = i;
+        while ((newg + 1) % 4 !== 0){
+          if (gameBoard[newg + 1] === 0){
+            gameBoard[newg+1] = gameBoard[newg];
+            gameBoard[newg] = 0;
+            newg++;
+          }else if (gameBoard[newg+1] === gameBoard[newg] && !blocked[newg+1]){
+            gameBoard[newg+1] = gameBoard[newg+1] * 2;
+            gameBoard[newg] = 0;
+            newg = newg++;
+            blocked[newg] = true;
+          }else break;
+        }
+      }
+    }else if (direction === "down"){
+      for (let i = gameBoard.length - 1; i >= 0; i--){
+        var newI = i;
+        while (newI < gameBoard.length - 4){
+          if (gameBoard[newI+4] === 0){
+            gameBoard[newI+4] = gameBoard[newI];
+            gameBoard[newI] = 0;
+            newI = newI + 4;
+          }else if (gameBoard[newI+4] === gameBoard[newI] && !blocked[newI + 4]){
+            gameBoard[newI+4] = gameBoard[newI+4] * 2;
+            gameBoard[newI] = 0;
+            newI = newI + 4;
+            blocked[newI] = true;
+          }else break;
+        }
+      }
+    }else if (direction === "up"){
+      for (let i = 0; i < gameBoard.length; i++){
+        var newX = i;
+        while (newX >= 4){
+          if (gameBoard[newX-4] === 0){
+            gameBoard[newX-4] = gameBoard[newX];
+            gameBoard[newX] = 0;
+            newX = newX - 4;
+          }else if (gameBoard[newX-4] === gameBoard[newX] && !blocked[newX - 4]){
+            gameBoard[newX-4] = gameBoard[newX-4] * 2;
+            gameBoard[newX] = 0;
+            newX = newX - 4;
+            blocked[newX] = true;
+          }else break;
+        }
+      }
+    }
+    if (!areBoardsSame(prevBoardState,gameBoard)){
+      moves++;
+      gameBoard[randomlyPickFreeSquare()] = randomNumberSelect();
+    }
+    print2048Board();
+    print2048ScoreBoard();
   }
   return (
     <div className="gameScreen" id="gameScreen">
