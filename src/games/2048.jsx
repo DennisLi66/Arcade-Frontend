@@ -27,7 +27,19 @@ function Two048(){
     document.getElementById('two048ScoresButton').onclick = function(){get2048ScoresPage()};
   }
   function read2048Instructions(){
-    var instructions;
+    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+      <>
+        <Button id='backButton'>Back</Button><br></br>
+        <h1> Instructions </h1>
+        <div>
+          This game is based on the popular 2048 arcade game. Collide numbers of the same value together to combine them.
+          Press an arrow key to move all tiles in that direction. If two tiles of the same number collide, they will combine.
+          Press R to restart the game.
+          Press the spacebar to pause the timer.
+        </div>
+      </>
+    )
+    document.getElementById("backButton").onclick = function(){get2048MainMenu()};
   }
   //Scores
   function submitScore(){
