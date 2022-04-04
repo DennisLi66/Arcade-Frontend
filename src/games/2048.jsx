@@ -11,6 +11,7 @@ function Two048(){
   //Values
   const cookies = new Cookies();
   var gameBoard = [];
+  var odds = [];
   var score, startTime, totalTime, moves = 0;
   //Menus
   function get2048MainMenu(){
@@ -152,10 +153,25 @@ function Two048(){
     gameBoard = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     score = 0;
     startTime = 0;
+    totalTime = 0;
+    moves = 0;
+    odds = [];
+    generateStarterOdds();
     gameBoard[randomlyPickFreeSquare()] = 2;
     gameBoard[randomlyPickFreeSquare()] = 2;
   }
   //Algorithms
+  function generateStarterOdds(){
+    for (let i = 0; i < 100; i++) odds.push(2);
+  }
+  function updateOdds(number){
+    var copy = number;
+    while (true){
+      copy = copy/2;
+      if (copy === 1) return;
+      else odds.push(copy);
+    }
+  }
   function randomlyPickFreeSquare(){
     var emptySlots = [];
     for (let i = 0; i < gameBoard.length; i++){
@@ -183,8 +199,7 @@ function Two048(){
 
   }
   function randomNumberSelect(){
-    var randomNumber;
-    return 2;
+    return odds[Math.floor(Math.random() * (odds.length + 1))];
   }
   //Detection
   function detectDirectionalKeyDown(key){
@@ -262,6 +277,7 @@ function Two048(){
             newf--;
           }else if (gameBoard[newf - 1] === gameBoard[newf] && !blocked[newf-1]){
             gameBoard[newf-1] = gameBoard[newf-1]*2;
+            updateOdds(gameBoard[newf-1]*2)
             gameBoard[newf] = 0;
             newf--;
             blocked[newf] = true;
@@ -278,6 +294,7 @@ function Two048(){
             newg++;
           }else if (gameBoard[newg+1] === gameBoard[newg] && !blocked[newg+1]){
             gameBoard[newg+1] = gameBoard[newg+1] * 2;
+            updateOdds(gameBoard[newf+1]*2)
             gameBoard[newg] = 0;
             newg = newg++;
             blocked[newg] = true;
@@ -294,6 +311,7 @@ function Two048(){
             newI = newI + 4;
           }else if (gameBoard[newI+4] === gameBoard[newI] && !blocked[newI + 4]){
             gameBoard[newI+4] = gameBoard[newI+4] * 2;
+            updateOdds(gameBoard[newf+4]*2)
             gameBoard[newI] = 0;
             newI = newI + 4;
             blocked[newI] = true;
@@ -310,6 +328,7 @@ function Two048(){
             newX = newX - 4;
           }else if (gameBoard[newX-4] === gameBoard[newX] && !blocked[newX - 4]){
             gameBoard[newX-4] = gameBoard[newX-4] * 2;
+            updateOdds(gameBoard[newf-4]*2)
             gameBoard[newX] = 0;
             newX = newX - 4;
             blocked[newX] = true;
