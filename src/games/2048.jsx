@@ -13,6 +13,7 @@ function Two048(){
   var gameBoard = [];
   var odds = [];
   var score, startTime, totalTime, moves = 0;
+  var paused = false;
   //Menus
   function get2048MainMenu(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
@@ -147,6 +148,8 @@ function Two048(){
   function start2048Game(){
     create2048Board();
     printInitialContent();
+    document.removeEventListener('keydown',detectOnlyPauseOrRestart);
+    document.removeEventListener('keydown',detectOnlyRestart);
     document.addEventListener('keydown',detectDirectionalKeyDown);
   }
   function create2048Board(){
@@ -154,6 +157,7 @@ function Two048(){
     score = 0;
     startTime = 0;
     totalTime = 0;
+    paused = false;
     moves = 0;
     odds = [];
     generateStarterOdds();
@@ -219,6 +223,13 @@ function Two048(){
     else if (key.keyCode === 82) start2048Game();
     else if (key.keyCode === 32) pauseGame();
   }
+  function detectOnlyPauseOrRestart(key){
+    if (key.keyCode === 82) start2048Game();
+    else if (key.keyCode === 32) pauseGame();
+  }
+  function detectOnlyRestart(key){
+    if (key.keyCode === 82) start2048Game();
+  }
   //Printers
   function printInitialContent(){
     document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
@@ -245,7 +256,11 @@ function Two048(){
     )
   }
   function print2048ScoreBoard(end=false){
-    if (end) totalTime = Date.now() - startTime;
+    if (end) {
+      totalTime = Date.now() - startTime;
+      document.removeEventListener('keydown',detectDirectionalKeyDown);
+      document.addEventListener('keydown',detectOnlyRestart);
+    }
     document.getElementById('bulletinBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <div>
       <Button id='mainMenuButton'>Main Menu</Button>
@@ -262,7 +277,19 @@ function Two048(){
   }
   //Player Actions
   function pauseGame(){
-    var pause;
+    if (paused){
+      paused = false;
+      startTime = Date.now();
+      document.addEventListener('keydown',detectDirectionalKeyDown);
+      document.removeEventListener('keydown',detectOnlyPauseOrRestart);
+      document.getElementById("two048rPauseScreen").style.visibility = 'hidden';
+    }else{
+      paused = true;
+      totalTime += Date.now() - startTime;
+      document.removeEventListener('keydown',detectDirectionalKeyDown);
+      document.addEventListener('keydown',detectOnlyPauseOrRestart);
+      document.getElementById("two048PauseScreen").style.visibility = 'visible';
+    }
   }
   function shiftContents(direction){
     var blocked = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
