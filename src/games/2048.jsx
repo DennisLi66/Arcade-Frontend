@@ -5,6 +5,10 @@ import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
 
+//Fix Update Odds
+//Fix pause screen css
+//Fix updating score
+
 require('dotenv').config();
 
 function Two048(){
@@ -170,11 +174,11 @@ function Two048(){
   }
   function updateOdds(number){
     var copy = number;
-    while (true){
-      copy = copy/2;
-      if (copy === 1) return;
-      else odds.push(copy);
-    }
+    // while (true){
+    //   copy = copy/2;
+    //   if (copy === 1) return;
+    //   else odds.push(copy);
+    // }
   }
   function randomlyPickFreeSquare(){
     var emptySlots = [];
@@ -197,13 +201,17 @@ function Two048(){
       if (i % 4 !== 0 && gameBoard[i] === gameBoard[i-1]) return true;
       if ((i + 1) % 4 !== 0 && gameBoard[i] === gameBoard[i+1]) return true;
     }
+    console.log(gameBoard);
     return false;
   }
-  function generateStyleForSquare(number){
-
+  function generateColorForSquare(number){
+    var number1 = Math.min(255,(Math.log2(number) - 1) * 16);
+    var choices = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
+    //console.log('#' + choices[Math.floor(number1/16)] + choices[number1 % 16] + "0000");
+    return '#' + choices[Math.floor(number1/16)] + choices[number1 % 16] + "0000";
   }
   function randomNumberSelect(){
-    return odds[Math.floor(Math.random() * (odds.length + 1))];
+    return odds[Math.floor(Math.random() * (odds.length))];
   }
   //Detection
   function detectDirectionalKeyDown(key){
@@ -247,17 +255,21 @@ function Two048(){
   function print2048Board(){
     var squares = [];
     for (let i = 0; i < gameBoard.length; i++){
-      squares.push(<div className='two048Tile' key={i}><h1>{gameBoard[i] === 0 ? "" : gameBoard[i]}</h1></div>)
+      squares.push(<div className='two048Tile' key={i} id={"square" + i}><h1>{gameBoard[i] === 0 ? "" : gameBoard[i]}</h1></div>)
     }
     document.getElementById("two048GameBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
       <div>
       {squares}
       </div>
     )
+    for (let i = 0; i < gameBoard.length; i++){
+      if (gameBoard[i] !== 0){
+        document.getElementById('square' + i).style.backgroundColor = generateColorForSquare(gameBoard[i])
+      }
+    }
   }
   function print2048ScoreBoard(end=false){
     if (end) {
-      totalTime = Date.now() - startTime;
       document.removeEventListener('keydown',detectDirectionalKeyDown);
       document.addEventListener('keydown',detectOnlyRestart);
     }
@@ -268,7 +280,7 @@ function Two048(){
       {end ? " Total Time: " + totalTime : ""}
       {end ? " Total Moves " + moves : ""}
       <Button id='restartButton'>Restart</Button>
-      {end ? (<Button>Submit Score</Button>) : (<div></div>)}
+      {end ? (<Button id='submitButton'>Submit Score</Button>) : (<div></div>)}
       </div>
     )
     document.getElementById('restartButton').onclick = function(){start2048Game()}
@@ -282,7 +294,7 @@ function Two048(){
       startTime = Date.now();
       document.addEventListener('keydown',detectDirectionalKeyDown);
       document.removeEventListener('keydown',detectOnlyPauseOrRestart);
-      document.getElementById("two048rPauseScreen").style.visibility = 'hidden';
+      document.getElementById("two048PauseScreen").style.visibility = 'hidden';
     }else{
       paused = true;
       totalTime += Date.now() - startTime;
@@ -368,6 +380,9 @@ function Two048(){
       moves++;
       gameBoard[randomlyPickFreeSquare()] = randomNumberSelect();
     }
+    totalTime += Date.now()-startTime;
+    startTime = Date.now();
+    //console.log(totalTime);
     print2048Board();
     if (!anyMovesRemaining()) print2048ScoreBoard("lose");
     else print2048ScoreBoard();
