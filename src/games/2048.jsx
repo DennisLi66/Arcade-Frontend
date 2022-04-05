@@ -6,8 +6,6 @@ import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
 
 //Fix Update Odds
-//Fix pause screen css
-//Fix updating score
 
 require('dotenv').config();
 
@@ -169,14 +167,17 @@ function Two048(){
     gameBoard[randomlyPickFreeSquare()] = 2;
   }
   //Algorithms
+  function millisecondsToReadableTime(){
+    
+  }
   function generateStarterOdds(){
     for (let i = 0; i < 100; i++) odds.push(2);
   }
   function updateOdds(number){
     var copy = number;
     // while (true){
-    //   copy = copy/2;
-    //   if (copy === 1) return;
+    //   copy = Math.floor(copy/2);
+    //   if (copy <= 1) return;
     //   else odds.push(copy);
     // }
   }
@@ -201,7 +202,6 @@ function Two048(){
       if (i % 4 !== 0 && gameBoard[i] === gameBoard[i-1]) return true;
       if ((i + 1) % 4 !== 0 && gameBoard[i] === gameBoard[i+1]) return true;
     }
-    console.log(gameBoard);
     return false;
   }
   function generateColorForSquare(number){
@@ -217,16 +217,12 @@ function Two048(){
   function detectDirectionalKeyDown(key){
     if (key.key === "ArrowLeft" ){
       shiftContents("left");
-      startTime = Date.now();
     }else if (key.key === "ArrowRight"){
       shiftContents("right");
-      startTime = Date.now();
     }else if (key.key === "ArrowDown" ){
       shiftContents("down");
-      startTime = Date.now();
     }else if (key.key === "ArrowUp"){
       shiftContents("up");
-      startTime = Date.now();
     }
     else if (key.keyCode === 82) start2048Game();
     else if (key.keyCode === 32) pauseGame();
@@ -316,7 +312,8 @@ function Two048(){
             newf--;
           }else if (gameBoard[newf - 1] === gameBoard[newf] && !blocked[newf-1]){
             gameBoard[newf-1] = gameBoard[newf-1]*2;
-            updateOdds(gameBoard[newf-1]*2)
+            score += gameBoard[newf-1];
+            updateOdds(gameBoard[newf-1]);
             gameBoard[newf] = 0;
             newf--;
             blocked[newf] = true;
@@ -333,7 +330,8 @@ function Two048(){
             newg++;
           }else if (gameBoard[newg+1] === gameBoard[newg] && !blocked[newg+1]){
             gameBoard[newg+1] = gameBoard[newg+1] * 2;
-            updateOdds(gameBoard[newf+1]*2)
+            score += gameBoard[newg+1];
+            updateOdds(gameBoard[newg+1]);
             gameBoard[newg] = 0;
             newg = newg++;
             blocked[newg] = true;
@@ -350,7 +348,8 @@ function Two048(){
             newI = newI + 4;
           }else if (gameBoard[newI+4] === gameBoard[newI] && !blocked[newI + 4]){
             gameBoard[newI+4] = gameBoard[newI+4] * 2;
-            updateOdds(gameBoard[newf+4]*2)
+            score += gameBoard[newI+4];
+            updateOdds(gameBoard[newI+4]);
             gameBoard[newI] = 0;
             newI = newI + 4;
             blocked[newI] = true;
@@ -367,7 +366,8 @@ function Two048(){
             newX = newX - 4;
           }else if (gameBoard[newX-4] === gameBoard[newX] && !blocked[newX - 4]){
             gameBoard[newX-4] = gameBoard[newX-4] * 2;
-            updateOdds(gameBoard[newf-4]*2)
+            score += gameBoard[newX-4]
+            updateOdds(gameBoard[newX-4])
             gameBoard[newX] = 0;
             newX = newX - 4;
             blocked[newX] = true;
@@ -380,9 +380,6 @@ function Two048(){
       moves++;
       gameBoard[randomlyPickFreeSquare()] = randomNumberSelect();
     }
-    totalTime += Date.now()-startTime;
-    startTime = Date.now();
-    //console.log(totalTime);
     print2048Board();
     if (!anyMovesRemaining()) print2048ScoreBoard("lose");
     else print2048ScoreBoard();

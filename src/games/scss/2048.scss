@@ -5,16 +5,20 @@
   // width 200px;
   line-height: 0;
 }
-.two048GameBoard{
-  display: inline-block;
-  margin:0;
+.boardPhases{
   height: 602px;
   width: 602px;
   grid-area: 1 / 2 / 2 / 3;
+}
+.two048GameBoard{
+  @extend .boardPhases;
+  display: inline-block;
+  margin:0;
   border: solid 1px black;
   background-color: #AFFAA0;
 }
 .two048PauseScreen{
+  @extend .boardPhases;
   background-color: black;
   color: white;
   visibility: hidden;
