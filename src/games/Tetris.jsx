@@ -4,6 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
+import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 require('dotenv').config();
 
 //FIX THIS: Mid secion topple may cause issues, check periodically
@@ -511,7 +512,7 @@ function Tetris(){
     clearInterval(intervalID);
     //change infoRow
     var returnButtonText = (<Button id='returnButton'>Main Menu</Button>);
-    var middleText = " Score: " + score + " Elapsed Time: " + totalTime + " ";
+    var middleText = " Score: " + score + " Time: " + millisecondsToReadableTime(totalTime) + " ";
     var restartAndSubmitButton =
     (
       <>

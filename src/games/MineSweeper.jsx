@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import fisherYatesShuffle from "../helpers/fisherYatesShuffle.ts";
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
+import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 import flagPNG from './minesweeperImages/flag.png'
 import square1 from './minesweeperImages/square1.png'
 import square0 from './minesweeperImages/square0.png'
@@ -17,6 +18,8 @@ import square7 from './minesweeperImages/square7.png'
 import square8 from './minesweeperImages/square8.png'
 import death from './minesweeperImages/death.png'
 require('dotenv').config();
+
+//Consider adding pause to minesweeper FIX THIS
 
 function MineSweeper(){
   const cookies = new Cookies();
@@ -116,7 +119,7 @@ function MineSweeper(){
   function printMineSweeperScoreBoard(end=false,message= false){
     var middleText = (<> You've Lost. </>);
     if (!end) middleText = (<>Flags Placed: {flagsPlaced} Total Mines: {mines}</>);
-    else if (end && end === "Victory") middleText = (<><span className='errMsg'>{message}</span> Completed in {endingTime} milliseconds. <Button id='submitButton'>Submit Score</Button></>);
+    else if (end && end === "Victory") middleText = (<><span className='errMsg'>{message}</span> Time: {millisecondsToReadableTime(endingTime)} <Button id='submitButton'>Submit Score</Button></>);
     document.getElementById('mineSweeperScoreBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <>
         <Button id='mainMenuButton'>Main Menu</Button>

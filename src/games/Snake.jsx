@@ -4,7 +4,9 @@ import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
+import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 require('dotenv').config();
+
 //Could Add Difficuly FIX THIS, like faster or constantly increasing
 //Add seeing scores FIX THIS
 //Add score submission FIX THIS
@@ -261,7 +263,7 @@ function Snake() {
     document.addEventListener('keydown',detectDirectionalKeyDown);
   }
   //Pages
-  function readInstructions(){ //FIX THIS: ADD INSTRUCTIONS
+  function readInstructions(){
     document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(
       <div>
         <Button id='backButton'>Back</Button>
@@ -423,7 +425,7 @@ function Snake() {
     totalTime += Date.now - startingTime;
     document.removeEventListener('keydown',detectDirectionalKeyDown);
     document.addEventListener('keydown',detectOnlyRestart);
-    var scoreInformation = (" Score: " + score + " Time Elapsed: " + totalTime / 1000 + " seconds ");
+    var scoreInformation = (" Score: " + score + " Time Elapsed: " + millisecondsToReadableTime(totalTime));
     var returnButton = (<Button id="returnButton">Main Menu</Button>)
     var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
     var submitScoreButton = (<Button id='submitScoreButton'>Submit Score</Button>)

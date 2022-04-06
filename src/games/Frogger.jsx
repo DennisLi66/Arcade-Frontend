@@ -4,6 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
+import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 
 import FrogImageNorth from './froggerImages/frogNorth.png'
 import FrogImageSouth from './froggerImages/frogSouth.png'
@@ -159,7 +160,7 @@ function Frogger(){
   function printFroggerScoreBoard(ended=false,message = ""){
     var text;
     if (ended === "Loss"){ //Final Score and Time
-      text = (<>{message}<Button id='mainMenuButton'>Main Menu</Button> Final Score: {score} Final Time: {totalTime}<Button id='submitScoreButton'>Submit Score</Button><Button id='restartButton'>Restart</Button></>)
+      text = (<>{message}<Button id='mainMenuButton'>Main Menu</Button> Final Score: {score} Final Time: {millisecondsToReadableTime(totalTime)}<Button id='submitScoreButton'>Submit Score</Button><Button id='restartButton'>Restart</Button></>)
     }else{
       text = (<>{message}<Button id='mainMenuButton'>Main Menu</Button> Current Score: {score} <Button id='restartButton'>Restart</Button></>)
     }

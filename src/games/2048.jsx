@@ -4,8 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import loginFunctionality from "../loginFunctionality/loginFunctionality"
-
-//Fix Update Odds
+import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 
 require('dotenv').config();
 
@@ -167,19 +166,17 @@ function Two048(){
     gameBoard[randomlyPickFreeSquare()] = 2;
   }
   //Algorithms
-  function millisecondsToReadableTime(){
-    
-  }
   function generateStarterOdds(){
-    for (let i = 0; i < 100; i++) odds.push(2);
+    for (let i = 0; i < 30; i++) odds.push(2);
   }
   function updateOdds(number){
+    if (!number) return;
     var copy = number;
-    // while (true){
-    //   copy = Math.floor(copy/2);
-    //   if (copy <= 1) return;
-    //   else odds.push(copy);
-    // }
+    while (true){
+      copy = Math.floor(copy/2);
+      if (copy <= 1) return;
+      else odds.push(copy);
+    }
   }
   function randomlyPickFreeSquare(){
     var emptySlots = [];
@@ -207,7 +204,6 @@ function Two048(){
   function generateColorForSquare(number){
     var number1 = Math.min(255,(Math.log2(number) - 1) * 16);
     var choices = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
-    //console.log('#' + choices[Math.floor(number1/16)] + choices[number1 % 16] + "0000");
     return '#' + choices[Math.floor(number1/16)] + choices[number1 % 16] + "0000";
   }
   function randomNumberSelect(){
@@ -266,6 +262,7 @@ function Two048(){
   }
   function print2048ScoreBoard(end=false){
     if (end) {
+      totalTime += Date.now() - startTime;
       document.removeEventListener('keydown',detectDirectionalKeyDown);
       document.addEventListener('keydown',detectOnlyRestart);
     }
@@ -273,7 +270,7 @@ function Two048(){
       <div>
       <Button id='mainMenuButton'>Main Menu</Button>
       Score: {score}
-      {end ? " Total Time: " + totalTime : ""}
+      {end ? " Total Time: " + millisecondsToReadableTime(totalTime) : ""}
       {end ? " Total Moves " + moves : ""}
       <Button id='restartButton'>Restart</Button>
       {end ? (<Button id='submitButton'>Submit Score</Button>) : (<div></div>)}
