@@ -227,7 +227,7 @@ function MineSweeper(){
       const requestSetup = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({userID:cookies.get("id"),gameID:1,
+        body: JSON.stringify({userID:cookies.get("id"),gameID:4,
         timeInMilliseconds: endingTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
       }
       fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
@@ -242,7 +242,7 @@ function MineSweeper(){
         })
     }else{
       document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-        loginFunctionality({timeInMilliseconds: endingTime, gameID: 1})
+        loginFunctionality({timeInMilliseconds: endingTime, gameID: 4})
       )
       //ask that the user logs in FIX THIS
       // pass a dictionary to a new object in a new file

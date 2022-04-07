@@ -46,7 +46,30 @@ function Two048(){
   }
   //Scores
   function submitScore(){
-    var submission;
+    if (cookies.get("id")){
+      const requestSetup = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({userID:cookies.get("id"),gameID: 6, score: score,
+        timeInMilliseconds: totalTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
+      }
+      fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          if (data.status === -1){
+            print2048ScoreBoard('loss',data.message);
+          }else{
+            get2048ScoresPage("Your score has been submitted.")
+          }
+        })
+    }else{
+      document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+        loginFunctionality({timeInMilliseconds: totalTime, gameID: 6, score: score})
+      )
+      //ask that the user logs in FIX THIS
+      // pass a dictionary to a new object in a new file
+    }
   }
   function get2048ScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
     var fetchString;
@@ -260,7 +283,7 @@ function Two048(){
       }
     }
   }
-  function print2048ScoreBoard(end=false){
+  function print2048ScoreBoard(end=false,message=""){
     if (end) {
       totalTime += Date.now() - startTime;
       document.removeEventListener('keydown',detectDirectionalKeyDown);
@@ -269,6 +292,7 @@ function Two048(){
     document.getElementById('bulletinBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
       <div>
       <Button id='mainMenuButton'>Main Menu</Button>
+      {message + " "}
       Score: {score}
       {end ? " Total Time: " + millisecondsToReadableTime(totalTime) : ""}
       {end ? " Total Moves " + moves : ""}

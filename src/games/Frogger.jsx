@@ -395,7 +395,7 @@ function Frogger(){
       const requestSetup = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({userID:cookies.get("id"),gameID: 6, score: score,
+        body: JSON.stringify({userID:cookies.get("id"),gameID: 5, score: score,
         timeInMilliseconds: totalTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
       }
       fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
@@ -410,7 +410,7 @@ function Frogger(){
         })
     }else{
       document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-        loginFunctionality({timeInMilliseconds: totalTime, gameID: 6, score: score})
+        loginFunctionality({timeInMilliseconds: totalTime, gameID: 5, score: score})
       )
       //ask that the user logs in FIX THIS
       // pass a dictionary to a new object in a new file
