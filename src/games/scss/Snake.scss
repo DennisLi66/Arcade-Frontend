@@ -1,13 +1,17 @@
 /* Board Squares */
 .snakeScreen{
   display: grid;
-  padding-left: 20%
+  left: 20%;
+  width: 100%;
+  min-width: 640px;
 }
 %snakeScreenElements{
+  position: relative;
   border: 1px solid black;
   height: 590px;
   width: 590px;
   grid-area: 1 / 1 / 2 / 2;
+  left: 25vw
 }
 .gameBoard{
   @extend %snakeScreenElements;
@@ -20,7 +24,7 @@
   @extend %snakeScreenElements;
   background-color: black;
   color: white;
-  padding-top: 30%;
+  position: relative;
   visibility: hidden;
 }
 .bulletinBoard{
@@ -35,7 +39,7 @@
 }
 .gameScreen{
   border: 3px solid black;
-  padding: 20px;
+  // padding: 20px;
   background-color: gray;
   padding:0;
 }

@@ -35,10 +35,10 @@ function Two048(){
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
         <div>
-          This game is based on the popular 2048 arcade game. Collide numbers of the same value together to combine them.
-          Press an arrow key to move all tiles in that direction. If two tiles of the same number collide, they will combine.
-          Press R to restart the game.
-          Press the spacebar to pause the timer.
+          <p>This game is based on the popular 2048 arcade game. Collide numbers of the same value together to combine them.</p>
+          <p>Press an arrow key to move all tiles in that direction. If two tiles of the same number collide, they will combine.</p>
+          <p>Press R to restart the game.</p>
+          <p>Press the spacebar to pause the timer.</p>
         </div>
       </>
     )
@@ -259,7 +259,7 @@ function Two048(){
       <>
       <div className = 'two048Screen' id='two048Screen'>
         <div className='two048GameBoard' id='two048GameBoard'></div>
-        <div className='two048PauseScreen' id='two048PauseScreen'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div>
+        <div className='two048PauseScreen' id='two048PauseScreen'><div className='pauseText'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div></div>
       </div>
       <div className='bulletinBoard' id='bulletinBoard'></div>
       </>

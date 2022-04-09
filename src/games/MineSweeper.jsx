@@ -268,13 +268,14 @@ function MineSweeper(){
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
         <div>
-          In Minesweeper, your objective is to reveal all the tiles on the board that are not mines. Clicking on a mine will cause you to lose the game,
-          while clicking on a tile without a mine will reveal the tile and the tiles near it that are not mines.
+          <p>In Minesweeper, your objective is to reveal all the tiles on the board that are not mines. </p>
+          <p>Clicking on a mine will cause you to lose the game,
+          while clicking on a tile without a mine will reveal the tile and the tiles near it that are not mines.</p>
 
-          Controls:
-          Click on a tile to reveal it.
-          Right click on a tile to mark it as a mine. Right click on a tile again to remove that mark if needed.
-          Press the R button to quickly restart the game if needed.
+          <p>Controls:</p>
+          <p>Click on a tile to reveal it.</p>
+          <p>Right click on a tile to mark it as a mine. Right click on a tile again to remove that mark if needed.</p>
+          <p>Press the R button to quickly restart the game if needed.</p>
         </div>
       </>
     )

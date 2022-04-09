@@ -320,7 +320,11 @@ function Wordle(){
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
         <div>
-
+          <p> Wordle is a game about guessing the secret word. </p>
+          <p> Type in a word and submit it in to see how your entry compares to the answer.</p>
+          <p> If a letter is green, it is present in the word and at that position of that word.</p>
+          <p> If a letter is yellow, it is present in the word, but not at that position. </p>
+          <p> If a letter is colorless, it is not present in the word in any position. </p>
         </div>
       </>
     )

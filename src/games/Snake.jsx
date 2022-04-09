@@ -114,6 +114,7 @@ function Snake() {
   }
   function detectDirectionalKeyDown(key){
     //left: 37, up: 38, right: 39, down: 40
+    key.preventDefault();
     key = key.keyCode;
     if ((key === 37 || key === '37') && currentDirection !== "right"){
       if (!direction){
@@ -204,7 +205,7 @@ function Snake() {
       <h1>Snake</h1>
       <div className = 'snakeScreen' id='snakeScreen'>
         <div className='gameBoard' id='gameBoard'></div>
-        <div className='pauseScreen' id='pauseScreen'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div>
+        <div className='pauseScreen' id='pauseScreen'><div className='pauseText'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div></div>
       </div>
       <div className='bulletinBoard' id='bulletinBoard'></div>
       </>
@@ -269,12 +270,13 @@ function Snake() {
         <Button id='backButton'>Back</Button>
         <h1> Instructions </h1>
         <div>
+        <p>
           Snake is a game about controlling a snake trying to eat a dot. The snake must avoid crashing into the walls or crashing into
           itself, and will need your help to do so.
-
-          Use the arrow keys to navigate the snake towards the dot.
-          Press the spacebar to pause the game as needed.
-          Press R to quickly restart the game if necessary.
+        </p>
+          <p>Use the arrow keys to navigate the snake towards the dot.</p>
+          <p>Press the spacebar to pause the game as needed.</p>
+          <p>Press R to quickly restart the game if necessary.</p>
         </div>
       </div>
     )

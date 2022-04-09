@@ -180,7 +180,7 @@ function Frogger(){
         <div className='froggerTileBoard' id='froggerTileBoard'></div>
         <div className='froggerObjBoard' id='froggerObjBoard'></div>
         <div className='froggerFrogBoard' id='froggerFrogBoard'></div>
-        <div className='froggerPauseScreen' id='froggerPauseScreen'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div>
+        <div className='froggerPauseScreen' id='froggerPauseScreen'><div className='pauseText'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div></div>
       </div>
       <div className='bulletinBoard' id='bulletinBoard'></div>
       </>
@@ -190,6 +190,7 @@ function Frogger(){
   }
   //Key Detection
   function detectDirectionalKeyDown(key){
+    key.preventDefault();
     if (key.key === "ArrowLeft" ){
       currentDirection = "left";
       moveFrog("left");
@@ -437,11 +438,11 @@ function Frogger(){
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
         <div>
-          In Frogger, your objective is make it to the lilypads on the other side of the road and river without getting run
-          over by a car or falling into the river.
-          Use the arrow keys to control your frog.
-          Press the spacebar to pause the game.
-          Press the R Button to quickly restart the game.
+          <p>In Frogger, your objective is make it to the lilypads on the other side of the road and river without getting run
+          over by a car or falling into the river.</p>
+          <p>Use the arrow keys to control your frog.</p>
+          <p>Press the spacebar to pause the game.</p>
+          <p>Press the R Button to quickly restart the game.</p>
         </div>
       </>
     )

@@ -83,7 +83,7 @@ function App() {
         changeNavbar(
           (
             <Navbar key='in' bg='light' expand="lg" className='loggedOutBar'>
-            <Navbar.Brand>Dennis' Arcade</Navbar.Brand>
+            <Navbar.Brand onClick={()=>{window.location.reload()}}>Dennis' Arcade</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
             <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>

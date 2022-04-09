@@ -7,7 +7,8 @@ import loginFunctionality from "../loginFunctionality/loginFunctionality"
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 require('dotenv').config();
 
-//FIX THIS: Mid secion topple may cause issues, check periodically
+//FIX THIS: Tetris Pieces can still keep going at the end
+  ///will need to clearinterval on strike down
 function Tetris(){
    //10 wide, 20 high inner board
    //pieceQueue loads 3 or more pieces
@@ -293,6 +294,7 @@ function Tetris(){
   }
   function detectDirectionalKeyDown(key){
     //left: 37, up: 38, right: 39, down: 40
+    key.preventDefault();
     key = key.keyCode;
     if ((key === 65) || key === '65'){ //a key //rotate counter counterclockwise
       rotatePiece("counterclockwise");
@@ -574,21 +576,22 @@ function Tetris(){
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
         <div>
-          In Tetris, your objective is to clear rows of blocks without them reaching the top. You can clear a row of blocks
-          by forming a complete row of blocks, but the more rows you clear at a time, the more points you get. Just make sure
-          not to reach the top.
-
+        <p>
+          In Tetris, your objective is to clear rows of blocks without them reaching the top.
+          </p><p>You can clear a row of blocks
+          by forming a complete row of blocks, but the more rows you clear at a time, the more points you get.</p><p> Just make sure
+          not to reach the top.</p>
           Controls:
-          Use the left and right arrow keys to move left and right, respectively.
-          Press the A key to rotate your current piece counterclockwise, given space.
-          Press the D key or the up arrow key to rotate your current piece clockwise, given space.
-          Press the down arrow key to have your current piece descend faster.
-          Press the spacebar to store your current piece, if you aren't currently storing one. Note that this action will cause you
-          to lose a small amount of points each usage.
-          If you are currently storing a piece, pressing the spacebar once again will make it your next piece, pushing the upcoming pieces
-          back.
-          Press the W button to pause the game if needed, and w to unpause.
-          Press the R button to quickly restart the game if needed.
+          <p>Use the left and right arrow keys to move left and right, respectively.</p>
+          <p>Press the A key to rotate your current piece counterclockwise, given space.</p>
+          <p>Press the D key or the up arrow key to rotate your current piece clockwise, given space.</p>
+          <p>Press the down arrow key to have your current piece descend faster.</p>
+          <p>Press the spacebar to store your current piece, if you aren't currently storing one. Note that this action will cause you
+          to lose a small amount of points each usage.</p>
+          <p>If you are currently storing a piece, pressing the spacebar once again will make it your next piece, pushing the upcoming pieces
+          back.</p>
+          <p>Press the W button to pause the game if needed, and w to unpause.</p>
+          <p>Press the R button to quickly restart the game if needed.</p>
 
         </div>
       </>
