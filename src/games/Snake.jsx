@@ -424,7 +424,7 @@ function Snake() {
     }
   }
   function displayEndingScreen(){ //Display Score and Time Elapsed, Restart Button, Submit Score Button
-    totalTime += Date.now - startingTime;
+    totalTime += Date.now() - startingTime;
     document.removeEventListener('keydown',detectDirectionalKeyDown);
     document.addEventListener('keydown',detectOnlyRestart);
     var scoreInformation = (" Score: " + score + " Time Elapsed: " + millisecondsToReadableTime(totalTime));

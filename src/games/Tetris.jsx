@@ -7,8 +7,6 @@ import loginFunctionality from "../loginFunctionality/loginFunctionality"
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 require('dotenv').config();
 
-//FIX THIS: Tetris Pieces can still keep going at the end
-  ///will need to clearinterval on strike down
 function Tetris(){
    //10 wide, 20 high inner board
    //pieceQueue loads 3 or more pieces
@@ -199,7 +197,22 @@ function Tetris(){
       }
     }
   }
-  //
+  function storePiece(){
+    // set current piece to stored
+    if (!storedPiece){
+      storedPiece = currentPiece;
+      getNewPiece();
+      placeNewBlock()
+      recentlyStored = true;
+      score -= 5;
+    }else if (!recentlyStored){
+      //if already stored, set next piece to stored and queue for afterStoredPiece
+      pieceQueue.unshift(storedPiece);
+      storedPiece = false;
+    }
+    printAllContent();
+  }
+  // Movement
   function toppleBlocks(){
     score += 4; //give points for each block;
     var rowsToTopple = [];
@@ -242,23 +255,7 @@ function Tetris(){
     }
     var points = [0,10,25,40,60];
     score += points[rowsToTopple.length];
-    printAllContent();
     recentlyStored = false;
-    detectLoss();
-  }
-  function storePiece(){
-    // set current piece to stored
-    if (!storedPiece){
-      storedPiece = currentPiece;
-      getNewPiece();
-      placeNewBlock()
-      recentlyStored = true;
-      score -= 5;
-    }else if (!recentlyStored){
-      //if already stored, set next piece to stored and queue for afterStoredPiece
-      pieceQueue.unshift(storedPiece);
-      storedPiece = false;
-    }
     printAllContent();
   }
   function updateDescent(){
@@ -290,8 +287,11 @@ function Tetris(){
       }
     }
     printTetrisBoard();
-    intervalID = setTimeout(updateDescent,maxTimeTilDescent);
+    clearInterval(intervalID);
+    // detectLoss();
+    if (!detectLoss()) intervalID = setTimeout(updateDescent,maxTimeTilDescent);
   }
+  ////////
   function detectDirectionalKeyDown(key){
     //left: 37, up: 38, right: 39, down: 40
     key.preventDefault();
@@ -503,16 +503,18 @@ function Tetris(){
         gameBoard[g] = 'X';
       }
     }
-    if (isLoss) showLossScreen();
+    if (isLoss) {
+      console.log("Game Over");
+      totalTime += Date.now() - startingTime;
+      document.removeEventListener('keydown',detectDirectionalKeyDown);
+      document.addEventListener('keydown',detectOnlyRestart);
+      currentPiece = false;
+      clearInterval(intervalID);
+      showLossScreen();
+    }
+    return isLoss;
   }
   function showLossScreen(){
-    totalTime += Date.now() - startingTime;
-    //remove event handler
-    document.removeEventListener('keydown',detectDirectionalKeyDown);
-    document.addEventListener('keydown',detectOnlyRestart);
-    //remove runGame
-    clearInterval(intervalID);
-    //change infoRow
     var returnButtonText = (<Button id='returnButton'>Main Menu</Button>);
     var middleText = " Score: " + score + " Time: " + millisecondsToReadableTime(totalTime) + " ";
     var restartAndSubmitButton =
