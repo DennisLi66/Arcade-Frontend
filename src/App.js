@@ -28,6 +28,10 @@ require('dotenv').config();
 //logout causes crash?
 //Update adding timeduration to Login
 //login needs to set a redirection then reload
+
+//detect redirectForLogin
+//opengame should clear cookies not associated with login
+
 function App() {
   const [navBar,changeNavbar] = React.useState(
     <Navbar bg='light' expand="lg" className='loggedOutBar'>
@@ -386,18 +390,15 @@ function App() {
         changeNavbarToLoggedOut();
       }
       if (cookies.get("redirect")){
-        if (cookies.get("redirect") === "Snake"){
-          cookies.remove("redirect");
-          openGame("Snake");
-        }else if (cookies.get("redirect") === "Tetris"){
-          cookies.remove("redirect");
-          openGame("Tetris");
-        }else if (cookies.get("redirect") === "Login"){
+        if (cookies.get("redirect") === "Login"){
           cookies.remove("redirect");
           getLoginPage();
         }else if (cookies.get("redirect") === "Register"){
           cookies.remove("redirect");
           getRegisterPage();
+        }else if (cookies.get("redirect") === "LoginGame"){
+          //FIX THIS
+          console.log("Got a game to log!")
         }
       }else{
         var conf;

@@ -4,7 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import fisherYatesShuffle from "../helpers/fisherYatesShuffle.ts";
-import loginFunctionality from "../loginFunctionality/loginFunctionality"
+import cookieSetter from "../helpers/setCookiesForGame.jsx";
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 import flagPNG from './minesweeperImages/flag.png'
 import square1 from './minesweeperImages/square1.png'
@@ -220,7 +220,7 @@ function MineSweeper(){
       revealedBoard[i] = 1;
     }
     printMineSweeperBoard(true);
-    printMineSweeperScoreBoard("Victory");
+    printMineSweeperScoreBoard("Loss");
   }
   function submitMinesweeperScore(){
     if (cookies.get("id")){
@@ -241,11 +241,7 @@ function MineSweeper(){
           }
         })
     }else{
-      document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-        loginFunctionality({timeInMilliseconds: endingTime, gameID: 4})
-      )
-      //ask that the user logs in FIX THIS
-      // pass a dictionary to a new object in a new file
+      cookieSetter({timeInMilliseconds: endingTime, gameID: 4})
     }
   }
   //Get Pages

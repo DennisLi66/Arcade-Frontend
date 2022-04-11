@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button'
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
-import loginFunctionality from "../loginFunctionality/loginFunctionality"
+import cookieSetter from "../helpers/setCookiesForGame.jsx";
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 
 import FrogImageNorth from './froggerImages/frogNorth.png'
@@ -410,11 +410,7 @@ function Frogger(){
           }
         })
     }else{
-      document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-        loginFunctionality({timeInMilliseconds: totalTime, gameID: 5, score: score})
-      )
-      //ask that the user logs in FIX THIS
-      // pass a dictionary to a new object in a new file
+      cookieSetter({timeInMilliseconds: totalTime, gameID: 5, score: score});
     }
   }
   //Pages

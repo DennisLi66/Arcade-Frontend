@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button'
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
-import loginFunctionality from "../loginFunctionality/loginFunctionality"
+import cookieSetter from "../helpers/setCookiesForGame.jsx";
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 
 require('dotenv').config();
@@ -64,11 +64,7 @@ function Two048(){
           }
         })
     }else{
-      document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-        loginFunctionality({timeInMilliseconds: totalTime, gameID: 6, score: score})
-      )
-      //ask that the user logs in FIX THIS
-      // pass a dictionary to a new object in a new file
+      cookieSetter({timeInMilliseconds: totalTime, gameID: 6, score: score});
     }
   }
   function get2048ScoresPage(message = "", rule = "", results = [], start = 0, end = 10){

@@ -1,7 +1,7 @@
 import React from "react";
 import Button from 'react-bootstrap/Button'
 import Table from 'react-bootstrap/Table'
-import loginFunctionality from "../loginFunctionality/loginFunctionality"
+import cookieSetter from "../helpers/setCookiesForGame.jsx"
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
@@ -416,11 +416,7 @@ function Snake() {
           }
         })
     }else{
-      document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-        loginFunctionality({score: score, timeInMilliseconds: totalTime, gameID: 1})
-      )
-      //ask that the user logs in FIX THIS
-      // pass a dictionary to a new object in a new file
+      cookieSetter({score: score, timeInMilliseconds: totalTime, gameID: 1});
     }
   }
   function displayEndingScreen(){ //Display Score and Time Elapsed, Restart Button, Submit Score Button

@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button'
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
-import loginFunctionality from "../loginFunctionality/loginFunctionality"
+import cookieSetter from "../helpers/setCookiesForGame.jsx";
 import produceWord from "../helpers/produceWord.ts";
 require('dotenv').config();
 
@@ -277,11 +277,7 @@ function Wordle(){
           }
         })
     }else{
-      document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-        loginFunctionality({score: score, gameID: 3})
-      )
-      //ask that the user logs in FIX THIS
-      // pass a dictionary to a new object in a new file
+      cookieSetter({score: score, gameID: 3});
     }
   }
   //Checking For Validity

@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button'
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
-import loginFunctionality from "../loginFunctionality/loginFunctionality"
+import cookieSetter from "../helpers/setCookiesForGame.jsx";
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 require('dotenv').config();
 
@@ -536,8 +536,6 @@ function Tetris(){
     document.getElementById("quickRestartButton").onclick = function(){startGame()};
   }
   function submitScore(){
-    // console.log(cookies.get("id"));
-    // console.log(cookies.get("sessionID"));
     if (cookies.get("id")){
       const requestSetup = {
         method: 'PUT',
@@ -557,11 +555,7 @@ function Tetris(){
           }
         })
     }else{
-      document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
-        loginFunctionality({score: score, timeInMilliseconds: totalTime, gameID: 2})
-      )
-      //ask that the user logs in FIX THIS
-      // pass a dictionary to a new object in a new file
+      cookieSetter({score: score, timeInMilliseconds: totalTime, gameID: 2});
     }
   }
   // Initial
