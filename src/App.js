@@ -42,6 +42,13 @@ function App() {
 
   const getHome = React.useCallback(
     (confMsg = "") => {
+      //Remove Score Setting Cookies
+      function removeScoreCookies(){
+        cookies.remove("redirect");
+        cookies.remove("score");
+        cookies.remove("timeInMilliseconds");
+        cookies.remove("gameID");
+      }
       //Visual Stuff
       function hoverImage(imageName){
         if (imageName === 'snake'){
@@ -232,6 +239,7 @@ function App() {
               <input name='userEmail' id='userEmail' type='email' required></input><br></br>
               <Button type='submit'>Submit</Button>
             </form>
+            <Button onClick={()=>{getLoginPage()}}>Back to Login Page</Button>
           </div>
         ))
       }
@@ -354,7 +362,7 @@ function App() {
                 if (cookies.get("id")){
                   //FIX THIS
                 }else{
-                  getLoginPage("","You have successfully changed your password.")
+                  getLoginPage("","You have successfully changed your password. It can now be used to log in.")
                 }
               }
             })
@@ -369,6 +377,7 @@ function App() {
       }
       //games
       function openGame(gameTitle){
+        removeScoreCookies();
         if (gameTitle === "Snake"){
           changeBody(Snake());
         }else if (gameTitle === "Tetris"){
@@ -398,9 +407,15 @@ function App() {
           getRegisterPage();
         }else if (cookies.get("redirect") === "LoginGame"){
           //FIX THIS
+          //update login to send score in after logging in
+          cookies.remove("redirect");
+          getLoginPage();
+          //update registration to send in score after logging in?
+          //maneuvering off either screen should cause cookies to be removed
           console.log("Got a game to log!")
         }
       }else{
+        removeScoreCookies();
         var conf;
         if (confMsg !== ""){
           conf = (<div className='confMsg'>{confMsg}</div>)
