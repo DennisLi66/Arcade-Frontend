@@ -7,7 +7,7 @@ function cookieSetter(dictionary){
   cookies.set("redirect","LoginGame");
   cookies.set("gameID", dictionary['gameID']);
   if (dictionary['timeInMilliseconds']) cookies.set("timeInMilliseconds",dictionary['timeInMilliseconds'])
-  if (dictionary['score']) cookies.set("score",dictionary['score']);
+  if (dictionary['score']) cookies.set("score",dictionary['score'].toString());
   window.location.reload();
 }
 export default cookieSetter;

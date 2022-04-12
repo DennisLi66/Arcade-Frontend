@@ -210,12 +210,13 @@ function App() {
         fetch(process.env.REACT_APP_SERVERLOCATION + "/login",requestSetup)
           .then(response => response.json())
           .then(data => {
+            console.log(data);
             if (data.status === -1) getLoginPage(data.message,"")
             else if (data.status === 0){
               cookies.set('id',data.userID,{path:'/'});
               cookies.set('sessionID',data.sessionID,{path:'/'});
+              cookies.set('name',data.name,{path:'/'});
               //cookies.set('expireTime',rememberMe === 'hour' ? Date.now() + 3600000 : "forever",{path:"/"});
-              changeNavbarToLoggedIn();
               if (cookies.get("gameID")){
                 //submit score
                 const scoreRequestSetup = {
@@ -226,8 +227,9 @@ function App() {
                   sessionID:cookies.get("sessionID")})
                 }
                 var endpoint = "";
-                if (cookies.get("timeInMilliseconds") && !cookies.get("score")) endpoint = "/times";
-                else if (!cookies.get("timeInMilliseconds") && cookies.get("score")) endpoint = "/scores";
+                var gameScore = cookies.get("score") ? parseInt(cookies.get("score")) : null;
+                if (cookies.get("timeInMilliseconds") && !gameScore) endpoint = "/times";
+                else if (!cookies.get("timeInMilliseconds") && gameScore) endpoint = "/scores";
                 else endpoint = "/scoreswithtimes";
                 fetch(process.env.REACT_APP_SERVERLOCATION + endpoint,scoreRequestSetup)
                   .then(response => response.json())
@@ -384,23 +386,23 @@ function App() {
         cookies.remove('name');
         cookies.remove('id');
         cookies.remove('sessionID');
-        changeNavbarToLoggedOut();
+        window.location.reload();
         //FIX THIS: WILL NEED CHANGES ON CERTAIN PAGES reload page with a cookie that tracks last page
       }
       //games
       function openGame(gameTitle, msg = ""){
         removeScoreCookies();
-        if (gameTitle === "Snake" || gameTitle === 1){
+        if (gameTitle === "Snake" || gameTitle === 1 || gameTitle === "1"){
           changeBody(Snake(msg));
-        }else if (gameTitle === "Tetris" || gameTitle === 2){
+        }else if (gameTitle === "Tetris" || gameTitle === 2 || gameTitle === '2'){
           changeBody(Tetris(msg));
-        }else if (gameTitle === "Wordle" || gameTitle === 3){
+        }else if (gameTitle === "Wordle" || gameTitle === 3 || gameTitle === "3"){
           changeBody(Wordle(msg));
-        }else if (gameTitle === "MineSweeper" || gameTitle === 4){
+        }else if (gameTitle === "MineSweeper" || gameTitle === 4 || gameTitle === "4"){
           changeBody(MineSweeper(msg));
-        }else if (gameTitle === "Frogger" || gameTitle === 5){
+        }else if (gameTitle === "Frogger" || gameTitle === 5 || gameTitle === "5"){
           changeBody(Frogger(msg))
-        }else if (gameTitle === "2048" || gameTitle === 6){
+        }else if (gameTitle === "2048" || gameTitle === 6 || gameTitle === "6"){
           changeBody(Two048(msg));
         }
       }
@@ -421,7 +423,6 @@ function App() {
           getLoginPage();
           //update registration to send in score after logging in?
           //maneuvering off either screen should cause cookies to be removed
-          console.log("Got a game to log!")
         }
       }else{
         removeScoreCookies();

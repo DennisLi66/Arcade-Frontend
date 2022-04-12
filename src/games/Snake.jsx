@@ -18,11 +18,12 @@ function Snake(msg = "") {
   var intervalID = "";
   var validSquares = [];
   var direction = false; //will also tell us if gamestarted
-  var currentDirection = false;
+  var currentDirection = "up";
   var snakePositions = []; //is a stack
   var totalTime = 0;
   var setTime = 0;
   var paused = false;
+  var permit = true;
   //Helper Functions
   function moveToSpace(space){
     if (space < 42 || space > (42*42-42) ||  space % 42 === 41 || space % 42 === 0 || snakePositions.slice(1).indexOf(space) !== -1 ){//snake collides onto wall or body part that is not tail
@@ -48,6 +49,7 @@ function Snake(msg = "") {
         var tail = snakePositions.shift(); //pop stack snake
         gameBoard[tail] = "0";//change previous tail to empty space
         validSquares.push(space);//make tail validsquare
+        permit = true;
       }
       printSnakeBoard();
     }
@@ -59,6 +61,8 @@ function Snake(msg = "") {
     }
     startingTime = 0;
     intervalID = "";
+    currentDirection = "up";
+    permit = true;
     validSquares = [];
     direction = false;
     setTime = 0;
@@ -118,30 +122,35 @@ function Snake(msg = "") {
       if (!direction){
         direction = "left";
         startingTime = Date.now();
-        intervalID = setTimeout(runGame, 125);
+        intervalID = setTimeout(runGame, 75);
         printInfoRow();
       }
-      direction = "left";
+      else if (permit) direction = "left";
+      permit = false;
     }else if ((key === 38 || key === "38") && currentDirection !== "down"){
       if (!direction){
         direction = "up";
         startingTime = Date.now();
-        intervalID = setTimeout(runGame, 125);
+        intervalID = setTimeout(runGame, 75);
         printInfoRow();
       }
-      direction = "up";
+      else if (permit) direction = "up";
+      permit = false;
     }else if ((key === 39 || key === "39") && currentDirection !== "left"){
       if (!direction){
         direction = "right";
         startingTime = Date.now();
-        intervalID = setTimeout(runGame, 125);
+        intervalID = setTimeout(runGame, 75);
         printInfoRow();
       }
-      direction = "right";
+      else if (permit) direction = "right";
+      permit = false;
     }else if ((key === 40 || key === "40") && currentDirection !== "up"){
       if (direction){
         direction = "down";
       }
+      else if (permit) direction = "down"
+      permit = false;
     }
     else if ((key === 32 || key === "32")  && direction ){
       pauseGame();
@@ -174,7 +183,7 @@ function Snake(msg = "") {
     }
     if (!(direction === 'end')){
       setTime = Date.now();
-      intervalID = setTimeout(runGame, 125);
+      intervalID = setTimeout(runGame, 75);
     }
   }
   function pauseGame(){
