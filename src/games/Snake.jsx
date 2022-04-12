@@ -8,10 +8,8 @@ import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 require('dotenv').config();
 
 //Could Add Difficuly FIX THIS, like faster or constantly increasing
-//Add seeing scores FIX THIS
-//Add score submission FIX THIS
 
-function Snake() {
+function Snake(msg = "") {
   const cookies = new Cookies();
   //IMPORTANT GAME VARIABLES
   var gameBoard = []; //    42 * 42 Board FIX THIS: SHOULD PROBABLY CHANGE SIZE
@@ -443,6 +441,7 @@ function Snake() {
   return (
     <div className="gameScreen" id="gameScreen">
       <h1>Snake</h1>
+      {(msg !== "") ?  <div className='confMsg'>{msg}</div>  : ""}
       <Button onClick={startSnakeGame}>Play Snake</Button><br></br>
       <Button onClick={readInstructions}>Read Instructions</Button><br></br>
       <Button onClick={getScoresPage}>Scores</Button><br></br>

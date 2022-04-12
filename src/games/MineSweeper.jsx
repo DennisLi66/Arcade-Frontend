@@ -21,7 +21,7 @@ require('dotenv').config();
 
 //Consider adding pause to minesweeper FIX THIS
 
-function MineSweeper(){
+function MineSweeper(msg = ""){
   const cookies = new Cookies();
   var minesweeperBoard = []; //14 high by 18 wide
   var revealedBoard = [];
@@ -230,7 +230,7 @@ function MineSweeper(){
         body: JSON.stringify({userID:cookies.get("id"),gameID:4,
         timeInMilliseconds: endingTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
       }
-      fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
+      fetch(process.env.REACT_APP_SERVERLOCATION + '/times',requestSetup)
         .then(response => response.json())
         .then(data => {
           console.log(data);
@@ -281,16 +281,16 @@ function MineSweeper(){
     var fetchString;
     var scoreTitle;
     if (rule === "" || rule === "best"){//Get the best
-      fetchString = "/scoreswithtimes?sortBy=top";
+      fetchString = "/times?sortBy=top";
       scoreTitle = "Top Scores";
     }else if (rule === "recent"){
-      fetchString = "/scoreswithtimes?sortBy=recent"
+      fetchString = "/times?sortBy=recent"
       scoreTitle = "Recent Scores";
     }else if (rule === "mybest"){
-      fetchString = "/scoreswithtimes?sortBy=top&userID="  + cookies.get("id");
+      fetchString = "/times?sortBy=top&userID="  + cookies.get("id");
       scoreTitle = "Your Top Scores";
     }else if (rule === "myrecent"){
-      fetchString = "scoreswithtimes?sortBy=recent&userID=" + cookies.get("id");
+      fetchString = "times?sortBy=recent&userID=" + cookies.get("id");
       scoreTitle = "Your Recent Scores";
     }
     if (results.length === 0){
@@ -377,6 +377,7 @@ function MineSweeper(){
   return (
     <div className='gameScreen' id='gameScreen'>
       <h1> Minesweeper </h1>
+      {(msg !== "") ?  <div className='confMsg'>{msg}</div>  : ""}
       <Button onClick={()=>{startMineSweeperGame()}}>Start Game</Button><br></br>
       <Button onClick={()=>{readMineSweeperInstructions()}}>Read Instructions</Button><br></br>
       <Button onClick={()=>{getMineSweeperScoresPage()}}>Scores</Button><br></br>

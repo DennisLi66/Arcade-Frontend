@@ -20,7 +20,7 @@ require('dotenv').config();
 
 //make things move at different intervals?
 
-function Frogger(){
+function Frogger(msg = ""){
   //Variables
   const cookies = new Cookies();
   var score = 0;
@@ -544,6 +544,7 @@ function Frogger(){
   return (
     <div className="gameScreen" id="gameScreen">
       <h1>Frogger</h1>
+      {(msg !== "") ?  <div className='confMsg'>{msg}</div>  : ""}
       <Button onClick={startFroggerGame}>Play Frogger</Button><br></br>
       <Button onClick={readFroggerInstructions}>Read Instructions</Button><br></br>
       <Button onClick={getFroggerScoresPage}>Scores</Button><br></br>

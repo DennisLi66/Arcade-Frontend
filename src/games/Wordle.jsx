@@ -10,7 +10,7 @@ require('dotenv').config();
 //Add score submission
 //gameScreen consists of psudeo input text box with blocks, game board with current guesses, and the score board
 
-function Wordle(){
+function Wordle(msg = ""){
   //VARIABLES
   const cookies = new Cookies();
   var score = 0;
@@ -263,10 +263,9 @@ function Wordle(){
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({userID:cookies.get("id"),score:score,gameID:3
-        ,
-        sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
+        ,sessionID:cookies.get("sessionID")})
       }
-      fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
+      fetch(process.env.REACT_APP_SERVERLOCATION + '/scores',requestSetup)
         .then(response => response.json())
         .then(data => {
           console.log(data);
@@ -330,16 +329,16 @@ function Wordle(){
     var fetchString;
     var scoreTitle;
     if (rule === "" || rule === "best"){//Get the best
-      fetchString = "/scoreswithtimes?sortBy=top";
+      fetchString = "/scores?sortBy=top";
       scoreTitle = "Top Scores";
     }else if (rule === "recent"){
-      fetchString = "/scoreswithtimes?sortBy=recent"
+      fetchString = "/scores?sortBy=recent"
       scoreTitle = "Recent Scores";
     }else if (rule === "mybest"){
-      fetchString = "/scoreswithtimes?sortBy=top&userID="  + cookies.get("id");
+      fetchString = "/scores?sortBy=top&userID="  + cookies.get("id");
       scoreTitle = "Your Top Scores";
     }else if (rule === "myrecent"){
-      fetchString = "scoreswithtimes?sortBy=recent&userID=" + cookies.get("id");
+      fetchString = "scores?sortBy=recent&userID=" + cookies.get("id");
       scoreTitle = "Your Recent Scores";
     }
     if (results.length === 0){
@@ -440,6 +439,7 @@ function Wordle(){
   return (
     <div className='gameScreen' id='gameScreen'>
       <h1> Wordle </h1>
+      {(msg !== "") ?  <div className='confMsg'>{msg}</div>  : ""}
       <Button onClick={()=>{startWordleGame()}}>Start Game</Button><br></br>
       <Button onClick={()=>{readWordleInstructions()}}>Read Instructions</Button><br></br>
       <Button onClick={()=>{getWordleScores()}}>Scores</Button><br></br>

@@ -27,10 +27,8 @@ require('dotenv').config();
 //COuld do puyo puyo or match 3
 //logout causes crash?
 //Update adding timeduration to Login
-//login needs to set a redirection then reload
-
 //detect redirectForLogin
-//opengame should clear cookies not associated with login
+//should redirect to game scores instead of game homepage
 
 function App() {
   const [navBar,changeNavbar] = React.useState(
@@ -41,7 +39,7 @@ function App() {
   const cookies = React.useMemo(() => {return new Cookies()},[])
 
   const getHome = React.useCallback(
-    (confMsg = "") => {
+    (confMsg = "", errMsg = "") => {
       //Remove Score Setting Cookies
       function removeScoreCookies(){
         cookies.remove("redirect");
@@ -212,23 +210,39 @@ function App() {
         fetch(process.env.REACT_APP_SERVERLOCATION + "/login",requestSetup)
           .then(response => response.json())
           .then(data => {
-            if (data.status === -1){
-              getLoginPage(data.message,"")
-            }else if (data.status === 0){
+            if (data.status === -1) getLoginPage(data.message,"")
+            else if (data.status === 0){
               cookies.set('id',data.userID,{path:'/'});
               cookies.set('sessionID',data.sessionID,{path:'/'});
               //cookies.set('expireTime',rememberMe === 'hour' ? Date.now() + 3600000 : "forever",{path:"/"});
               changeNavbarToLoggedIn();
-              getHome("You have successfully logged in.")
+              if (cookies.get("gameID")){
+                //submit score
+                const scoreRequestSetup = {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({userID:cookies.get("id"), gameID: cookies.get("gameID"),
+                  score: cookies.get("score"),timeInMilliseconds: cookies.get("timeInMilliseconds"),
+                  sessionID:cookies.get("sessionID")})
+                }
+                var endpoint = "";
+                if (cookies.get("timeInMilliseconds") && !cookies.get("score")) endpoint = "/times";
+                else if (!cookies.get("timeInMilliseconds") && cookies.get("score")) endpoint = "/scores";
+                else endpoint = "/scoreswithtimes";
+                fetch(process.env.REACT_APP_SERVERLOCATION + endpoint,scoreRequestSetup)
+                  .then(response => response.json())
+                  .then(data => {
+                    console.log(data);
+                    if (data.status === -1) getHome(errMsg = "Your score failed to submit.")
+                    else openGame(cookies.get('gameID'),"Your score has been submitted.")
+                  })
+              }else getHome("You have successfully logged in.");
             }
           })
-        ///change nav to logged in
       }
       function getForgotPasswordPage(error=""){
         var errMsg = "";
-        if (error !== ""){
-          errMsg = (<div className='errMsg'>{error}</div>)
-        }
+        if (error !== "") errMsg = (<div className='errMsg'>{error}</div>)
         changeBody((
           <div>
             {errMsg}
@@ -323,9 +337,7 @@ function App() {
       }
       function showChangePasswordPage(email,error = "",code){
         var errMsg;
-        if (error !== ""){
-          errMsg = (<div className='errMsg'>{error}</div>)
-        }
+        if (error !== "") errMsg = (<div className='errMsg'>{error}</div>);
         changeBody(
           <div>
             {errMsg}
@@ -376,28 +388,25 @@ function App() {
         //FIX THIS: WILL NEED CHANGES ON CERTAIN PAGES reload page with a cookie that tracks last page
       }
       //games
-      function openGame(gameTitle){
+      function openGame(gameTitle, msg = ""){
         removeScoreCookies();
-        if (gameTitle === "Snake"){
-          changeBody(Snake());
-        }else if (gameTitle === "Tetris"){
-          changeBody(Tetris());
-        }else if (gameTitle === "Wordle"){
-          changeBody(Wordle());
-        }else if (gameTitle === "MineSweeper"){
-          changeBody(MineSweeper());
-        }else if (gameTitle === "Frogger"){
-          changeBody(Frogger())
-        }else if (gameTitle === "2048"){
-          changeBody(Two048());
+        if (gameTitle === "Snake" || gameTitle === 1){
+          changeBody(Snake(msg));
+        }else if (gameTitle === "Tetris" || gameTitle === 2){
+          changeBody(Tetris(msg));
+        }else if (gameTitle === "Wordle" || gameTitle === 3){
+          changeBody(Wordle(msg));
+        }else if (gameTitle === "MineSweeper" || gameTitle === 4){
+          changeBody(MineSweeper(msg));
+        }else if (gameTitle === "Frogger" || gameTitle === 5){
+          changeBody(Frogger(msg))
+        }else if (gameTitle === "2048" || gameTitle === 6){
+          changeBody(Two048(msg));
         }
       }
       //Detect Stuff Here
-      if (cookies.get("name")){
-        changeNavbarToLoggedIn();
-      }else{
-        changeNavbarToLoggedOut();
-      }
+      if (cookies.get("name")) changeNavbarToLoggedIn();
+      else changeNavbarToLoggedOut();
       if (cookies.get("redirect")){
         if (cookies.get("redirect") === "Login"){
           cookies.remove("redirect");
@@ -416,13 +425,10 @@ function App() {
         }
       }else{
         removeScoreCookies();
-        var conf;
-        if (confMsg !== ""){
-          conf = (<div className='confMsg'>{confMsg}</div>)
-        }
         changeBody((
           <div>
-            {conf}
+            {confMsg !== "" ?  (<div className='confMsg'>{confMsg}</div>) : ""}
+            {errMsg !== "" ?  (<div className='errMsg'>{errMsg}</div>) : ""}
             <h1>Welcome to Dennis' Arcade!</h1>
             <div>
               <div className="gameBox">

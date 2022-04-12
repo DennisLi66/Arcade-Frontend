@@ -7,7 +7,7 @@ import cookieSetter from "../helpers/setCookiesForGame.jsx";
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 require('dotenv').config();
 
-function Tetris(){
+function Tetris(msg = ""){
    //10 wide, 20 high inner board
    //pieceQueue loads 3 or more pieces
   const cookies = new Cookies();
@@ -708,6 +708,7 @@ function Tetris(){
   return (
     <div className='gameScreen' id='gameScreen'>
       <h1> Tetris </h1>
+            {(msg !== "") ?  <div className='confMsg'>{msg}</div>  : ""}
       <Button onClick={()=>{startGame()}}>Start Game</Button><br></br>
       <Button onClick={()=>{readInstructions()}}>Read Instructions</Button><br></br>
       <Button onClick={()=>{getScoresPage()}}>Scores</Button><br></br>

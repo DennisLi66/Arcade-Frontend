@@ -8,7 +8,7 @@ import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 
 require('dotenv').config();
 
-function Two048(){
+function Two048(msg = ""){
   //Values
   const cookies = new Cookies();
   var gameBoard = [];
@@ -404,6 +404,7 @@ function Two048(){
   return (
     <div className="gameScreen" id="gameScreen">
       <h1>2048</h1>
+      {(msg !== "") ?  <div className='confMsg'>{msg}</div>  : ""}
       <Button onClick={start2048Game}>Play 2048</Button><br></br>
       <Button onClick={read2048Instructions}>Read Instructions</Button><br></br>
       <Button onClick={get2048ScoresPage}>Scores</Button><br></br>
