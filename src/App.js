@@ -5,6 +5,7 @@ import './games/scss/Wordle.scss';
 import './games/scss/MineSweeper.scss'
 import './games/scss/Frogger.scss'
 import './games/scss/2048.scss'
+import $ from 'jquery';
 import React from "react";
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
@@ -49,27 +50,20 @@ function App() {
       }
       //Visual Stuff
       function hoverImage(imageName){
-        if (imageName === 'snake'){
-          document.getElementById("snakeWords").style.visibility = 'visible';
-        } else if (imageName === 'wordle'){
-          document.getElementById("wordleWords").style.visibility = 'visible';
-        } else if (imageName === 'tetris'){
-          document.getElementById("tetrisWords").style.visibility = 'visible';
-        }else if (imageName === "minesweeper"){
-          document.getElementById("mineWords").style.visibility = "visible";
-        }else if (imageName === "frogger"){
-          document.getElementById("froggerWords").style.visibility = "visible";
-        }else if (imageName === "two048"){
-          document.getElementById("two048Words").style.visibility = "visible";
-        }
+        if (imageName === 'snake') $("#snakeWords").css('visibility', 'visible');
+        else if (imageName === 'wordle') $("#wordleWords").css('visibility','visible');
+        else if (imageName === 'tetris') $("#tetrisWords").css('visibility','visible');
+        else if (imageName === "minesweeper") $("#mineWords").css('visibility',"visible");
+        else if (imageName === "frogger") $("#froggerWords").css('visibility',"visible");
+        else if (imageName === "two048") $("#two048Words").css('visibility',"visible");
       }
       function hoverOff(){
-        document.getElementById("snakeWords").style.visibility = 'hidden';
-        document.getElementById("wordleWords").style.visibility = 'hidden';
-        document.getElementById("tetrisWords").style.visibility = 'hidden';
-        document.getElementById("mineWords").style.visibility = "hidden";
-        document.getElementById("froggerWords").style.visibility = "hidden";
-        document.getElementById("two048Words").style.visibility = "hidden";
+        $("#snakeWords").css('visibility','hidden');
+        $("#wordleWords").css('visibility','hidden');
+        $("#tetrisWords").css('visibility','hidden');
+        $("#mineWords").css('visibility','hidden');
+        $("#froggerWords").css('visibility','hidden');
+        $("#two048Words").css('visibility','hidden');
       }
       //Nav Changers
       function changeNavbarToLoggedIn(){
@@ -139,10 +133,10 @@ function App() {
       }
       function handleRegistration(event){
         event.preventDefault();
-        var userPassword = document.getElementById('password').value;
-        var confPassword = document.getElementById('confPass').value;
-        var email = document.getElementById('userEmail').value;
-        var username = document.getElementById('username').value;
+        var userPassword = $('#password').val();
+        var confPassword = $('#confPass').val();
+        var email = $('#userEmail').val();
+        var username = $('#username').val();
         if (userPassword !== confPassword){
           getRegisterPage("Your passwords did not match.")
         }else{
@@ -199,9 +193,9 @@ function App() {
       }
       function handleLogin(event){
         event.preventDefault();
-        var email = document.getElementById("userEmail").value;
-        var password = document.getElementById("password").value;
-        var timeDuration = document.getElementById("rememberMe").checked ? "forever" : "hour";
+        var email = $("#userEmail").val();
+        var password = $("#password").val();
+        var timeDuration = $("#rememberMe").is(':checked') ? "forever" : "hour";
         const requestSetup = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -261,7 +255,7 @@ function App() {
       }
       function handleForgotPassword(event){
         event.preventDefault();
-        var email = document.getElementById("userEmail").value;
+        var email = $("#userEmail").val();
         const requestSetup = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -290,7 +284,7 @@ function App() {
       }
       function handleCodeSubmission(event,chances,email){
         event.preventDefault();
-        var code = document.getElementById('code').value;
+        var code = $('#code').val();
         const requestSetup = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -357,8 +351,8 @@ function App() {
       }
       function handleNewPassword(event,email,code){
         event.preventDefault();
-        var password = document.getElementById("newPass").value;
-        var confPass = document.getElementById("confPass").value;
+        var password = $("#newPass").val();
+        var confPass = $("#confPass").val();
         if (password !== confPass){
           showChangePasswordPage(email,"Those passwords did not match.",code)
         }else{
