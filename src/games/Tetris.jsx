@@ -23,9 +23,7 @@ function Tetris(msg = ""){
   var maxTimeTilDescent = 1000;
   //Board Manipulation
   function loadPieceQueue(){
-    while (pieceQueue.length < 3){
-      pieceQueue.push(Math.floor(Math.random() * 7) + 1);
-    }
+    while (pieceQueue.length < 3) pieceQueue.push(Math.floor(Math.random() * 7) + 1);
   }
   function getNewPiece(){
     //return a number corresponsing to a piece and update nextPiece
@@ -38,7 +36,8 @@ function Tetris(msg = ""){
       clearInterval(intervalID);
       intervalID = "";
     }
-    document.removeEventListener('keydown',detectOnlyRestart);
+    $('body').off('keydown',detectOnlyRestart);
+    $('body').off('keydown',detectOnlyPauseOrRestart);
     gameBoard = [];
     currentPieceOccupyingSpaces = [];
     pieceQueue = [];
@@ -51,19 +50,13 @@ function Tetris(msg = ""){
     recentlyStored = false;
     maxTimeTilDescent = 1000;
     var borderRow = [];
-    for (let i = 0; i < 12 ; i++){
-      borderRow.push('X')
-    }
+    for (let i = 0; i < 12 ; i++) borderRow.push('X');
     gameBoard.push(...borderRow);
     var row = [];
     row.push('X');
-    for (let i = 0; i < 10; i++){
-      row.push("0");
-    }
+    for (let i = 0; i < 10; i++) row.push("0");
     row.push('X');
-    for (let i = 0; i < 20; i++){
-      gameBoard.push(...row);
-    }
+    for (let i = 0; i < 20; i++) gameBoard.push(...row);
     gameBoard.push(...borderRow);
   }
   //Block Setting
@@ -352,18 +345,18 @@ function Tetris(msg = ""){
       paused = false;
       setTime = Date.now();
       setTimeout(updateDescent,placeholder);
-      document.removeEventListener('keydown',detectOnlyPauseOrRestart);
-      document.addEventListener('keydown',detectDirectionalKeyDown);
-      document.getElementById("tetrisSideDisplayPauseScreen").style.visibility = 'hidden';
-      document.getElementById("tetrisBoardPauseScreen").style.visibility = "hidden";
+      $('#body').off('keydown',detectOnlyPauseOrRestart);
+      $('#body').on('keydown',detectDirectionalKeyDown);
+      $("#tetrisSideDisplayPauseScreen").css('visibility','hidden');
+      $("#tetrisBoardPauseScreen").css('visibility',"hidden");
     }else{
       totalTime = Date.now() - startingTime;
       clearTimeout(intervalID);
       paused = Date.now() - setTime;
-      document.removeEventListener('keydown',detectDirectionalKeyDown);
-      document.addEventListener('keydown',detectOnlyPauseOrRestart);
-      document.getElementById("tetrisSideDisplayPauseScreen").style.visibility = 'visible';
-      document.getElementById("tetrisBoardPauseScreen").style.visibility = "visible";
+      $('body').off('keydown',detectDirectionalKeyDown);
+      $('body').on('keydown',detectOnlyPauseOrRestart);
+      $("#tetrisSideDisplayPauseScreen").css('visibility','visible');
+      $("#tetrisBoardPauseScreen").css('visibility',"visible");
     }
   }
   //Printing
@@ -380,7 +373,7 @@ function Tetris(msg = ""){
         <div className='tetrisBulletinBoard' id='tetrisBulletinBoard'></div>
         </>
     );
-    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(reactScript);
+    $("#gameScreen").html(ReactDOMServer.renderToStaticMarkup(reactScript));
     printAllContent();
   }
   function printAllContent(){
@@ -391,22 +384,16 @@ function Tetris(msg = ""){
   function printTetrisBoard(message = ""){
     var toPrint = "";
     var counter = 0;
-    if (message !== ""){
-      toPrint += "<div class='errMsg'>" + message + "</div>"
-    }
+    if (message !== "") toPrint += "<div class='errMsg'>" + message + "</div>";
     for (let i = 0; i < gameBoard.length; i++){
       if (currentPieceOccupyingSpaces.length !== 0 && currentPieceOccupyingSpaces[counter] === i){
         counter++;
         toPrint += "<div class='tetrisActiveSquare'></div>"
-      }else if (gameBoard[i] === 'X'){
-        toPrint += "<div class='tetrisBorderSquare'></div>"
-      }else if (gameBoard[i] === '0'){
-        toPrint += "<div class='tetrisEmptySquare'></div>"
-      }else if (gameBoard[i] === 'B'){
-        toPrint += "<div class='tetrisBlockSquare'></div>"
-      }
+      }else if (gameBoard[i] === 'X') toPrint += "<div class='tetrisBorderSquare'></div>";
+      else if (gameBoard[i] === '0') toPrint += "<div class='tetrisEmptySquare'></div>";
+      else if (gameBoard[i] === 'B') toPrint += "<div class='tetrisBlockSquare'></div>";
     }
-    document.getElementById("tetrisBoard").innerHTML = toPrint;
+    $("#tetrisBoard").html(toPrint);
   }
   function printInfoRow(){
     var text = (<Button id='returnButton'>Main Menu</Button>);
@@ -415,10 +402,8 @@ function Tetris(msg = ""){
     if (currentPiece){
       middleText = (" Score: " + score + " ");
       quickRestartButton = (<Button id="quickRestartButton">Restart</Button>)
-    }else{
-      middleText = (" Press on the down arrow key to start. ")
-    }
-    document.getElementById("tetrisBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    }else middleText = (" Press on the down arrow key to start. ");
+    $("#tetrisBulletinBoard").html(ReactDOMServer.renderToStaticMarkup(
       (
         <>
           {text}
@@ -426,9 +411,9 @@ function Tetris(msg = ""){
           {quickRestartButton}
         </>
       )
-    );
-    document.getElementById("returnButton").onclick = function(){getFrontPage()};
-    if (currentPiece) document.getElementById("quickRestartButton").onclick = function(){startGame()};
+    ));
+    $("#returnButton").click(function(){getFrontPage()});
+    if (currentPiece) $("#quickRestartButton").click(function(){startGame()});
   }
   function printSideDisplay(){//prints at beginning, after store, and after topple
     //Need to display storedPiece, and next two upcoming pieces
@@ -478,7 +463,7 @@ function Tetris(msg = ""){
       nextPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='nextPiecePicture'>{nextPieceGrid}</div>)
       afterNextPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='afterPiecePicture'>{afterNextPieceGrid}</div>)
     }
-    document.getElementById("tetrisSideDisplay").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $("#tetrisSideDisplay").html(ReactDOMServer.renderToStaticMarkup(
       <>
         <h4>Held Piece</h4>
         {holdPieceReactString}
@@ -488,26 +473,22 @@ function Tetris(msg = ""){
         <h5>After Next</h5>
         {afterNextPieceReactString}
       </>
-    )
+    ));
   }
   //Losing
   function detectLoss(){
     //if board is overfilled, cause loss
     var isLoss = false;
     for (let g = 0; g < 12; g++){
-      if (gameBoard[g] === '0'){
-        gameBoard[g] = 'X';
-      }else if (gameBoard[g] === 'B'){
-        isLoss = true;
-      }else{
-        gameBoard[g] = 'X';
-      }
+      if (gameBoard[g] === '0') gameBoard[g] = 'X';
+      else if (gameBoard[g] === 'B') isLoss = true;
+      else gameBoard[g] = 'X';
     }
     if (isLoss) {
       console.log("Game Over");
       totalTime += Date.now() - startingTime;
-      document.removeEventListener('keydown',detectDirectionalKeyDown);
-      document.addEventListener('keydown',detectOnlyRestart);
+      $('body').off('keydown',detectDirectionalKeyDown);
+      $('body').on('keydown',detectOnlyRestart);
       currentPiece = false;
       clearInterval(intervalID);
       showLossScreen();
@@ -524,16 +505,16 @@ function Tetris(msg = ""){
       <Button id="quickRestartButton">Restart</Button>
       </>
     );
-    document.getElementById("tetrisBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $("#tetrisBulletinBoard").html(ReactDOMServer.renderToStaticMarkup(
       <>
         {returnButtonText}
         {middleText}
         {restartAndSubmitButton}
       </>
-    );
-    document.getElementById("submitScoreButton").onclick = function(){submitScore()};
-    document.getElementById("returnButton").onclick = function(){getFrontPage()} ;
-    document.getElementById("quickRestartButton").onclick = function(){startGame()};
+    ));
+    $("#submitScoreButton").click(function(){submitScore()});
+    $("#returnButton").click(function(){getFrontPage()});
+    $("#quickRestartButton").click(function(){startGame()});
   }
   function submitScore(){
     if (cookies.get("id")){
@@ -563,11 +544,13 @@ function Tetris(msg = ""){
     setBoard();
     printInitialContent();
     printAllContent();
-    document.addEventListener('keydown',detectDirectionalKeyDown);
+    $('body').off('keydown',detectOnlyPauseOrRestart);
+    $('body').off('keydown',detectOnlyRestart);
+    $('body').on('keydown',detectDirectionalKeyDown);
   }
   //Pages
   function readInstructions(){
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
@@ -591,8 +574,8 @@ function Tetris(msg = ""){
 
         </div>
       </>
-    )
-    document.getElementById("backButton").onclick = function(){getFrontPage()};
+    ));
+    $("#backButton").click(function(){getFrontPage()});
   }
   function getScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
     var fetchString;
@@ -671,38 +654,34 @@ function Tetris(msg = ""){
         <div>{prevButton}{nextButton}</div>
       </>
     );
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
-    document.getElementById('backButton').onclick = function(){getFrontPage()};
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(reactString));
+    $('#backButton').click(function(){getFrontPage()});
     if (rule === "myrecent"){
-      document.getElementById("personalScoresSwitch").onclick = function(){getScoresPage("","recent")};
-      document.getElementById("otherMetricButton").onclick = function(){getScoresPage("","mybest")};
+      $("#personalScoresSwitch").click(function(){getScoresPage("","recent")});
+      $("#otherMetricButton").click(function(){getScoresPage("","mybest")});
     }else if (rule === "mybest"){
-      document.getElementById("personalScoresSwitch").onclick = function(){getScoresPage("","best")};
-      document.getElementById("otherMetricButton").onclick = function(){getScoresPage("","myrecent")};
+      $("#personalScoresSwitch").click(function(){getScoresPage("","best")});
+      $("#otherMetricButton").click(function(){getScoresPage("","myrecent")});
     }else if (rule === "recent"){
-      if (cookies.get("id")){
-        document.getElementById("personalScoresSwitch").onclick = function(){getScoresPage("","myrecent")};
-      }
-      document.getElementById("otherMetricButton").onclick = function(){getScoresPage("","best")};
+      if (cookies.get("id")) $("#personalScoresSwitch").click(function(){getScoresPage("","myrecent")});
+      $("otherMetricButton").click(function(){getScoresPage("","best")});
     }else if (rule === "best" || rule === ""){
-      if (cookies.get("id")){
-        document.getElementById("personalScoresSwitch").onclick = function(){getScoresPage("","mybest")};
-      }
-      document.getElementById("otherMetricButton").onclick = function(){getScoresPage("","recent")};
+      if (cookies.get("id")) $("#personalScoresSwitch").click(function(){getScoresPage("","mybest")});
+      $("#otherMetricButton").click(function(){getScoresPage("","recent")});
     }
   }
   function getFrontPage(){
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
         <h1> Tetris </h1>
         <Button id='startGameButton' >Start Game</Button><br></br>
         <Button id='instructionsButton'>Read Instructions</Button><br></br>
         <Button id='scoresButton'>Scores</Button><br></br>
       </>
-    );
-      document.getElementById("startGameButton").onclick = function(){startGame()};
-      document.getElementById("instructionsButton").onclick = function(){readInstructions()};
-      document.getElementById("scoresButton").onclick = function(){getScoresPage()};
+    ));
+      $("#startGameButton").click(function(){startGame()});
+      $("#instructionsButton").click(function(){readInstructions()});
+      $("#scoresButton").click(function(){getScoresPage()});
   }
 
   return (
