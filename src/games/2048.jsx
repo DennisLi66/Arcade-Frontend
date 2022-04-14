@@ -1,14 +1,14 @@
-import React from "react";
+import React from 'react';
 import Button from 'react-bootstrap/Button'
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
-import cookieSetter from "../helpers/setCookiesForGame.jsx";
-import millisecondsToReadableTime from "../helpers/timeConversion.ts";
-
+import cookieSetter from '../helpers/setCookiesForGame.jsx';
+import millisecondsToReadableTime from '../helpers/timeConversion.ts';
+import $ from 'jquery'
 require('dotenv').config();
 
-function Two048(msg = ""){
+function Two048(msg = ''){
   //Values
   const cookies = new Cookies();
   var gameBoard = [];
@@ -17,20 +17,20 @@ function Two048(msg = ""){
   var paused = false;
   //Menus
   function get2048MainMenu(){
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
       <h1>2048</h1>
       <Button id='start2048Button'>Play 2048</Button><br></br>
       <Button id='two048InstructionsButton'>Read Instructions</Button><br></br>
       <Button id='two048ScoresButton'>Scores</Button><br></br>
       </>
-    );
-    document.getElementById('start2048Button').onclick = function(){start2048Game()};
-    document.getElementById('two048InstructionsButton').onclick = function(){read2048Instructions()};
-    document.getElementById('two048ScoresButton').onclick = function(){get2048ScoresPage()};
+    ));
+    $('#start2048Button').click(function(){start2048Game()});
+    $('#two048InstructionsButton').click(function(){read2048Instructions()});
+    $('#two048ScoresButton').click(function(){get2048ScoresPage()});
   }
   function read2048Instructions(){
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
@@ -41,17 +41,17 @@ function Two048(msg = ""){
           <p>Press the spacebar to pause the timer.</p>
         </div>
       </>
-    )
-    document.getElementById("backButton").onclick = function(){get2048MainMenu()};
+    ))
+    $('#backButton').click(function(){get2048MainMenu()});
   }
   //Scores
   function submitScore(){
-    if (cookies.get("id")){
+    if (cookies.get('id')){
       const requestSetup = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({userID:cookies.get("id"),gameID: 6, score: score,
-        timeInMilliseconds: totalTime,sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
+        body: JSON.stringify({userID:cookies.get('id'),gameID: 6, score: score,
+        timeInMilliseconds: totalTime,sessionID:cookies.get('sessionID')}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
       }
       fetch(process.env.REACT_APP_SERVERLOCATION + '/scoreswithtimes',requestSetup)
         .then(response => response.json())
@@ -60,28 +60,28 @@ function Two048(msg = ""){
           if (data.status === -1){
             print2048ScoreBoard('loss',data.message);
           }else{
-            get2048ScoresPage("Your score has been submitted.")
+            get2048ScoresPage('Your score has been submitted.')
           }
         })
     }else{
       cookieSetter({timeInMilliseconds: totalTime, gameID: 6, score: score});
     }
   }
-  function get2048ScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
+  function get2048ScoresPage(message = '', rule = '', results = [], start = 0, end = 10){
     var fetchString;
     var scoreTitle;
-    if (rule === "" || rule === "best"){//Get the best
-      fetchString = "/scoreswithtimes?sortBy=top";
-      scoreTitle = "Top Scores";
-    }else if (rule === "recent"){
-      fetchString = "/scoreswithtimes?sortBy=recent"
-      scoreTitle = "Recent Scores";
-    }else if (rule === "mybest"){
-      fetchString = "/scoreswithtimes?sortBy=top&userID="  + cookies.get("id");
-      scoreTitle = "Your Top Scores";
-    }else if (rule === "myrecent"){
-      fetchString = "scoreswithtimes?sortBy=recent&userID=" + cookies.get("id");
-      scoreTitle = "Your Recent Scores";
+    if (rule === '' || rule === 'best'){//Get the best
+      fetchString = '/scoreswithtimes?sortBy=top';
+      scoreTitle = 'Top Scores';
+    }else if (rule === 'recent'){
+      fetchString = '/scoreswithtimes?sortBy=recent'
+      scoreTitle = 'Recent Scores';
+    }else if (rule === 'mybest'){
+      fetchString = '/scoreswithtimes?sortBy=top&userID='  + cookies.get('id');
+      scoreTitle = 'Your Top Scores';
+    }else if (rule === 'myrecent'){
+      fetchString = 'scoreswithtimes?sortBy=recent&userID=' + cookies.get('id');
+      scoreTitle = 'Your Recent Scores';
     }
     if (results.length === 0){
       fetch(process.env.REACT_APP_SERVERLOCATION + fetchString + '&gameID=6')
@@ -106,29 +106,29 @@ function Two048(msg = ""){
     }
     var otherMetricButton;
     var personalScoresSwitchButton;
-    if (rule === "myrecent"){
+    if (rule === 'myrecent'){
       otherMetricButton = (<Button id='otherMetricButton'> My Best Scores </Button>)
       personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Recent Scores </Button>)
-    }else if (rule === "mybest"){
+    }else if (rule === 'mybest'){
       otherMetricButton = (<Button id='otherMetricButton'> My Recent Scores </Button>)
       personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Best Scores </Button>)
-    }else if (rule === "recent"){
-      if (cookies.get("id")){
+    }else if (rule === 'recent'){
+      if (cookies.get('id')){
         personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
       }
       otherMetricButton =  (<Button id='otherMetricButton'> All Best Scores </Button>)
-    }else if (rule === "best" || rule === ""){
-      if (cookies.get("id")){
+    }else if (rule === 'best' || rule === ''){
+      if (cookies.get('id')){
         personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
       }
       otherMetricButton =  (<Button id='otherMetricButton'> All Recent Scores </Button>)
     }
     var nextButton, prevButton;
     if (end < results.length){
-      nextButton = (<Button onClick={get2048ScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
+      nextButton = (<Button onClick={get2048ScoresPage('',rule,results,start + 10, end + 10)}> Next </Button>)
     }
     if (start > 0){
-      prevButton = (<Button onClick={get2048ScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
+      prevButton = (<Button onClick={get2048ScoresPage('',rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
     }
     var reactString = (
       <>
@@ -144,33 +144,33 @@ function Two048(msg = ""){
         <div>{prevButton}{nextButton}</div>
       </>
     );
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
-    document.getElementById('backButton').onclick = function(){get2048MainMenu()};
-    if (rule === "myrecent"){
-      document.getElementById("personalScoresSwitch").onclick = function(){get2048ScoresPage("","recent")};
-      document.getElementById("otherMetricButton").onclick = function(){get2048ScoresPage("","mybest")};
-    }else if (rule === "mybest"){
-      document.getElementById("personalScoresSwitch").onclick = function(){get2048ScoresPage("","best")};
-      document.getElementById("otherMetricButton").onclick = function(){get2048ScoresPage("","myrecent")};
-    }else if (rule === "recent"){
-      if (cookies.get("id")){
-        document.getElementById("personalScoresSwitch").onclick = function(){get2048ScoresPage("","myrecent")};
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(reactString));
+    $('#backButton').click(function(){get2048MainMenu()});
+    if (rule === 'myrecent'){
+      $('#personalScoresSwitch').click(function(){get2048ScoresPage('','recent')});
+      $('otherMetricButton').click(function(){get2048ScoresPage('','mybest')});
+    }else if (rule === 'mybest'){
+      $('#personalScoresSwitch').click(function(){get2048ScoresPage('','best')});
+      $('#otherMetricButton').click(function(){get2048ScoresPage('','myrecent')});
+    }else if (rule === 'recent'){
+      if (cookies.get('id')){
+        $('personalScoresSwitch').click(function(){get2048ScoresPage('','myrecent')});
       }
-      document.getElementById("otherMetricButton").onclick = function(){get2048ScoresPage("","best")};
-    }else if (rule === "best" || rule === ""){
-      if (cookies.get("id")){
-        document.getElementById("personalScoresSwitch").onclick = function(){get2048ScoresPage("","mybest")};
+      $('#otherMetricButton').click(function(){get2048ScoresPage('','best')});
+    }else if (rule === 'best' || rule === ''){
+      if (cookies.get('id')){
+        $('#personalScoresSwitch').click(function(){get2048ScoresPage('','mybest')});
       }
-      document.getElementById("otherMetricButton").onclick = function(){get2048ScoresPage("","recent")};
+      $('#otherMetricButton').click(function(){get2048ScoresPage('','recent')});
     }
   }
   //Game Start
   function start2048Game(){
     create2048Board();
     printInitialContent();
-    document.removeEventListener('keydown',detectOnlyPauseOrRestart);
-    document.removeEventListener('keydown',detectOnlyRestart);
-    document.addEventListener('keydown',detectDirectionalKeyDown);
+    $('body').off('keydown',detectOnlyPauseOrRestart);
+    $('body').off('keydown',detectOnlyRestart);
+    $('body').on('keydown',detectDirectionalKeyDown);
   }
   function create2048Board(){
     gameBoard = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
@@ -202,7 +202,7 @@ function Two048(msg = ""){
     for (let i = 0; i < gameBoard.length; i++){
       if (gameBoard[i] === 0) emptySlots.push(i);
     }
-    return emptySlots[Math.floor(Math.random() * (emptySlots.length + 1))]
+    return emptySlots[Math.floor(Math.random() * (emptySlots.length))]
   }
   function areBoardsSame(x,y){
     for (let i = 0; i < x.length; i++){
@@ -223,21 +223,21 @@ function Two048(msg = ""){
   function generateColorForSquare(number){
     var number1 = Math.min(255,(Math.log2(number) - 1) * 16);
     var choices = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
-    return '#' + choices[Math.floor(number1/16)] + choices[number1 % 16] + "0000";
+    return '#' + choices[Math.floor(number1/16)] + choices[number1 % 16] + '0000';
   }
   function randomNumberSelect(){
     return odds[Math.floor(Math.random() * (odds.length))];
   }
   //Detection
   function detectDirectionalKeyDown(key){
-    if (key.key === "ArrowLeft" ){
-      shiftContents("left");
-    }else if (key.key === "ArrowRight"){
-      shiftContents("right");
-    }else if (key.key === "ArrowDown" ){
-      shiftContents("down");
-    }else if (key.key === "ArrowUp"){
-      shiftContents("up");
+    if (key.key === 'ArrowLeft' ){
+      shiftContents('left');
+    }else if (key.key === 'ArrowRight'){
+      shiftContents('right');
+    }else if (key.key === 'ArrowDown' ){
+      shiftContents('down');
+    }else if (key.key === 'ArrowUp'){
+      shiftContents('up');
     }
     else if (key.keyCode === 82) start2048Game();
     else if (key.keyCode === 32) pauseGame();
@@ -251,7 +251,7 @@ function Two048(msg = ""){
   }
   //Printers
   function printInitialContent(){
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
       <div className = 'two048Screen' id='two048Screen'>
         <div className='two048GameBoard' id='two048GameBoard'></div>
@@ -259,67 +259,67 @@ function Two048(msg = ""){
       </div>
       <div className='bulletinBoard' id='bulletinBoard'></div>
       </>
-    )
+    ))
     print2048Board();
     print2048ScoreBoard();
   }
   function print2048Board(){
     var squares = [];
     for (let i = 0; i < gameBoard.length; i++){
-      squares.push(<div className='two048Tile' key={i} id={"square" + i}><h1>{gameBoard[i] === 0 ? "" : gameBoard[i]}</h1></div>)
+      squares.push(<div className='two048Tile' key={i} id={'square' + i}><h1>{gameBoard[i] === 0 ? '' : gameBoard[i]}</h1></div>)
     }
-    document.getElementById("two048GameBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#two048GameBoard').html(ReactDOMServer.renderToStaticMarkup(
       <div>
       {squares}
       </div>
-    )
+    ))
     for (let i = 0; i < gameBoard.length; i++){
       if (gameBoard[i] !== 0){
-        document.getElementById('square' + i).style.backgroundColor = generateColorForSquare(gameBoard[i])
+        $('#square' + i).css('backgroundColor', generateColorForSquare(gameBoard[i]));
       }
     }
   }
-  function print2048ScoreBoard(end=false,message=""){
+  function print2048ScoreBoard(end=false,message=''){
     if (end) {
       totalTime += Date.now() - startTime;
-      document.removeEventListener('keydown',detectDirectionalKeyDown);
-      document.addEventListener('keydown',detectOnlyRestart);
+      $('body').off('keydown',detectDirectionalKeyDown)
+      $('body').on('keydown',detectOnlyRestart);
     }
-    document.getElementById('bulletinBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#bulletinBoard').html(ReactDOMServer.renderToStaticMarkup(
       <div>
       <Button id='mainMenuButton'>Main Menu</Button>
-      {message + " "}
+      {message + ' '}
       Score: {score}
-      {end ? " Total Time: " + millisecondsToReadableTime(totalTime) : ""}
-      {end ? " Total Moves " + moves : ""}
+      {end ? ' Total Time: ' + millisecondsToReadableTime(totalTime) : ''}
+      {end ? ' Total Moves ' + moves : ''}
       <Button id='restartButton'>Restart</Button>
       {end ? (<Button id='submitButton'>Submit Score</Button>) : (<div></div>)}
       </div>
-    )
-    document.getElementById('restartButton').onclick = function(){start2048Game()}
-    document.getElementById('mainMenuButton').onclick = function(){get2048MainMenu()}
-    if (end) document.getElementById('submitButton').onclick = function(){submitScore()}
+    ))
+    $('#restartButton').click(function(){start2048Game()});
+    $('#mainMenuButton').click(function(){get2048MainMenu()});
+    if (end) $('#submitButton').click(function(){submitScore()});
   }
   //Player Actions
   function pauseGame(){
     if (paused){
       paused = false;
       startTime = Date.now();
-      document.addEventListener('keydown',detectDirectionalKeyDown);
-      document.removeEventListener('keydown',detectOnlyPauseOrRestart);
-      document.getElementById("two048PauseScreen").style.visibility = 'hidden';
+      $('body').on('keydown',detectDirectionalKeyDown);
+      $('body').off('keydown',detectOnlyPauseOrRestart)
+      $('#two048PauseScreen').css('visibility','hidden');
     }else{
       paused = true;
       totalTime += Date.now() - startTime;
-      document.removeEventListener('keydown',detectDirectionalKeyDown);
-      document.addEventListener('keydown',detectOnlyPauseOrRestart);
-      document.getElementById("two048PauseScreen").style.visibility = 'visible';
+      $('body').off('keydown',detectDirectionalKeyDown);
+      $('body').on('keydown',detectOnlyPauseOrRestart);
+      $('#two048PauseScreen').css('visibility','visible');
     }
   }
   function shiftContents(direction){
     var blocked = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     var prevBoardState = [...gameBoard];
-    if (direction === "left"){
+    if (direction === 'left'){
       for (let i = 0; i < gameBoard.length; i++){
         var newf = i;
         while (newf % 4 !== 0){
@@ -337,7 +337,7 @@ function Two048(msg = ""){
           }else break;
         }
       }
-    }else if (direction === "right"){
+    }else if (direction === 'right'){
       for (let i = gameBoard.length - 1; i >= 0; i--){
         var newg = i;
         while ((newg + 1) % 4 !== 0){
@@ -355,7 +355,7 @@ function Two048(msg = ""){
           }else break;
         }
       }
-    }else if (direction === "down"){
+    }else if (direction === 'down'){
       for (let i = gameBoard.length - 1; i >= 0; i--){
         var newI = i;
         while (newI < gameBoard.length - 4){
@@ -373,7 +373,7 @@ function Two048(msg = ""){
           }else break;
         }
       }
-    }else if (direction === "up"){
+    }else if (direction === 'up'){
       for (let i = 0; i < gameBoard.length; i++){
         var newX = i;
         while (newX >= 4){
@@ -398,13 +398,13 @@ function Two048(msg = ""){
       gameBoard[randomlyPickFreeSquare()] = randomNumberSelect();
     }
     print2048Board();
-    if (!anyMovesRemaining()) print2048ScoreBoard("lose");
+    if (!anyMovesRemaining()) print2048ScoreBoard('lose');
     else print2048ScoreBoard();
   }
   return (
-    <div className="gameScreen" id="gameScreen">
+    <div className='gameScreen' id='gameScreen'>
       <h1>2048</h1>
-      {(msg !== "") ?  <div className='confMsg'>{msg}</div>  : ""}
+      {(msg !== '') ?  <div className='confMsg'>{msg}</div>  : ''}
       <Button onClick={start2048Game}>Play 2048</Button><br></br>
       <Button onClick={read2048Instructions}>Read Instructions</Button><br></br>
       <Button onClick={get2048ScoresPage}>Scores</Button><br></br>
