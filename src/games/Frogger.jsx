@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import cookieSetter from "../helpers/setCookiesForGame.jsx";
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
+import $ from 'jquery'
 
 import FrogImageNorth from './froggerImages/frogNorth.png'
 import FrogImageSouth from './froggerImages/frogSouth.png'
@@ -40,7 +41,7 @@ function Frogger(msg = ""){
   function startFroggerGame(){
     createFroggerBoard();
     printInitialContent();
-    document.addEventListener('keydown',detectDirectionalKeyDown);
+    $('body').on('keydown',detectDirectionalKeyDown);
   }
   function createFroggerBoard(){ //height 20 width 15
     //Obstacles include water, cars, rocks
@@ -153,9 +154,9 @@ function Frogger(msg = ""){
       else if (objectBoard[i] === "L") objs.push(<img className='froggerLog' alt='Log' src={LogEast}></img>);
       else objs.push(<div className='froggerTile'></div>);
     }
-    document.getElementById('froggerTileBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(tiles);
-    document.getElementById('froggerFrogBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(frog);
-    document.getElementById('froggerObjBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(objs)
+    $('#froggerTileBoard').html(ReactDOMServer.renderToStaticMarkup(tiles));
+    $('#froggerFrogBoard').html(ReactDOMServer.renderToStaticMarkup(frog));
+    $('#froggerObjBoard').html(ReactDOMServer.renderToStaticMarkup(objs));
   }
   function printFroggerScoreBoard(ended=false,message = ""){
     var text;
@@ -164,17 +165,17 @@ function Frogger(msg = ""){
     }else{
       text = (<>{message}<Button id='mainMenuButton'>Main Menu</Button> Current Score: {score} <Button id='restartButton'>Restart</Button></>)
     }
-    document.getElementById("bulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $("#bulletinBoard").html(ReactDOMServer.renderToStaticMarkup(
       <>
       {text}
       </>
-    )
-    document.getElementById("mainMenuButton").onclick = function(){getFroggerMainMenu()}
-    document.getElementById("restartButton").onclick = function(){startFroggerGame()}
-    if ( ended === "Loss" ) document.getElementById("submitScoreButton").onclick = function(){submitFroggerScore(ended)}
+    ));
+    $("#mainMenuButton").click(function(){getFroggerMainMenu()});
+    $("#restartButton").click(function(){startFroggerGame()})
+    if ( ended === "Loss" ) $("#submitScoreButton").click(function(){submitFroggerScore(ended)});
   }
   function printInitialContent(){
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
       <div className = 'froggerScreen' id='froggerScreen'>
         <div className='froggerTileBoard' id='froggerTileBoard'></div>
@@ -184,7 +185,7 @@ function Frogger(msg = ""){
       </div>
       <div className='bulletinBoard' id='bulletinBoard'></div>
       </>
-    )
+    ));
     printFroggerBoard();
     printFroggerScoreBoard();
   }
@@ -226,9 +227,9 @@ function Frogger(msg = ""){
       lastTime = Date.now();
       startTime = Date.now();
       paused = false;
-      document.addEventListener('keydown',detectDirectionalKeyDown);
-      document.removeEventListener('keydown',detectOnlyPauseOrRestart);
-      document.getElementById("froggerPauseScreen").style.visibility = 'hidden';
+      $('body').on('keydown',detectDirectionalKeyDown);
+      $('body').off('keydown',detectOnlyPauseOrRestart);
+      $("#froggerPauseScreen").css('visibility','hidden');
       intervalID = setTimeout(function(){
         runBoard();
         intervalID = setInterval(runBoard,refreshRate)
@@ -238,9 +239,9 @@ function Frogger(msg = ""){
       remainingTime = Date.now() - lastTime;
       totalTime += Date.now() - startTime;
       clearInterval(intervalID);
-      document.removeEventListener('keydown',detectDirectionalKeyDown);
-      document.addEventListener('keydown',detectOnlyPauseOrRestart);
-      document.getElementById("froggerPauseScreen").style.visibility = 'visible';
+      $('#body').off('keydown',detectDirectionalKeyDown);
+      $('#body').on('keydown',detectOnlyPauseOrRestart);
+      $("#froggerPauseScreen").css('visibility','visible');
     }
   }
   //Board Detections
@@ -386,8 +387,8 @@ function Frogger(msg = ""){
   function displayLossScreen(){
     clearInterval(intervalID);
     totalTime += Date.now() - startTime;
-    document.removeEventListener('keydown',detectDirectionalKeyDown);
-    document.addEventListener('keydown',detectOnlyRestart);
+    $('body').off('keydown',detectDirectionalKeyDown);
+    $('body').on('keydown',detectOnlyRestart);
     printFroggerBoard();
     printFroggerScoreBoard("Loss");
   }
@@ -416,20 +417,20 @@ function Frogger(msg = ""){
   //Pages
   function getFroggerMainMenu(){
     clearInterval(intervalID);
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
       <h1>Frogger</h1>
       <Button id='startFroggerButton'>Play Frogger</Button><br></br>
       <Button id='froggerInstructionsButton'>Read Instructions</Button><br></br>
       <Button id='froggerScoresButton'>Scores</Button><br></br>
       </>
-    );
-    document.getElementById('startFroggerButton').onclick = function(){startFroggerGame()};
-    document.getElementById('froggerInstructionsButton').onclick = function(){readFroggerInstructions()};
-    document.getElementById('froggerScoresButton').onclick = function(){getFroggerScoresPage()};
+    ));
+    $('#startFroggerButton').click(function(){startFroggerGame()});
+    $('#froggerInstructionsButton').click(function(){readFroggerInstructions()});
+    $('#froggerScoresButton').click(function(){getFroggerScoresPage()});
   }
   function readFroggerInstructions(){
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
@@ -441,8 +442,8 @@ function Frogger(msg = ""){
           <p>Press the R Button to quickly restart the game.</p>
         </div>
       </>
-    )
-    document.getElementById("backButton").onclick = function(){getFroggerMainMenu()};
+    ));
+    $("#backButton").click(function(){getFroggerMainMenu()});
   }
   function getFroggerScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
     var fetchString;
@@ -521,24 +522,20 @@ function Frogger(msg = ""){
         <div>{prevButton}{nextButton}</div>
       </>
     );
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
-    document.getElementById('backButton').onclick = function(){getFroggerMainMenu()};
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(reactString));
+    $('#backButton').click(function(){getFroggerMainMenu()});
     if (rule === "myrecent"){
-      document.getElementById("personalScoresSwitch").onclick = function(){getFroggerScoresPage("","recent")};
-      document.getElementById("otherMetricButton").onclick = function(){getFroggerScoresPage("","mybest")};
+      $("#personalScoresSwitch").click(function(){getFroggerScoresPage("","recent")});
+      $("#otherMetricButton").click(function(){getFroggerScoresPage("","mybest")});
     }else if (rule === "mybest"){
-      document.getElementById("personalScoresSwitch").onclick = function(){getFroggerScoresPage("","best")};
-      document.getElementById("otherMetricButton").onclick = function(){getFroggerScoresPage("","myrecent")};
+      $("#personalScoresSwitch").click(function(){getFroggerScoresPage("","best")});
+      $("#otherMetricButton").click(function(){getFroggerScoresPage("","myrecent")});
     }else if (rule === "recent"){
-      if (cookies.get("id")){
-        document.getElementById("personalScoresSwitch").onclick = function(){getFroggerScoresPage("","myrecent")};
-      }
-      document.getElementById("otherMetricButton").onclick = function(){getFroggerScoresPage("","best")};
+      if (cookies.get("id")) $("#personalScoresSwitch").click(function(){getFroggerScoresPage("","myrecent")});
+      $("#otherMetricButton").click(function(){getFroggerScoresPage("","best")});
     }else if (rule === "best" || rule === ""){
-      if (cookies.get("id")){
-        document.getElementById("personalScoresSwitch").onclick = function(){getFroggerScoresPage("","mybest")};
-      }
-      document.getElementById("otherMetricButton").onclick = function(){getFroggerScoresPage("","recent")};
+      if (cookies.get("id")) $("#personalScoresSwitch").click(function(){getFroggerScoresPage("","mybest")});
+      $("#otherMetricButton").click(function(){getFroggerScoresPage("","recent")});
     }
   }
   return (
