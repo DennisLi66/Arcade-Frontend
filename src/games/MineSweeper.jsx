@@ -6,6 +6,7 @@ import Table from 'react-bootstrap/Table'
 import fisherYatesShuffle from "../helpers/fisherYatesShuffle.ts";
 import cookieSetter from "../helpers/setCookiesForGame.jsx";
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
+import $ from 'jquery';
 import flagPNG from './minesweeperImages/flag.png'
 import square1 from './minesweeperImages/square1.png'
 import square0 from './minesweeperImages/square0.png'
@@ -41,10 +42,7 @@ function MineSweeper(msg = ""){
     }
     //scramble randomMines and pick the first 40;
     randomMines = fisherYatesShuffle(randomMines);
-    for (let i = 0; i < mines; i++){
-      minesweeperBoard[randomMines.shift()] = -1;
-    }
-    //FIX THIS: Change Numbers to proximity to mines
+    for (let i = 0; i < mines; i++) minesweeperBoard[randomMines.shift()] = -1;
     for (let i = 0; i < minesweeperBoard.length; i++){
       if (minesweeperBoard[i] === -1){
         if (i - 18 >= 0 && minesweeperBoard[i - 18] !== -1) minesweeperBoard[i - 18] = minesweeperBoard[i - 18] + 1 //Above
@@ -57,15 +55,15 @@ function MineSweeper(msg = ""){
         if ( ((i + 1) % 18 !== 0) && (i + 19 < 14*18) && minesweeperBoard[i + 19] !== -1) minesweeperBoard[i + 19] = minesweeperBoard[i + 19] + 1; //Below Right
       }
     }
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <div className='mineSweeperStack'>
         <div className='minesweeperBoard' id='minesweeperBoard'></div>
         <div className='mineSweeperScoreBoard' id='mineSweeperScoreBoard'></div>
       </div>
-    )
+    ));
   }
   function startMineSweeperGame(){
-    document.addEventListener('keydown',detectRestart)
+    $('body').on('keydown',detectRestart)
     setBoard();
     printMineSweeperBoard();
     printMineSweeperScoreBoard();
@@ -101,18 +99,18 @@ function MineSweeper(msg = ""){
         }
       }
     }
-    document.getElementById('minesweeperBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#minesweeperBoard').html(ReactDOMServer.renderToStaticMarkup(
       <>
         {board}
       </>
-    )
+    ))
     if (!end){
       for (let i = 0; i < 14*18; i++){
-        document.getElementById('square' + i).oncontextmenu = function(){
+        $('#square' + i).contextmenu(function(){
           markSquare(i);
           return false;
-        };
-        document.getElementById('square' + i).onclick = function(){revealSquare(i)}
+        });
+        $('#square' + i).click(function(){revealSquare(i)});
       }
     }
   }
@@ -120,16 +118,16 @@ function MineSweeper(msg = ""){
     var middleText = (<> You've Lost. </>);
     if (!end) middleText = (<>Flags Placed: {flagsPlaced} Total Mines: {mines}</>);
     else if (end && end === "Victory") middleText = (<><span className='errMsg'>{message}</span> Time: {millisecondsToReadableTime(endingTime)} <Button id='submitButton'>Submit Score</Button></>);
-    document.getElementById('mineSweeperScoreBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#mineSweeperScoreBoard').html(ReactDOMServer.renderToStaticMarkup(
       <>
         <Button id='mainMenuButton'>Main Menu</Button>
         {middleText}
         <Button id='quickRestartButton'>Restart</Button>
       </>
-    )
-    document.getElementById('mainMenuButton').onclick = function(){getMineSweeperMainMenu()};
-    document.getElementById('quickRestartButton').onclick = function(){startMineSweeperGame()};
-    if(end && end === "Victory") document.getElementById('submitButton').onclick = function(){submitMinesweeperScore()}
+    ));
+    $('#mainMenuButton').click(function(){getMineSweeperMainMenu()});
+    $('#quickRestartButton').click(function(){startMineSweeperGame()});
+    if(end && end === "Victory") $('#submitButton').click(function(){submitMinesweeperScore()});
   }
   //Actions
   function markSquare(square){
@@ -198,27 +196,21 @@ function MineSweeper(msg = ""){
   }
   //Victory and Loss
   function detectVictory(){
-    for (let i = 0; i < minesweeperBoard.length; i++){
-      if (revealedBoard[i] === 0 && minesweeperBoard[i] !== -1) return false;
-    }
+    for (let i = 0; i < minesweeperBoard.length; i++) if (revealedBoard[i] === 0 && minesweeperBoard[i] !== -1) return false;
     return true;
   }
   function detectRestart(key){
     if (key.keyCode === 82) startMineSweeperGame();
   }
   function showVictoryScreen(){
-    document.removeEventListener('keydown',detectRestart);
+    $('body').off('keydown',detectRestart);
     endingTime = Date.now() - startingTime;
-    for (let i = 0; i < revealedBoard.length; i++){
-      revealedBoard[i] = 1;
-    }
+    for (let i = 0; i < revealedBoard.length; i++) revealedBoard[i] = 1;
     printMineSweeperBoard(true);
     printMineSweeperScoreBoard("Victory");
   }
   function showLossScreen(){
-    for (let i = 0; i < revealedBoard.length; i++){
-      revealedBoard[i] = 1;
-    }
+    for (let i = 0; i < revealedBoard.length; i++) revealedBoard[i] = 1;
     printMineSweeperBoard(true);
     printMineSweeperScoreBoard("Loss");
   }
@@ -234,32 +226,27 @@ function MineSweeper(msg = ""){
         .then(response => response.json())
         .then(data => {
           console.log(data);
-          if (data.status === -1){
-            printMineSweeperScoreBoard("Victory",data.message);
-          }else{
-            getMineSweeperScoresPage("Your score has been submitted.")
-          }
+          if (data.status === -1) printMineSweeperScoreBoard("Victory",data.message);
+          else getMineSweeperScoresPage("Your score has been submitted.");
         })
-    }else{
-      cookieSetter({timeInMilliseconds: endingTime, gameID: 4})
-    }
+    }else cookieSetter({timeInMilliseconds: endingTime, gameID: 4});
   }
   //Get Pages
   function getMineSweeperMainMenu(){
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
       <h1> Tetris </h1>
       <Button id='startGameButton'>Start Game</Button><br></br>
       <Button id='instructionsButton'>Read Instructions</Button><br></br>
       <Button id='scoresButton'>Scores</Button><br></br>
       </>
-    );
-    document.getElementById('startGameButton').onclick = function(){startMineSweeperGame()};
-    document.getElementById('instructionsButton').onclick = function(){readMineSweeperInstructions()};
-    document.getElementById('scoresButton').onclick = function(){getMineSweeperScoresPage()};
+    ));
+    $('#startGameButton').click(function(){startMineSweeperGame()});
+    $('#instructionsButton').click(function(){readMineSweeperInstructions()});
+    $('#scoresButton').click(function(){getMineSweeperScoresPage()});
   }
   function readMineSweeperInstructions(){
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
@@ -274,8 +261,8 @@ function MineSweeper(msg = ""){
           <p>Press the R button to quickly restart the game if needed.</p>
         </div>
       </>
-    )
-    document.getElementById("backButton").onclick = function(){getMineSweeperMainMenu()};
+    ))
+    $("#backButton").click(function(){getMineSweeperMainMenu()});
   }
   function getMineSweeperScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
     var fetchString;
@@ -301,19 +288,13 @@ function MineSweeper(msg = ""){
           if (data.status === -1){
             // do nothing... FIX THIS
             console.log(data.message);
-          }else{
-            scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
-          }
+          }else scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
         })
-    }else{ //use results instead
-      scoresHelperFunction(message,rule,results,start,end,scoreTitle);
-    }
+    }else scoresHelperFunction(message,rule,results,start,end,scoreTitle);
   }
   function scoresHelperFunction(message,rule,results,start,end,scoreTitle){
     var listOfElements = [];
-    for (let i = start; i < Math.min(results.length,end); i++){
-      listOfElements.push(<tr key = {i}><td>{i + 1}</td> <td> {results[i][0]} </td> <td> {results[i][1]} </td> <td> {results[i][2]}</td> <td> {results[i][3]}</td> </tr>)
-    }
+    for (let i = start; i < Math.min(results.length,end); i++) listOfElements.push(<tr key = {i}><td>{i + 1}</td> <td> {results[i][0]} </td> <td> {results[i][1]} </td> <td> {results[i][2]}</td> <td> {results[i][3]}</td> </tr>)
     var otherMetricButton;
     var personalScoresSwitchButton;
     if (rule === "myrecent"){
@@ -323,23 +304,15 @@ function MineSweeper(msg = ""){
       otherMetricButton = (<Button id='otherMetricButton'> My Recent Scores </Button>)
       personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Best Scores </Button>)
     }else if (rule === "recent"){
-      if (cookies.get("id")){
-        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
-      }
+      if (cookies.get("id")) personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
       otherMetricButton =  (<Button id='otherMetricButton'> All Best Scores </Button>)
     }else if (rule === "best" || rule === ""){
-      if (cookies.get("id")){
-        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
-      }
+      if (cookies.get("id")) personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
       otherMetricButton =  (<Button id='otherMetricButton'> All Recent Scores </Button>)
     }
     var nextButton, prevButton;
-    if (end < results.length){
-      nextButton = (<Button onClick={getMineSweeperScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
-    }
-    if (start > 0){
-      prevButton = (<Button onClick={getMineSweeperScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
-    }
+    if (end < results.length) nextButton = (<Button onClick={getMineSweeperScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
+    if (start > 0) prevButton = (<Button onClick={getMineSweeperScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)    
     var reactString = (
       <>
         <h1> {scoreTitle} </h1>
@@ -354,24 +327,20 @@ function MineSweeper(msg = ""){
         <div>{prevButton}{nextButton}</div>
       </>
     );
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
-    document.getElementById('backButton').onclick = function(){getMineSweeperMainMenu()};
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(reactString));
+    $('#backButton').click(function(){getMineSweeperMainMenu()});
     if (rule === "myrecent"){
-      document.getElementById("personalScoresSwitch").onclick = function(){getMineSweeperScoresPage("","recent")};
-      document.getElementById("otherMetricButton").onclick = function(){getMineSweeperScoresPage("","mybest")};
+      $("#personalScoresSwitch").click(function(){getMineSweeperScoresPage("","recent")});
+      $("#otherMetricButton").click(function(){getMineSweeperScoresPage("","mybest")});
     }else if (rule === "mybest"){
-      document.getElementById("personalScoresSwitch").onclick = function(){getMineSweeperScoresPage("","best")};
-      document.getElementById("otherMetricButton").onclick = function(){getMineSweeperScoresPage("","myrecent")};
+      $("#personalScoresSwitch").click(function(){getMineSweeperScoresPage("","best")});
+      $("#otherMetricButton").click(function(){getMineSweeperScoresPage("","myrecent")});
     }else if (rule === "recent"){
-      if (cookies.get("id")){
-        document.getElementById("personalScoresSwitch").onclick = function(){getMineSweeperScoresPage("","myrecent")};
-      }
-      document.getElementById("otherMetricButton").onclick = function(){getMineSweeperScoresPage("","best")};
+      if (cookies.get("id")) $("#personalScoresSwitch").click(function(){getMineSweeperScoresPage("","myrecent")});
+      $("#otherMetricButton").click(function(){getMineSweeperScoresPage("","best")});
     }else if (rule === "best" || rule === ""){
-      if (cookies.get("id")){
-        document.getElementById("personalScoresSwitch").onclick = function(){getMineSweeperScoresPage("","mybest")};
-      }
-      document.getElementById("otherMetricButton").onclick = function(){getMineSweeperScoresPage("","recent")};
+      if (cookies.get("id")) $("#personalScoresSwitch").click(function(){getMineSweeperScoresPage("","mybest")});
+      $("#otherMetricButton").click(function(){getMineSweeperScoresPage("","recent")});
     }
   }
   return (
