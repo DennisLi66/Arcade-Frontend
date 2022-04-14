@@ -5,6 +5,7 @@ import cookieSetter from "../helpers/setCookiesForGame.jsx"
 import ReactDOMServer from 'react-dom/server';
 import Cookies from 'universal-cookie';
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
+import $ from 'jquery'
 require('dotenv').config();
 
 //Could Add Difficuly FIX THIS, like faster or constantly increasing
@@ -56,9 +57,7 @@ function Snake(msg = "") {
   }
   //Pregame
   function fillGameBoard(){
-    if (intervalID !== ""){
-      clearInterval(intervalID);
-    }
+    clearInterval(intervalID);
     startingTime = 0;
     intervalID = "";
     currentDirection = "up";
@@ -71,24 +70,18 @@ function Snake(msg = "") {
     gameBoard = [];
     score = 0;
     paused = false;
-    document.removeEventListener('keydown',detectOnlyRestart);
+    $('body').off('keydown',detectOnlyRestart);
     //Actual Function
     var borderRow = [];
-    for (let i = 0; i < 42; i++){
-      borderRow.push("X");
-    }
+    for (let i = 0; i < 42; i++) borderRow.push("X");
     //push top border row
     gameBoard.push(...borderRow);
     //push middle content
     var row = [];
     row.push("X");
-    for (let i = 0; i < 40; i++){
-      row.push("0");
-    }
+    for (let i = 0; i < 40; i++) row.push("0");
     row.push("X");
-    for (let i = 0; i < 40; i++){
-      gameBoard.push(...row);
-    }
+    for (let i = 0; i < 40; i++) gameBoard.push(...row);
     //push bottom border row
     gameBoard.push(...borderRow);
     gameBoard[38 * 42 + 5] = 'S'; //snake
@@ -193,21 +186,21 @@ function Snake(msg = "") {
       paused = false;
       setTime = Date.now();
       setTimeout(runGame,placeholder);
-      document.removeEventListener('keydown',detectOnlyPauseOrRestart);
-      document.addEventListener('keydown',detectDirectionalKeyDown);
-      document.getElementById("pauseScreen").style.visibility = 'hidden';
+      $('body').off('keydown',detectOnlyPauseOrRestart);
+      $('body').on('keydown',detectDirectionalKeyDown);
+      $("#pauseScreen").css('visibility','hidden');
     }else{
       totalTime += Date.now() - startingTime;
       clearTimeout(intervalID);
       paused = Date.now() - setTime;
-      document.removeEventListener('keydown',detectDirectionalKeyDown);
-      document.addEventListener('keydown',detectOnlyPauseOrRestart);
-      document.getElementById("pauseScreen").style.visibility = 'visible';
+      $('body').off('keydown',detectDirectionalKeyDown);
+      $('body').on('keydown',detectOnlyPauseOrRestart);
+      $("#pauseScreen").css('visibility','visible');
     }
   }
   //Printers
   function printInitialContent(){
-    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $("#gameScreen").html(ReactDOMServer.renderToStaticMarkup(
       <>
       <h1>Snake</h1>
       <div className = 'snakeScreen' id='snakeScreen'>
@@ -216,7 +209,7 @@ function Snake(msg = "") {
       </div>
       <div className='bulletinBoard' id='bulletinBoard'></div>
       </>
-    );
+    ));
     printSnakeBoard();
     printInfoRow();
   }
@@ -241,7 +234,7 @@ function Snake(msg = "") {
         {squareList}
       </>
     )
-    document.getElementById("gameBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
+    $("#gameBoard").html(ReactDOMServer.renderToStaticMarkup(reactString));
   }
   function printInfoRow(){
     var text = (<Button id='returnButton'>Main Menu</Button>);
@@ -250,10 +243,8 @@ function Snake(msg = "") {
     if (direction){
       middleText = (" Score: " + score + " ");
       quickRestartButton = (<Button id="quickRestartButton">Restart</Button>)
-    }else{
-      middleText = ("Press on any of the arrow keys to start.")
-    }
-    document.getElementById("bulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    }else middleText = ("Press on any of the arrow keys to start.")
+    $("#bulletinBoard").html(ReactDOMServer.renderToStaticMarkup(
       (
         <div>
           {text}
@@ -261,18 +252,18 @@ function Snake(msg = "") {
           {quickRestartButton}
         </div>
       )
-    );
-    document.getElementById("returnButton").onclick = function(){getFrontPage()};
-    if (direction) document.getElementById("quickRestartButton").onclick = function(){startSnakeGame()};
+    ));
+    $("#returnButton").click(function(){getFrontPage()});
+    if (direction) $("#quickRestartButton").click(function(){startSnakeGame()});
   }
   function startSnakeGame(){
     fillGameBoard();
     printInitialContent();
-    document.addEventListener('keydown',detectDirectionalKeyDown);
+    $('body').on('keydown',detectDirectionalKeyDown);
   }
   //Pages
   function readInstructions(){
-    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $("#gameScreen").html(ReactDOMServer.renderToStaticMarkup(
       <div>
         <Button id='backButton'>Back</Button>
         <h1> Instructions </h1>
@@ -286,11 +277,11 @@ function Snake(msg = "") {
           <p>Press R to quickly restart the game if necessary.</p>
         </div>
       </div>
-    )
-    document.getElementById('backButton').onclick = function(){getFrontPage()}
+    ));
+    $('#backButton').click(function(){getFrontPage()});
   }
   function getFrontPage(){
-    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $("#gameScreen").html(ReactDOMServer.renderToStaticMarkup(
       (
         <div>
           <h1>Snake</h1>
@@ -299,10 +290,10 @@ function Snake(msg = "") {
             <Button id="getScoresButton">Scores</Button><br></br><br></br>
         </div>
       )
-    )
-    document.getElementById('playSnakeButton').onclick = function(){startSnakeGame()};
-    document.getElementById('readInstructionsButton').onclick = function(){readInstructions()};
-    document.getElementById('getScoresButton').onclick = function(){getScoresPage()}
+    ));
+    $('#playSnakeButton').click(function(){startSnakeGame()});
+    $('#readInstructionsButton').click(function(){readInstructions()});
+    $('#getScoresButton').click(function(){getScoresPage()});
   }
   function getScoresPage(message = "", rule = "", results = [], start = 0, end = 10){ //FIX THIS DOES NOT DISPLAY PROPERLY
     var fetchString;
@@ -350,23 +341,15 @@ function Snake(msg = "") {
       otherMetricButton = (<Button id='otherMetricButton'> My Recent Scores </Button>)
       personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Best Scores </Button>)
     }else if (rule === "recent"){
-      if (cookies.get("id")){
-        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
-      }
+      if (cookies.get("id")) personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
       otherMetricButton =  (<Button id='otherMetricButton'> All Best Scores </Button>)
     }else if (rule === "best" || rule === ""){
-      if (cookies.get("id")){
-        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
-      }
+      if (cookies.get("id")) personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
       otherMetricButton =  (<Button id='otherMetricButton'> All Recent Scores </Button>)
     }
     var nextButton, prevButton;
-    if (end < results.length){
-      nextButton = (<Button onClick={getScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
-    }
-    if (start > 0){
-      prevButton = (<Button onClick={getScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
-    }
+    if (end < results.length) nextButton = (<Button onClick={getScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
+    if (start > 0) prevButton = (<Button onClick={getScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
     var reactString = (
       <div>
         <h1> {scoreTitle} </h1>
@@ -381,24 +364,20 @@ function Snake(msg = "") {
         <div>{prevButton}{nextButton}</div>
       </div>
     );
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
-    document.getElementById('backButton').onclick = function(){getFrontPage()};
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(reactString));
+    $('#backButton').click(function(){getFrontPage()});
     if (rule === "myrecent"){
-      document.getElementById("personalScoresSwitch").onclick = function(){getScoresPage("","recent")};
-      document.getElementById("otherMetricButton").onclick = function(){getScoresPage("","mybest")};
+      $("#personalScoresSwitch").click(function(){getScoresPage("","recent")});
+      $("#otherMetricButton").click(function(){getScoresPage("","mybest")});
     }else if (rule === "mybest"){
-      document.getElementById("personalScoresSwitch").onclick = function(){getScoresPage("","best")};
-      document.getElementById("otherMetricButton").onclick = function(){getScoresPage("","myrecent")};
+      $("#personalScoresSwitch").click(function(){getScoresPage("","best")});
+      $("#otherMetricButton").click(function(){getScoresPage("","myrecent")});
     }else if (rule === "recent"){
-      if (cookies.get("id")){
-        document.getElementById("personalScoresSwitch").onclick = function(){getScoresPage("","myrecent")};
-      }
-      document.getElementById("otherMetricButton").onclick = function(){getScoresPage("","best")};
+      if (cookies.get("id")) $("#personalScoresSwitch").click(function(){getScoresPage("","myrecent")});
+      $("#otherMetricButton").click(function(){getScoresPage("","best")});
     }else if (rule === "best" || rule === ""){
-      if (cookies.get("id")){
-        document.getElementById("personalScoresSwitch").onclick = function(){getScoresPage("","mybest")};
-      }
-      document.getElementById("otherMetricButton").onclick = function(){getScoresPage("","recent")};
+      if (cookies.get("id")) $("#personalScoresSwitch").click(function(){getScoresPage("","mybest")});
+      $("#otherMetricButton").click(function(){getScoresPage("","recent")});
     }
   }
   //Post GAME
@@ -428,23 +407,23 @@ function Snake(msg = "") {
   }
   function displayEndingScreen(){ //Display Score and Time Elapsed, Restart Button, Submit Score Button
     totalTime += Date.now() - startingTime;
-    document.removeEventListener('keydown',detectDirectionalKeyDown);
-    document.addEventListener('keydown',detectOnlyRestart);
+    $('body').off('keydown',detectDirectionalKeyDown);
+    $('body').on('keydown',detectOnlyRestart);
     var scoreInformation = (" Score: " + score + " Time Elapsed: " + millisecondsToReadableTime(totalTime));
     var returnButton = (<Button id="returnButton">Main Menu</Button>)
     var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
     var submitScoreButton = (<Button id='submitScoreButton'>Submit Score</Button>)
-    document.getElementById('bulletinBoard').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#bulletinBoard').html(ReactDOMServer.renderToStaticMarkup(
       <div>
         {returnButton}
         {scoreInformation}
         {quickRestartButton}
         {submitScoreButton}
       </div>
-    );
-    document.getElementById("returnButton").onclick = function(){getFrontPage()};
-    document.getElementById("quickRestartButton").onclick = function(){startSnakeGame()};
-    document.getElementById("submitScoreButton").onclick = function(){submitScore()}
+    ));
+    $("#returnButton").click(function(){getFrontPage()});
+    $("#quickRestartButton").click(function(){startSnakeGame()});
+    $("#submitScoreButton").click(function(){submitScore()});
   }
 
   return (
