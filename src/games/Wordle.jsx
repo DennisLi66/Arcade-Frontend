@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import cookieSetter from "../helpers/setCookiesForGame.jsx";
 import produceWord from "../helpers/produceWord.ts";
+import $ from 'jquery'
 require('dotenv').config();
 
 //Add score submission
@@ -32,7 +33,7 @@ function Wordle(msg = ""){
       <div className='WordleBulletinBoard' id='WordleBulletinBoard'></div>
       </>
     );
-    document.getElementById("gameScreen").innerHTML = ReactDOMServer.renderToStaticMarkup(reactScript);
+    $("#gameScreen").html(ReactDOMServer.renderToStaticMarkup(reactScript));
     printWordleGameBoard();
     printWordleBulletinBoard();
     printWordleTextBox();
@@ -47,7 +48,7 @@ function Wordle(msg = ""){
     }else{
       middleText = (" Type a letter to begin. ")
     }
-    document.getElementById("WordleBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $("#WordleBulletinBoard").html(ReactDOMServer.renderToStaticMarkup(
       (
         <>
           {text}
@@ -55,16 +56,16 @@ function Wordle(msg = ""){
           {quickRestartButton}
         </>
       )
-    );
-    document.getElementById("returnButton").onclick = function(){getWordleFrontPage()};
-    if (currentWord !== "") document.getElementById("quickRestartButton").onclick = function(){startWordleGame()};
+    ));
+    $("#returnButton").click(function(){getWordleFrontPage()});
+    if (currentWord !== "") $("#quickRestartButton").click(function(){startWordleGame()});
   }
   function printWordleLossBulletinBoard(){
     var text = (<Button id='returnButton'>Main Menu</Button>);
     var middleText = (" Final Score: " + score + " ");
     var quickRestartButton = (<Button id="quickRestartButton">Restart</Button>);
     var submitAndQuitButton = (<Button id='submitAndQuitButton'>Submit Score</Button>);
-    document.getElementById("WordleBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $("#WordleBulletinBoard").html(ReactDOMServer.renderToStaticMarkup(
       (
         <>
           {text}
@@ -73,10 +74,10 @@ function Wordle(msg = ""){
           {quickRestartButton}
         </>
       )
-    );
-    document.getElementById("returnButton").onclick = function(){getWordleFrontPage()};
-    document.getElementById("quickRestartButton").onclick = function(){startWordleGame()};
-    document.getElementById("submitAndQuitButton").onclick = function(){submitScoreAndEndGame()}
+    ));
+    $("#returnButton").click(function(){getWordleFrontPage()});
+    $("#quickRestartButton").click(function(){startWordleGame()});
+    $("#submitAndQuitButton").click(function(){submitScoreAndEndGame()});
   }
   function printWordleWinBulletinBoard(){
     var middleText = (" Current Score: " + score + " ");
@@ -86,7 +87,7 @@ function Wordle(msg = ""){
     if (wordLength > 3) decreaseLengthButton = (<Button id='decreaseLengthButton'>Decrease Word Length</Button>);
     var submitAndQuitButton = (<Button id='submitAndQuitButton'>Submit Score and End Game</Button>);
     var continueButton = (<Button id='continueButton'>Continue</Button>)
-    document.getElementById("WordleBulletinBoard").innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $("#WordleBulletinBoard").html(ReactDOMServer.renderToStaticMarkup(
       <>
         {middleText}
         {decreaseLengthButton}
@@ -94,11 +95,11 @@ function Wordle(msg = ""){
         {advanceLengthButton}
         {submitAndQuitButton}
       </>
-    );
-    if (wordLength < 8) document.getElementById("advanceLengthButton").onclick = function(){nextWordStage(1)};
-    if (wordLength > 3) document.getElementById("decreaseLengthButton").onclick = function(){nextWordStage(-1)};
-    document.getElementById("submitAndQuitButton").onclick = function(){submitScoreAndEndGame()};
-    document.getElementById("continueButton").onclick = function(){nextWordStage()}
+    ));
+    if (wordLength < 8) $("#advanceLengthButton").click(function(){nextWordStage(1)});
+    if (wordLength > 3) $("#decreaseLengthButton").click(function(){nextWordStage(-1)});
+    $("#submitAndQuitButton").click(function(){submitScoreAndEndGame()});
+    $("#continueButton").click(function(){nextWordStage()});
   }
   function printWordleGameBoard(){
     var wordsToPrint = [];
@@ -155,12 +156,12 @@ function Wordle(msg = ""){
         </div>
         )
       )
-    document.getElementById('guessBoxes').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#guessBoxes').html(ReactDOMServer.renderToStaticMarkup(
       <>
       <h2>Guesses</h2>
       {wordsToPrint}
       </>
-    )
+    ))
   }
   function printWordleTextBox(message = ""){
     var letterBoxes = [];
@@ -170,7 +171,7 @@ function Wordle(msg = ""){
     while (letterBoxes.length < wordLength){
       letterBoxes.push(<div className='WordleMiniBox' key={letterBoxes.length}></div>)
     }
-    document.getElementById('WordleTextBox').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#WordleTextBox').html(ReactDOMServer.renderToStaticMarkup(
       <>
         <h4>Your Current Guess</h4>
         <h5> {message} </h5>
@@ -180,23 +181,23 @@ function Wordle(msg = ""){
           <Button id='wordleSubmitButton'>Submit</Button>
         </div>
       </>
-    );
-    document.getElementById('wordleSubmitButton').onclick = function(){submitGuess()};
-    document.getElementById('wordleClearButton').onclick = function(){currentGuess = ""; printWordleTextBox()};
+    ));
+    $('#wordleSubmitButton').click(function(){submitGuess()});
+    $('#wordleClearButton').click(function(){currentGuess = ""; printWordleTextBox()});
   }
   function printWordleLossTextBox(){
     var letterBoxes = [];
     for (let i = 0; i < currentWord.length; i++){
       letterBoxes.push(<div className='WordleMiniBox' key={i}>{currentWord[i].toUpperCase()}</div>)
     };
-    document.getElementById('WordleTextBox').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#WordleTextBox').html(ReactDOMServer.renderToStaticMarkup(
       <>
         <h4>The Actual Word</h4>
         <div className='WordleBoxesHolder'>
           {letterBoxes}
         </div>
       </>
-    );
+    ));
   }
   //KeyLogging
   function detectKeyPress(button){
@@ -240,7 +241,7 @@ function Wordle(msg = ""){
     //add score based on amount of guesses
     //can submit score and quit
     //can increase word length and point gain
-    document.removeEventListener('keydown',detectKeyPress);
+    $('body').off('keydown',detectKeyPress);
     const guessRatio = [25,15,10,6,3,1];
     score += guessRatio[guesses.length] * (1 + Math.abs(5-wordLength));
     guesses.push(currentGuess);
@@ -249,15 +250,13 @@ function Wordle(msg = ""){
     printWordleWinBulletinBoard();
   }
   function showLossScreen(){
-    document.removeEventListener('keydown',detectKeyPress);
-    document.addEventListener('keydown',detectOnlyRestart);
+    $('body').off('keydown',detectKeyPress);
+    $('body').on('keydown',detectOnlyRestart);
     printWordleGameBoard();
     printWordleLossTextBox();
     printWordleLossBulletinBoard();
   }
   function submitScoreAndEndGame(){
-    // console.log(cookies.get("id"));
-    // console.log(cookies.get("sessionID"));
     if (cookies.get("id")){
       const requestSetup = {
         method: 'PUT',
@@ -296,7 +295,7 @@ function Wordle(msg = ""){
     currentGuess = "";
     guesses = [];
     printInitialContent();
-    document.addEventListener('keydown',detectKeyPress);
+    $('body').on('keydown',detectKeyPress);
   }
   //Pages
   function startWordleGame(){
@@ -306,11 +305,11 @@ function Wordle(msg = ""){
     currentGuess = "";
     guesses = [];
     printInitialContent();
-    document.removeEventListener('keydown',detectOnlyRestart);
-    document.addEventListener('keydown',detectKeyPress);
+    $('body').off('keydown',detectOnlyRestart);
+    $('body').on('keydown',detectKeyPress);
   }
   function readWordleInstructions(){
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
         <Button id='backButton'>Back</Button><br></br>
         <h1> Instructions </h1>
@@ -322,8 +321,8 @@ function Wordle(msg = ""){
           <p> If a letter is colorless, it is not present in the word in any position. </p>
         </div>
       </>
-    )
-    document.getElementById("backButton").onclick = function(){getWordleFrontPage()};
+    ));
+    $("#backButton").click(function(){getWordleFrontPage()});
   }
   function getWordleScores(message = "", rule = "", results = [], start = 0, end = 10){
     var fetchString;
@@ -402,38 +401,34 @@ function Wordle(msg = ""){
         <div>{prevButton}{nextButton}</div>
       </>
     );
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(reactString);
-    document.getElementById('backButton').onclick = function(){getWordleFrontPage()};
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(reactString));
+    $('#backButton').click(function(){getWordleFrontPage()});
     if (rule === "myrecent"){
-      document.getElementById("personalScoresSwitch").onclick = function(){getWordleScores("","recent")};
-      document.getElementById("otherMetricButton").onclick = function(){getWordleScores("","mybest")};
+      $("#personalScoresSwitch").click(function(){getWordleScores("","recent")});
+      $("#otherMetricButton").click(function(){getWordleScores("","mybest")});
     }else if (rule === "mybest"){
-      document.getElementById("personalScoresSwitch").onclick = function(){getWordleScores("","best")};
-      document.getElementById("otherMetricButton").onclick = function(){getWordleScores("","myrecent")};
+      $("#personalScoresSwitch").click(function(){getWordleScores("","best")});
+      $("#otherMetricButton").click(function(){getWordleScores("","myrecent")});
     }else if (rule === "recent"){
-      if (cookies.get("id")){
-        document.getElementById("personalScoresSwitch").onclick = function(){getWordleScores("","myrecent")};
-      }
-      document.getElementById("otherMetricButton").onclick = function(){getWordleScores("","best")};
+      if (cookies.get("id")) $("#personalScoresSwitch").click(function(){getWordleScores("","myrecent")});
+      $("#otherMetricButton").click(function(){getWordleScores("","best")});
     }else if (rule === "best" || rule === ""){
-      if (cookies.get("id")){
-        document.getElementById("personalScoresSwitch").onclick = function(){getWordleScores("","mybest")};
-      }
-      document.getElementById("otherMetricButton").onclick = function(){getWordleScores("","recent")};
+      if (cookies.get("id")) $("#personalScoresSwitch").click(function(){getWordleScores("","mybest")});
+      $("#otherMetricButton").click(function(){getWordleScores("","recent")});
     }
   }
   function getWordleFrontPage(){
-    document.getElementById('gameScreen').innerHTML = ReactDOMServer.renderToStaticMarkup(
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
         <h1> Wordle </h1>
         <Button id='startGameButton' >Start Game</Button><br></br>
         <Button id='instructionsButton'>Read Instructions</Button><br></br>
         <Button id='scoresButton'>Scores</Button><br></br>
       </>
-    );
-    document.getElementById("startGameButton").onclick = function(){startWordleGame()};
-    document.getElementById("instructionsButton").onclick = function(){readWordleInstructions()};
-    document.getElementById("scoresButton").onclick = function(){getWordleScores()};
+    ));
+    $("#startGameButton").click(function(){startWordleGame()});
+    $("#instructionsButton").click(function(){readWordleInstructions()});
+    $("#scoresButton").click(function(){getWordleScores()});
   }
   ////
   return (
