@@ -30,6 +30,8 @@ require('dotenv').config();
 //Update adding timeduration to Login
 //detect redirectForLogin
 //should redirect to game scores instead of game homepage
+//FIX THIS: crashes on switching scores page while logged in
+//FIX THIS: submit scores while logging in - submitting into times rather than scoresovertimes -> Fixed?
 
 function App() {
   const [navBar,changeNavbar] = React.useState(
@@ -158,6 +160,7 @@ function App() {
       }
       //Login and Passwords Stuffs
       function getLoginPage(error="",conf=""){
+        console.log(cookies)
         var errMsg, confMsg;
         if (error !== ""){
           errMsg = (<div className='errMsg'>{error}</div>)
@@ -204,13 +207,14 @@ function App() {
         fetch(process.env.REACT_APP_SERVERLOCATION + "/login",requestSetup)
           .then(response => response.json())
           .then(data => {
-            console.log(data);
+            //console.log(data);
             if (data.status === -1) getLoginPage(data.message,"")
             else if (data.status === 0){
               cookies.set('id',data.userID,{path:'/'});
               cookies.set('sessionID',data.sessionID,{path:'/'});
               cookies.set('name',data.name,{path:'/'});
-              //cookies.set('expireTime',rememberMe === 'hour' ? Date.now() + 3600000 : "forever",{path:"/"});
+              cookies.set('expireTime', data.rememberMe === 'hour' ? Date.now() + 3600000 : "forever",{path:"/"});
+              changeNavbarToLoggedIn();
               if (cookies.get("gameID")){
                 //submit score
                 const scoreRequestSetup = {
@@ -222,8 +226,9 @@ function App() {
                 }
                 var endpoint = "";
                 var gameScore = cookies.get("score") ? parseInt(cookies.get("score")) : null;
-                if (cookies.get("timeInMilliseconds") && !gameScore) endpoint = "/times";
-                else if (!cookies.get("timeInMilliseconds") && gameScore) endpoint = "/scores";
+                // if (gameScore && (gameScore === -1 || gameScore === "-1")) gameScore = 0;
+                if (cookies.get("timeInMilliseconds") && !cookies.get("score")) endpoint = "/times";
+                else if (!cookies.get("timeInMilliseconds") && !cookies.get("score")) endpoint = "/scores";
                 else endpoint = "/scoreswithtimes";
                 fetch(process.env.REACT_APP_SERVERLOCATION + endpoint,scoreRequestSetup)
                   .then(response => response.json())
@@ -411,7 +416,6 @@ function App() {
           cookies.remove("redirect");
           getRegisterPage();
         }else if (cookies.get("redirect") === "LoginGame"){
-          //FIX THIS
           //update login to send score in after logging in
           cookies.remove("redirect");
           getLoginPage();

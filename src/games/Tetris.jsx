@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie';
 import Table from 'react-bootstrap/Table'
 import cookieSetter from "../helpers/setCookiesForGame.jsx";
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
+import $ from 'jquery'
 require('dotenv').config();
 
 function Tetris(msg = ""){

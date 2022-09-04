@@ -411,7 +411,7 @@ function Frogger(msg = ""){
           }
         })
     }else{
-      cookieSetter({timeInMilliseconds: totalTime, gameID: 5, score: score});
+      cookieSetter({timeInMilliseconds: totalTime, gameID: 5, score: score === 0 ? "0" : score});
     }
   }
   //Pages
