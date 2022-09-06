@@ -350,11 +350,20 @@ function Snake(msg = "") {
     var nextButton, prevButton;
     if (end < results.length) nextButton = (<Button onClick={getScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
     if (start > 0) prevButton = (<Button onClick={getScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
+    var notif;
+    if (message) {
+      if (message === "" || message === "Your score has been submitted."){
+        notif = (<div className="confMsg">{message}</div>)
+      }else{
+        notif = (<div className="errMsg"> {message} </div>)
+      }
+    }
     var reactString = (
       <div>
         <h1> {scoreTitle} </h1>
         <div><Button id='backButton'>Main Menu</Button></div>
         <div> {otherMetricButton} {personalScoresSwitchButton} </div>
+        {notif}
         <Table>
         <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
         <tbody>

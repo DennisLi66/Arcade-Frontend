@@ -30,7 +30,8 @@ require('dotenv').config();
 //Update adding timeduration to Login
 //detect redirectForLogin
 //should redirect to game scores instead of game homepage
-//FIX THIS: crashes on switching scores page while logged in
+//FIX THIS: Does not auto log people out
+//FIX THIS: crashes on switching scores page while logged in : nonpersonal scores seem to work
 //FIX THIS: submit scores while logging in - submitting into times rather than scoresovertimes -> Fixed?
 
 function App() {
