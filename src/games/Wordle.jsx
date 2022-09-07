@@ -337,7 +337,7 @@ function Wordle(msg = ""){
       fetchString = "/scores?sortBy=top&userID="  + cookies.get("id");
       scoreTitle = "Your Top Scores";
     }else if (rule === "myrecent"){
-      fetchString = "scores?sortBy=recent&userID=" + cookies.get("id");
+      fetchString = "/scores?sortBy=recent&userID=" + cookies.get("id");
       scoreTitle = "Your Recent Scores";
     }
     if (results.length === 0){
@@ -346,15 +346,11 @@ function Wordle(msg = ""){
         .then(data => {
           console.log(data.results);
           if (data.status === -1){
-            // do nothing... FIX THIS
-            console.log(data.message);
-          }else{
-            wordleScoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
-          }
+            // console.log(data.message);
+            wordleScoresHelperFunction(data.message,rule,data.results,start,end,scoreTitle);
+          }else wordleScoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
         })
-    }else{ //use results instead
-      wordleScoresHelperFunction(message,rule,results,start,end,scoreTitle);
-    }
+    }else wordleScoresHelperFunction(message,rule,results,start,end,scoreTitle);
   }
   function wordleScoresHelperFunction(message,rule,results,start,end,scoreTitle){
     var listOfElements = [];
@@ -370,37 +366,26 @@ function Wordle(msg = ""){
       otherMetricButton = (<Button id='otherMetricButton'> My Recent Scores </Button>)
       personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Best Scores </Button>)
     }else if (rule === "recent"){
-      if (cookies.get("id")){
-        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
-      }
+      if (cookies.get("id")) personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
       otherMetricButton =  (<Button id='otherMetricButton'> All Best Scores </Button>)
     }else if (rule === "best" || rule === ""){
-      if (cookies.get("id")){
-        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
-      }
+      if (cookies.get("id")) personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
       otherMetricButton =  (<Button id='otherMetricButton'> All Recent Scores </Button>)
     }
     var nextButton, prevButton;
-    if (end < results.length){
-      nextButton = (<Button onClick={getWordleScores("",rule,results,start + 10, end + 10)}> Next </Button>)
-    }
-    if (start > 0){
-      prevButton = (<Button onClick={getWordleScores("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
-    }
+    if (end < results.length) nextButton = (<Button onClick={getWordleScores("",rule,results,start + 10, end + 10)}> Next </Button>)
+    if (start > 0) prevButton = (<Button onClick={getWordleScores("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
     var notif;
     if (message) {
-      if (message === "" || message === "Your score has been submitted."){
-        notif = (<div className="confMsg">{message}</div>)
-      }else{
-        notif = (<div className="errMsg"> {message} </div>)
-      }
+      if (message === "" || message === "Your score has been submitted.") notif = (<div className="confMsg">{message}</div>)
+      else notif = (<div className="errMsg"> {message} </div>)
     }
     var reactString = (
       <>
         <h1> {scoreTitle} </h1>
         <div><Button id='backButton'>Main Menu</Button></div>
         <div> {otherMetricButton} {personalScoresSwitchButton} </div>
-        {notif}
+        <div>{notif}</div>
         <Table>
         <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
         <tbody>

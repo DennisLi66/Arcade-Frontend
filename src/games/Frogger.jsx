@@ -98,9 +98,7 @@ function Frogger(msg = ""){
             objectBoard.push("L");
           }else if (y === 3 && (x === 3 || x === 11 || x === 4 || x === 10 || x === 7 || x === 8)){
             objectBoard.push("L");
-          }else{
-            objectBoard.push(0);
-          }
+          }else objectBoard.push(0);
         }
         else if (y >= 10 || y <= 18) {
           tileBoard.push("R");
@@ -122,9 +120,7 @@ function Frogger(msg = ""){
             objectBoard.push("C")
           }else if (y === 10 && (x === 2 || x === 3 || x === 12|| x === 11 || x === 7 || x === 9 || x === 5)){
             objectBoard.push("C")
-          }else{
-            objectBoard.push(0);
-          }
+          }else objectBoard.push(0);
         }
       }
     }
@@ -162,9 +158,7 @@ function Frogger(msg = ""){
     var text;
     if (ended === "Loss"){ //Final Score and Time
       text = (<>{message}<Button id='mainMenuButton'>Main Menu</Button> Final Score: {score} Final Time: {millisecondsToReadableTime(totalTime)}<Button id='submitScoreButton'>Submit Score</Button><Button id='restartButton'>Restart</Button></>)
-    }else{
-      text = (<>{message}<Button id='mainMenuButton'>Main Menu</Button> Current Score: {score} <Button id='restartButton'>Restart</Button></>)
-    }
+    }else text = (<>{message}<Button id='mainMenuButton'>Main Menu</Button> Current Score: {score} <Button id='restartButton'>Restart</Button></>)
     $("#bulletinBoard").html(ReactDOMServer.renderToStaticMarkup(
       <>
       {text}
@@ -410,9 +404,7 @@ function Frogger(msg = ""){
             getFroggerScoresPage("Your score has been submitted.")
           }
         })
-    }else{
-      cookieSetter({timeInMilliseconds: totalTime, gameID: 5, score: score === 0 ? "0" : score});
-    }
+    }else cookieSetter({timeInMilliseconds: totalTime, gameID: 5, score: score === 0 ? "0" : score});
   }
   //Pages
   function getFroggerMainMenu(){
@@ -458,7 +450,7 @@ function Frogger(msg = ""){
       fetchString = "/scoreswithtimes?sortBy=top&userID="  + cookies.get("id");
       scoreTitle = "Your Top Scores";
     }else if (rule === "myrecent"){
-      fetchString = "scoreswithtimes?sortBy=recent&userID=" + cookies.get("id");
+      fetchString = "/scoreswithtimes?sortBy=recent&userID=" + cookies.get("id");
       scoreTitle = "Your Recent Scores";
     }
     if (results.length === 0){
@@ -467,15 +459,11 @@ function Frogger(msg = ""){
         .then(data => {
           console.log(data.results);
           if (data.status === -1){
-            // do nothing... FIX THIS
-            console.log(data.message);
-          }else{
-            scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
-          }
+            // console.log(data.message);
+            scoresHelperFunction(data.message,rule,data.results,start,end,scoreTitle);
+          }else scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
         })
-    }else{ //use results instead
-      scoresHelperFunction(message,rule,results,start,end,scoreTitle);
-    }
+    }else scoresHelperFunction(message,rule,results,start,end,scoreTitle);
   }
   function scoresHelperFunction(message,rule,results,start,end,scoreTitle){
     var listOfElements = [];
@@ -491,37 +479,26 @@ function Frogger(msg = ""){
       otherMetricButton = (<Button id='otherMetricButton'> My Recent Scores </Button>)
       personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Best Scores </Button>)
     }else if (rule === "recent"){
-      if (cookies.get("id")){
-        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
-      }
+      if (cookies.get("id")) personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
       otherMetricButton =  (<Button id='otherMetricButton'> All Best Scores </Button>)
     }else if (rule === "best" || rule === ""){
-      if (cookies.get("id")){
-        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
-      }
+      if (cookies.get("id")) personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
       otherMetricButton =  (<Button id='otherMetricButton'> All Recent Scores </Button>)
     }
     var nextButton, prevButton;
-    if (end < results.length){
-      nextButton = (<Button onClick={getFroggerScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
-    }
-    if (start > 0){
-      prevButton = (<Button onClick={getFroggerScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
-    }
-    var notif;
-    if (message) {
-      if (message === "" || message === "Your score has been submitted."){
-        notif = (<div className="confMsg">{message}</div>)
-      }else{
-        notif = (<div className="errMsg"> {message} </div>)
-      }
+    if (end < results.length) nextButton = (<Button onClick={getFroggerScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>);
+    if (start > 0) prevButton = (<Button onClick={getFroggerScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>);
+    var notif = (<div> </div>);
+    if (message && message !== "") {
+      if (message === "" || message === "Your score has been submitted.") notif = (<div className="confMsg">{message}</div>)
+      else notif = (<div className="errMsg"> {message} </div>)
     }
     var reactString = (
       <>
         <h1> {scoreTitle} </h1>
         <div><Button id='backButton'>Main Menu</Button></div>
         <div> {otherMetricButton} {personalScoresSwitchButton} </div>
-        {notif}
+        <div> {notif} </div>
         <Table>
         <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
         <tbody>
@@ -553,7 +530,7 @@ function Frogger(msg = ""){
       {(msg !== "") ?  <div className='confMsg'>{msg}</div>  : ""}
       <Button onClick={startFroggerGame}>Play Frogger</Button><br></br>
       <Button onClick={readFroggerInstructions}>Read Instructions</Button><br></br>
-      <Button onClick={getFroggerScoresPage}>Scores</Button><br></br>
+      <Button onClick={()=>getFroggerScoresPage()}>Scores</Button><br></br>
     </div>
     )
 }

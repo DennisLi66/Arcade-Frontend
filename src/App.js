@@ -111,9 +111,7 @@ function App() {
       //Registration Page
       function getRegisterPage(error = ""){
         var errMsg;
-        if (error !== ""){
-          errMsg = (<div className='errMsg'>{error}</div>)
-        }
+        if (error !== "") errMsg = (<div className='errMsg'>{error}</div>);
         changeBody((
           <div>
             {errMsg}
@@ -140,9 +138,8 @@ function App() {
         var confPassword = $('#confPass').val();
         var email = $('#userEmail').val();
         var username = $('#username').val();
-        if (userPassword !== confPassword){
-          getRegisterPage("Your passwords did not match.")
-        }else{
+        if (userPassword !== confPassword) getRegisterPage("Your passwords did not match.")
+        else{
           const requestSetup = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -161,14 +158,10 @@ function App() {
       }
       //Login and Passwords Stuffs
       function getLoginPage(error="",conf=""){
-        console.log(cookies)
+        //console.log(cookies)
         var errMsg, confMsg;
-        if (error !== ""){
-          errMsg = (<div className='errMsg'>{error}</div>)
-        }
-        if (conf !== ""){
-          confMsg = (<div className='confMsg'>{conf}</div>)
-        }
+        if (error !== "") errMsg = (<div className='errMsg'>{error}</div>)
+        if (conf !== "") confMsg = (<div className='confMsg'>{conf}</div>)
         changeBody((
           <div>
             {errMsg}
@@ -226,8 +219,6 @@ function App() {
                   sessionID:cookies.get("sessionID")})
                 }
                 var endpoint = "";
-                var gameScore = cookies.get("score") ? parseInt(cookies.get("score")) : null;
-                // if (gameScore && (gameScore === -1 || gameScore === "-1")) gameScore = 0;
                 if (cookies.get("timeInMilliseconds") && !cookies.get("score")) endpoint = "/times";
                 else if (!cookies.get("timeInMilliseconds") && !cookies.get("score")) endpoint = "/scores";
                 else endpoint = "/scoreswithtimes";
@@ -359,9 +350,8 @@ function App() {
         event.preventDefault();
         var password = $("#newPass").val();
         var confPass = $("#confPass").val();
-        if (password !== confPass){
-          showChangePasswordPage(email,"Those passwords did not match.",code)
-        }else{
+        if (password !== confPass) showChangePasswordPage(email,"Those passwords did not match.",code)
+        else{
           const requestSetup = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -370,14 +360,11 @@ function App() {
           fetch(process.env.REACT_APP_SERVERLOCATION + "/changepassword",requestSetup)
             .then(response => response.json())
             .then(data=>{
-              if (data.status === -1){
-                showChangePasswordPage(email,data.message)
-              }else if (data.status === 0){
+              if (data.status === -1) showChangePasswordPage(email,data.message)
+              else if (data.status === 0){
                 if (cookies.get("id")){
                   //FIX THIS
-                }else{
-                  getLoginPage("","You have successfully changed your password. It can now be used to log in.")
-                }
+                }else getLoginPage("","You have successfully changed your password. It can now be used to log in.")
               }
             })
         }

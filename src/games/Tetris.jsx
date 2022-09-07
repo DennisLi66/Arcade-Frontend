@@ -447,9 +447,7 @@ function Tetris(msg = ""){
     var afterNextPieceGrid = [];
     var afterNextPieceReactString = (<div></div>)
     if (!currentPiece){
-      for (let i = 0; i < 16; i++){
-        nextPieceGrid.push(<div className='tetrisMiniEmptyBlock' key={i}></div>)
-      }
+      for (let i = 0; i < 16; i++) nextPieceGrid.push(<div className='tetrisMiniEmptyBlock' key={i}></div>)
       nextPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='nextPiecePicture'>{nextPieceGrid}</div>)
       afterNextPieceReactString = (<div className='tetrisSideDisplayPieceHolders' id='afterPiecePicture'>{nextPieceGrid}</div>)
     }else{
@@ -530,11 +528,8 @@ function Tetris(msg = ""){
         .then(response => response.json())
         .then(data => {
           console.log(data);
-          if (data.status === -1){
-            printTetrisBoard(data.message);
-          }else{
-            getScoresPage("Your score has been submitted.")
-          }
+          if (data.status === -1) printTetrisBoard(data.message);
+          else getScoresPage("Your score has been submitted.")
         })
     }else{
       cookieSetter({score: score, timeInMilliseconds: totalTime, gameID: 2});
@@ -591,7 +586,7 @@ function Tetris(msg = ""){
       fetchString = "/scoreswithtimes?sortBy=top&userID="  + cookies.get("id");
       scoreTitle = "Your Top Scores";
     }else if (rule === "myrecent"){
-      fetchString = "scoreswithtimes?sortBy=recent&userID=" + cookies.get("id");
+      fetchString = "/scoreswithtimes?sortBy=recent&userID=" + cookies.get("id");
       scoreTitle = "Your Recent Scores";
     }
     if (results.length === 0){
@@ -600,15 +595,11 @@ function Tetris(msg = ""){
         .then(data => {
           console.log(data.results);
           if (data.status === -1){
-            // do nothing... FIX THIS
-            console.log(data.message);
-          }else{
-            scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
-          }
+            // console.log(data.message);
+            scoresHelperFunction(data.message,rule,data.results,start,end,scoreTitle);
+          }else scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
         })
-    }else{ //use results instead
-      scoresHelperFunction(message,rule,results,start,end,scoreTitle);
-    }
+    }else scoresHelperFunction(message,rule,results,start,end,scoreTitle);
   }
   function scoresHelperFunction(message,rule,results,start,end,scoreTitle){
     var listOfElements = [];
@@ -624,37 +615,26 @@ function Tetris(msg = ""){
       otherMetricButton = (<Button id='otherMetricButton'> My Recent Scores </Button>)
       personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Best Scores </Button>)
     }else if (rule === "recent"){
-      if (cookies.get("id")){
-        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
-      }
+      if (cookies.get("id")) personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
       otherMetricButton =  (<Button id='otherMetricButton'> All Best Scores </Button>)
     }else if (rule === "best" || rule === ""){
-      if (cookies.get("id")){
-        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
-      }
+      if (cookies.get("id")) personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
       otherMetricButton =  (<Button id='otherMetricButton'> All Recent Scores </Button>)
     }
     var nextButton, prevButton;
-    if (end < results.length){
-      nextButton = (<Button onClick={getScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
-    }
-    if (start > 0){
-      prevButton = (<Button onClick={getScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
-    }
+    if (end < results.length) nextButton = (<Button onClick={getScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
+    if (start > 0) prevButton = (<Button onClick={getScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
     var notif;
     if (message) {
-      if (message === "" || message === "Your score has been submitted."){
-        notif = (<div className="confMsg">{message}</div>)
-      }else{
-        notif = (<div className="errMsg"> {message} </div>)
-      }
+      if (message === "" || message === "Your score has been submitted.") notif = (<div className="confMsg">{message}</div>)
+      else notif = (<div className="errMsg"> {message} </div>)
     }
     var reactString = (
       <>
         <h1> {scoreTitle} </h1>
         <div><Button id='backButton'>Main Menu</Button></div>
         <div> {otherMetricButton} {personalScoresSwitchButton} </div>
-        {notif}
+        <div>{notif}</div>
         <Table>
         <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
         <tbody>

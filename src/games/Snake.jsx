@@ -293,9 +293,11 @@ function Snake(msg = "") {
     ));
     $('#playSnakeButton').click(function(){startSnakeGame()});
     $('#readInstructionsButton').click(function(){readInstructions()});
-    $('#getScoresButton').click(function(){getScoresPage()});
+    $('#getScoresButton').click(()=>{getScoresPage()});
   }
   function getScoresPage(message = "", rule = "", results = [], start = 0, end = 10){ //FIX THIS DOES NOT DISPLAY PROPERLY
+    console.log(message)
+    console.log(rule)
     var fetchString;
     var scoreTitle;
     if (rule === "" || rule === "best"){//Get the best
@@ -308,7 +310,7 @@ function Snake(msg = "") {
       fetchString = "/scoreswithtimes?sortBy=top&userID="  + cookies.get("id");
       scoreTitle = "Your Top Scores";
     }else if (rule === "myrecent"){
-      fetchString = "scoreswithtimes?sortBy=recent&userID=" + cookies.get("id");
+      fetchString = "/scoreswithtimes?sortBy=recent&userID=" + cookies.get("id");
       scoreTitle = "Your Recent Scores";
     }
     if (results.length === 0){
@@ -317,9 +319,10 @@ function Snake(msg = "") {
         .then(data => {
           console.log(data.results);
           if (data.status === -1){
-            // do nothing... FIX THIS
-            console.log(data.message);
+            // console.log(data.message);
+            scoresHelperFunction(data.message,rule,data.results,start,end,scoreTitle);
           }else{
+            console.log(message)
             scoresHelperFunction(message,rule,data.results,start,end,scoreTitle)
           }
         })
@@ -350,20 +353,17 @@ function Snake(msg = "") {
     var nextButton, prevButton;
     if (end < results.length) nextButton = (<Button onClick={getScoresPage("",rule,results,start + 10, end + 10)}> Next </Button>)
     if (start > 0) prevButton = (<Button onClick={getScoresPage("",rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
-    var notif;
-    if (message) {
-      if (message === "" || message === "Your score has been submitted."){
-        notif = (<div className="confMsg">{message}</div>)
-      }else{
-        notif = (<div className="errMsg"> {message} </div>)
-      }
+    var notif = (<div> </div>);
+    if (message && message !== "") {
+      if (message === "" || message === "Your score has been submitted.") notif = (<div className="confMsg">{message}</div>)
+      else notif = (<div className="errMsg"> {message} </div>)
     }
     var reactString = (
       <div>
         <h1> {scoreTitle} </h1>
         <div><Button id='backButton'>Main Menu</Button></div>
         <div> {otherMetricButton} {personalScoresSwitchButton} </div>
-        {notif}
+        <div>{notif}</div>
         <Table>
         <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
         <tbody>
@@ -441,7 +441,7 @@ function Snake(msg = "") {
       {(msg !== "") ?  <div className='confMsg'>{msg}</div>  : ""}
       <Button onClick={startSnakeGame}>Play Snake</Button><br></br>
       <Button onClick={readInstructions}>Read Instructions</Button><br></br>
-      <Button onClick={getScoresPage}>Scores</Button><br></br>
+      <Button onClick={function(){getScoresPage()}}>Scores</Button><br></br>
     </div>
   )
 };

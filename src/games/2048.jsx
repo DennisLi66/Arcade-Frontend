@@ -89,15 +89,11 @@ function Two048(msg = ''){
         .then(data => {
           console.log(data.results);
           if (data.status === -1){
-            // do nothing... FIX THIS
-            console.log(data.message);
-          }else{
-            scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
-          }
+            // console.log(data.message);
+            scoresHelperFunction(data.message,rule,data.results,start,end,scoreTitle);
+          }else scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
         })
-    }else{ //use results instead
-      scoresHelperFunction(message,rule,results,start,end,scoreTitle);
-    }
+    }else scoresHelperFunction(message,rule,results,start,end,scoreTitle);
   }
   function scoresHelperFunction(message,rule,results,start,end,scoreTitle){
     var listOfElements = [];
@@ -113,37 +109,26 @@ function Two048(msg = ''){
       otherMetricButton = (<Button id='otherMetricButton'> My Recent Scores </Button>)
       personalScoresSwitchButton = (<Button id='personalScoresSwitch'> All Best Scores </Button>)
     }else if (rule === 'recent'){
-      if (cookies.get('id')){
-        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
-      }
+      if (cookies.get('id')) personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Recent Scores </Button>)
       otherMetricButton =  (<Button id='otherMetricButton'> All Best Scores </Button>)
     }else if (rule === 'best' || rule === ''){
-      if (cookies.get('id')){
-        personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
-      }
+      if (cookies.get('id')) personalScoresSwitchButton = (<Button id='personalScoresSwitch'> My Best Scores </Button>)
       otherMetricButton =  (<Button id='otherMetricButton'> All Recent Scores </Button>)
     }
     var nextButton, prevButton;
-    if (end < results.length){
-      nextButton = (<Button onClick={get2048ScoresPage('',rule,results,start + 10, end + 10)}> Next </Button>)
-    }
-    if (start > 0){
-      prevButton = (<Button onClick={get2048ScoresPage('',rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
-    }
+    if (end < results.length) nextButton = (<Button onClick={get2048ScoresPage('',rule,results,start + 10, end + 10)}> Next </Button>)
+    if (start > 0) prevButton = (<Button onClick={get2048ScoresPage('',rule,results,Math.min(start - 10), Math.max(end - 10,10))}> Previous </Button>)
     var notif;
     if (message) {
-      if (message === "" || message === "Your score has been submitted."){
-        notif = (<div className="confMsg">{message}</div>)
-      }else{
-        notif = (<div className="errMsg"> {message} </div>)
-      }
+      if (message === "" || message === "Your score has been submitted.") notif = (<div className="confMsg">{message}</div>)
+      else notif = (<div className="errMsg"> {message} </div>)
     }
     var reactString = (
       <>
         <h1> {scoreTitle} </h1>
         <div><Button id='backButton'>Main Menu</Button></div>
         <div> {otherMetricButton} {personalScoresSwitchButton} </div>
-        {notif}
+        <div>{notif}</div>
         <Table>
         <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
         <tbody>
@@ -416,7 +401,7 @@ function Two048(msg = ''){
       {(msg !== '') ?  <div className='confMsg'>{msg}</div>  : ''}
       <Button onClick={start2048Game}>Play 2048</Button><br></br>
       <Button onClick={read2048Instructions}>Read Instructions</Button><br></br>
-      <Button onClick={get2048ScoresPage}>Scores</Button><br></br>
+      <Button onClick={()=>get2048ScoresPage()}>Scores</Button><br></br>
     </div>
     )
 }

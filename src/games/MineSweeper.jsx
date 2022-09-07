@@ -277,7 +277,7 @@ function MineSweeper(msg = ""){
       fetchString = "/times?sortBy=top&userID="  + cookies.get("id");
       scoreTitle = "Your Top Scores";
     }else if (rule === "myrecent"){
-      fetchString = "times?sortBy=recent&userID=" + cookies.get("id");
+      fetchString = "/times?sortBy=recent&userID=" + cookies.get("id");
       scoreTitle = "Your Recent Scores";
     }
     if (results.length === 0){
@@ -286,8 +286,8 @@ function MineSweeper(msg = ""){
         .then(data => {
           console.log(data.results);
           if (data.status === -1){
-            // do nothing... FIX THIS
-            console.log(data.message);
+            // console.log(data.message);
+            scoresHelperFunction(data.message,rule,data.results,start,end,scoreTitle);
           }else scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
         })
     }else scoresHelperFunction(message,rule,results,start,end,scoreTitle);
@@ -326,7 +326,7 @@ function MineSweeper(msg = ""){
         <h1> {scoreTitle} </h1>
         <div><Button id='backButton'>Main Menu</Button></div>
         <div> {otherMetricButton} {personalScoresSwitchButton} </div>
-        {notif}
+        <div>{notif}</div>
         <Table>
         <thead> <tr> <th> # </th> <th> Username </th> <th> Score </th> <th> Time </th> <th> Time Submitted </th> </tr> </thead>
         <tbody>
