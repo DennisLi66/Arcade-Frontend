@@ -461,7 +461,9 @@ function Frogger(msg = ""){
           if (data.status === -1){
             // console.log(data.message);
             scoresHelperFunction(data.message,rule,data.results,start,end,scoreTitle);
-          }else scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
+          }
+          else if (!data.results) scoresHelperFunction("Oops! Received Faulty Information From Server...",rule,[],start,end,scoreTitle);
+          else scoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
         })
     }else scoresHelperFunction(message,rule,results,start,end,scoreTitle);
   }

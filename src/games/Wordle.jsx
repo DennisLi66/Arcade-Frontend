@@ -348,7 +348,8 @@ function Wordle(msg = ""){
           if (data.status === -1){
             // console.log(data.message);
             wordleScoresHelperFunction(data.message,rule,data.results,start,end,scoreTitle);
-          }else wordleScoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
+          } else if (!data.results) wordleScoresHelperFunction("Oops! Received Faulty Information From Server...",rule,[],start,end,scoreTitle);
+          else wordleScoresHelperFunction(message,rule,data.results,start,end,scoreTitle);
         })
     }else wordleScoresHelperFunction(message,rule,results,start,end,scoreTitle);
   }
