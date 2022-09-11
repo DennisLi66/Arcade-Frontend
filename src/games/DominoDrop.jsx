@@ -15,9 +15,13 @@ function DominoDrop(msg=""){
     const cookies = new Cookies();
     var score = 0;
     var intervalID = ""; //unlikely to need
-    var gameBoard = [];
+    var gameBoard = []; //size is 4 x 12
     var currentPiece = false;
 
+    //Game Functions
+    function startGame(){
+        setBoard();
+    }
     function generateDomino(){
         //yellow 1, orange 2, red 3, green 4, blue 5, black 6, blank white
         //randomly generate 1 of 7 values, white having a lower chance?
@@ -27,6 +31,31 @@ function DominoDrop(msg=""){
             Math.floor(Math.random() * 7), //secondValue
             Math.floor(Math.random() * 2)  //orientation
         ];
+    }
+    // //Board Interactions
+    function setBoard(){
+        gameBoard.push(['X','X','X','X','X','X']);
+        for (let i = 0; i < 12; i++) gameBoard.push(['X',0,0,0,0,'X']);
+        gameBoard.push(['X','X','X','X','X','X']);
+        score = 0;
+        currentPiece = false;
+    }
+    //Scores
+    function getScoresPage(){
+
+    }
+    //Other
+    function readInstructions(){
+        $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
+            <>
+              <Button id='backButton'>Back</Button><br></br>
+              <h1> Instructions </h1>
+              <div>
+                    FIX THIS
+              </div>
+            </>
+          ));
+          $("#backButton").click(function(){getFrontPage()});
     }
 
     return (
