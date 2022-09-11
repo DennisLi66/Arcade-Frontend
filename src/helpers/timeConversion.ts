@@ -6,6 +6,7 @@ function millisecondsToReadableTime(timeInMilliseconds:number) : string{
     }
     return toReturn;
   }
+  //FIX THIS MAKE IT LOOK PRETTIER
   //first, milliseconds to seconds
   //console.log("Final Time: " + timeInMilliseconds + " milliseconds.")
   var seconds = timeInMilliseconds/1000;
