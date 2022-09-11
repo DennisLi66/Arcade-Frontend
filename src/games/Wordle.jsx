@@ -8,8 +8,8 @@ import produceWord from "../helpers/produceWord.ts";
 import $ from 'jquery'
 require('dotenv').config();
 
-//Add score submission
 //gameScreen consists of psudeo input text box with blocks, game board with current guesses, and the score board
+//add highlight to current character, also clicking a box should let you change that box?
 
 function Wordle(msg = ""){
   //VARIABLES
@@ -413,6 +413,8 @@ function Wordle(msg = ""){
     }
   }
   function getWordleFrontPage(){
+    $('body').off('keydown',detectOnlyRestart);
+    $('body').off('keydown',detectKeyPress);
     $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
         <h1> Wordle </h1>

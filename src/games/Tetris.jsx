@@ -8,6 +8,8 @@ import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 import $ from 'jquery'
 require('dotenv').config();
 
+//pressing mainmenu does not reset tetris piece locations FIX THIS
+
 function Tetris(msg = ""){
    //10 wide, 20 high inner board
    //pieceQueue loads 3 or more pieces

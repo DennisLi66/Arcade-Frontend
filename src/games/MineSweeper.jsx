@@ -21,6 +21,7 @@ import death from './minesweeperImages/death.png'
 require('dotenv').config();
 
 //Consider adding pause to minesweeper FIX THIS
+//FIX THIS GAME BAR
 
 function MineSweeper(msg = ""){
   const cookies = new Cookies();
