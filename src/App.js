@@ -31,8 +31,7 @@ require('dotenv').config();
 //detect redirectForLogin
 //should redirect to game scores instead of game homepage
 //FIX THIS: Does not auto log people out
-//FIX THIS: crashes on switching scores page while logged in : nonpersonal scores seem to work
-//FIX THIS: submit scores while logging in - submitting into times rather than scoresovertimes -> Fixed?
+//Create More Space Between Buttons
 
 function App() {
   const [navBar,changeNavbar] = React.useState(

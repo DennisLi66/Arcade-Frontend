@@ -295,9 +295,7 @@ function Snake(msg = "") {
     $('#readInstructionsButton').click(function(){readInstructions()});
     $('#getScoresButton').click(()=>{getScoresPage()});
   }
-  function getScoresPage(message = "", rule = "", results = [], start = 0, end = 10){ //FIX THIS DOES NOT DISPLAY PROPERLY
-    console.log(message)
-    console.log(rule)
+  function getScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
     var fetchString;
     var scoreTitle;
     if (rule === "" || rule === "best"){//Get the best

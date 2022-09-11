@@ -542,6 +542,7 @@ function Tetris(msg = ""){
     setBoard();
     printInitialContent();
     printAllContent();
+    $('body').off('keydown',detectDirectionalKeyDown);
     $('body').off('keydown',detectOnlyPauseOrRestart);
     $('body').off('keydown',detectOnlyRestart);
     $('body').on('keydown',detectDirectionalKeyDown);
@@ -664,6 +665,7 @@ function Tetris(msg = ""){
     }
   }
   function getFrontPage(){
+
     $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
         <h1> Tetris </h1>
