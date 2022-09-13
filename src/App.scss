@@ -57,6 +57,12 @@
       @extend %blackBox;
     }
   }
+  &.dominoDrop{
+    grid-area: 4 / 1 / 5 / 2;
+    &#dominoWords{
+      @extend %blackBox;
+    }
+  }
 }
 .pauseText{
   position: relative;

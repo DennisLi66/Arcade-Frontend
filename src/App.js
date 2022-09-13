@@ -17,12 +17,14 @@ import Wordle from './games/Wordle';
 import MineSweeper from './games/MineSweeper';
 import Frogger from './games/Frogger'
 import Two048 from './games/2048'
+import DominoDrop from './games/DominoDrop';
 import snakeImage from "./images/SnakeGameImage.jpg";
 import tetrisImage from "./images/TetrisGameImage.jpg";
 import wordleImage from "./images/WordleGameImage.jpg";
 import mineImage from "./images/MinesweeperGameImage.JPG";
 import froggerImage from "./images/FroggerGameImage.JPG";
 import two048Image from "./images/2048GameImage.JPG";
+import dominoImage from "./images/2048GameImage.JPG";
 require('dotenv').config();
 
 //COuld do puyo puyo or match 3
@@ -58,6 +60,7 @@ function App() {
         else if (imageName === "minesweeper") $("#mineWords").css('visibility',"visible");
         else if (imageName === "frogger") $("#froggerWords").css('visibility',"visible");
         else if (imageName === "two048") $("#two048Words").css('visibility',"visible");
+        else if (imageName === "dominoDrop") $("#dominoWords").css('visibility',"visible");
       }
       function hoverOff(){
         $("#snakeWords").css('visibility','hidden');
@@ -66,6 +69,7 @@ function App() {
         $("#mineWords").css('visibility','hidden');
         $("#froggerWords").css('visibility','hidden');
         $("#two048Words").css('visibility','hidden');
+        $("#dominoWords").css('visibility','hidden');
       }
       //Nav Changers
       function changeNavbarToLoggedIn(){
@@ -378,19 +382,13 @@ function App() {
       //games
       function openGame(gameTitle, msg = ""){
         removeScoreCookies();
-        if (gameTitle === "Snake" || gameTitle === 1 || gameTitle === "1"){
-          changeBody(Snake(msg));
-        }else if (gameTitle === "Tetris" || gameTitle === 2 || gameTitle === '2'){
-          changeBody(Tetris(msg));
-        }else if (gameTitle === "Wordle" || gameTitle === 3 || gameTitle === "3"){
-          changeBody(Wordle(msg));
-        }else if (gameTitle === "MineSweeper" || gameTitle === 4 || gameTitle === "4"){
-          changeBody(MineSweeper(msg));
-        }else if (gameTitle === "Frogger" || gameTitle === 5 || gameTitle === "5"){
-          changeBody(Frogger(msg))
-        }else if (gameTitle === "2048" || gameTitle === 6 || gameTitle === "6"){
-          changeBody(Two048(msg));
-        }
+        if (gameTitle === "Snake" || gameTitle === 1 || gameTitle === "1") changeBody(Snake(msg));
+        else if (gameTitle === "Tetris" || gameTitle === 2 || gameTitle === '2') changeBody(Tetris(msg));
+        else if (gameTitle === "Wordle" || gameTitle === 3 || gameTitle === "3") changeBody(Wordle(msg));
+        else if (gameTitle === "MineSweeper" || gameTitle === 4 || gameTitle === "4") changeBody(MineSweeper(msg));
+        else if (gameTitle === "Frogger" || gameTitle === 5 || gameTitle === "5") changeBody(Frogger(msg))
+        else if (gameTitle === "2048" || gameTitle === 6 || gameTitle === "6") changeBody(Two048(msg));
+        else if (gameTitle === "DominoDrop" || gameTitle === 7 || gameTitle === "7") changeBody(DominoDrop(msg))
       }
       //Detect Stuff Here
       if (cookies.get("name")) changeNavbarToLoggedIn();
@@ -435,6 +433,9 @@ function App() {
 
                   <img className='gameImage two048' src={two048Image} alt="Play 2048 Button" onMouseOver={()=>{hoverImage("two048")}}></img>
                   <div className='gameImage two048' id='two048Words' onMouseOut={()=>{hoverOff()}} onClick={()=>{openGame("2048")}}><h1>2048</h1></div>
+
+                  <img className='gameImage dominoDrop' src={dominoImage} alt='Play Domino Drop Button' onMouseOver={()=>{hoverImage("dominoDrop")}}></img>
+                  <div className='gameImage dominoDrop' id='dominoWords' onMouseOut={()=>{hoverOff()}} onClick={()=>openGame("DominoDrop")}><h1>Domino Drop</h1></div>
               </div>
             </div>
           </div>

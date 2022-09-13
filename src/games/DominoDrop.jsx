@@ -21,6 +21,8 @@ function DominoDrop(msg=""){
     //Game Functions
     function startGame(){
         setBoard();
+        printInitialContent();
+        printAllContent();
     }
     function generateDomino(){
         //yellow 1, orange 2, red 3, green 4, blue 5, black 6, blank white
@@ -40,6 +42,13 @@ function DominoDrop(msg=""){
         score = 0;
         currentPiece = false;
     }
+    // // //Printers
+    function printInitialContent(){
+
+    }
+    function printAllContent(){
+
+    }
     //Scores
     function getScoresPage(){
 
@@ -57,6 +66,20 @@ function DominoDrop(msg=""){
           ));
           $("#backButton").click(function(){getFrontPage()});
     }
+    function getFrontPage(){
+      $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
+        <>
+          <h1> Domino Drop </h1>
+          <Button id='startGameButton' >Start Game</Button><br></br>
+          <Button id='instructionsButton'>Read Instructions</Button><br></br>
+          <Button id='scoresButton'>Scores</Button><br></br>
+        </>
+      ));
+        $("#startGameButton").click(function(){startGame()});
+        $("#instructionsButton").click(function(){readInstructions()});
+        $("#scoresButton").click(function(){getScoresPage()});
+    }
+
 
     return (
         <div className='gameScreen' id='gameScreen'>
