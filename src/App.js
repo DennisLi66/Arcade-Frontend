@@ -4,6 +4,7 @@ import './games/scss/Tetris.scss';
 import './games/scss/Wordle.scss';
 import './games/scss/MineSweeper.scss'
 import './games/scss/Frogger.scss'
+import './games/scss/DominoDrop.scss'
 import './games/scss/2048.scss'
 import $ from 'jquery';
 import React from "react";

@@ -248,6 +248,7 @@ function Two048(msg = ''){
   function printInitialContent(){
     $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
       <>
+      <h2> 2048 </h2>
       <div className = 'two048Screen' id='two048Screen'>
         <div className='two048GameBoard' id='two048GameBoard'></div>
         <div className='two048PauseScreen' id='two048PauseScreen'><div className='pauseText'><h1>PAUSED</h1><br></br><h3>Press Space to Unpause</h3></div></div>
