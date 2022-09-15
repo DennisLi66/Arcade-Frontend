@@ -7,6 +7,13 @@ import cookieSetter from "../helpers/setCookiesForGame.jsx";
 import millisecondsToReadableTime from "../helpers/timeConversion.ts";
 import $ from 'jquery'
 
+import oneDice from './dominoDropImages/one.png';
+import twoDice from './dominoDropImages/two.png';
+import threeDice from './dominoDropImages/three.png';
+import fourDice from './dominoDropImages/four.png';
+import fiveDice from './dominoDropImages/five.png';
+import sixDice from './dominoDropImages/six.png';
+
 //show block detonation?
 
 require('dotenv').config();
@@ -18,25 +25,28 @@ function DominoDrop(msg=""){
     var gameBoard = []; //size is 4 x 12
     var currentPiece = false;
     var currentOccupyingSpaces = [];
+    var nextPiece = false;
 
     //Game Functions
     function startGame(){
       gameBoard = [];
       score = 0;
       currentPiece = false;
-      currentOccupyingSpaces = [];
       setBoard();
+      currentPiece = generateDomino();
+      nextPiece = generateDomino();
+      currentOccupyingSpaces = currentPiece[2] === 0 ? [8,9] : [9,15] ;
       printInitialContent();
       printAllContent();
     }
     function generateDomino(){
-        //yellow 1, orange 2, red 3, green 4, blue 5, black 6, blank white
+        //yellow 1, orange 2, red 3, green 4, blue 5, violet 6, blank white
         //randomly generate 1 of 7 values, white having a lower chance?
         //can change odds later
         return [
-            Math.floor(Math.random() * 7), //firstValue
-            Math.floor(Math.random() * 7), //secondValue
-            Math.floor(Math.random() * 2)  //orientation
+            Math.floor(Math.random() * 7) + 1, //firstValue
+            Math.floor(Math.random() * 7) + 1, //secondValue
+            Math.floor(Math.random() * 2)  //orientation 0: Horizontal Shape 1: Vertical Shape
         ];
     }
     // //Board Interactions
@@ -70,25 +80,36 @@ function DominoDrop(msg=""){
       var squares = [];
       for (let i = 0; i < gameBoard.length; i++){
         for (let x = 0; x < gameBoard[i].length; x++){
-          if (gameBoard[i][x] === 'X'){
-            squares.push(<div className="borderTile" key={i} id={'square' + i*6+x}></div>)
-          }else if (gameBoard[i][x] === 0){
-            squares.push(<div className="blankTile" key={i} id={'square' + i*6+x}></div>)
-          }else if (gameBoard[i][x] === 1){
-
-          }else if (gameBoard[i][x] === 2){
-
-          }else if (gameBoard[i][x] === 3){
-
-          }else if (gameBoard[i][x] === 4){
-
-          }else if (gameBoard[i][x] === 5){
-
-          }else if (gameBoard[i][x] === 6){
-
-          }else if (gameBoard[i][x] === 7){
-
-          }
+          if (gameBoard[i][x] === 'X') squares.push(<div className="borderTile" key={i} id={'square' + i*6+x}></div>)
+          else if (gameBoard[i][x] === 1 || 
+            (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 1) || 
+            (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 1)){
+            squares.push(<img className='tile' src={oneDice} key={i} id={'square' + i*6+x}></img>);
+          }else if (gameBoard[i][x] === 2 || 
+            (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 2) || 
+            (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 2)){
+              squares.push(<img className='tile' src={twoDice} key={i} id={'square' + i*6+x}></img>);
+          }else if (gameBoard[i][x] === 3 || 
+            (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 3) || 
+            (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 3)){
+              squares.push(<img className='tile' src={threeDice} key={i} id={'square' + i*6+x}></img>);
+          }else if (gameBoard[i][x] === 4 || 
+            (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 4) || 
+            (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 4)){
+              squares.push(<img className='tile' src={fourDice} key={i} id={'square' + i*6+x}></img>);
+          }else if (gameBoard[i][x] === 5 || 
+            (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 5) || 
+            (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 5)){
+              squares.push(<img className='tile' src={fiveDice} key={i} id={'square' + i*6+x}></img>);
+          }else if (gameBoard[i][x] === 6 || 
+            (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 6) || 
+            (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 6)){
+              squares.push(<img className='tile' src={sixDice} key={i} id={'square' + i*6+x}></img>);
+          }else if (gameBoard[i][x] === 7 || 
+            (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 7) || 
+            (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 7)){
+              squares.push(<div className="whiteTile" key={i} id={'square' + i*6+x}></div>);
+          }else if (gameBoard[i][x] === 0) squares.push(<div className="blankTile" key={i} id={'square' + i*6+x}></div>);
         }
       }
       $('#ddGameBoard').html(ReactDOMServer.renderToStaticMarkup(

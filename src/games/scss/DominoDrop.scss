@@ -22,11 +22,16 @@
   }
   .blankTile{
     @extend .tile;
-    background-color: white;
+    background-color: gray;
     border: solid 1px red;
   }
   .borderTile{
     @extend .tile;
     background-color: black;
     border: solid 1px blue;
+  }
+  .whiteTile{
+    @extend .tile;
+    background-color: white;
+    border: solid 1px green; 
   }
