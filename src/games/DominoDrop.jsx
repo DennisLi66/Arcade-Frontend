@@ -29,6 +29,7 @@ function DominoDrop(msg=""){
 
     //Game Functions
     function startGame(){
+      $('body').off('keydown',detectKeyPress);
       gameBoard = [];
       score = 0;
       currentPiece = false;
@@ -38,6 +39,7 @@ function DominoDrop(msg=""){
       currentOccupyingSpaces = currentPiece[2] === 0 ? [8,9] : [9,15] ;
       printInitialContent();
       printAllContent();
+      $('body').on('keydown',detectKeyPress);
     }
     function generateDomino(){
         //yellow 1, orange 2, red 3, green 4, blue 5, violet 6, blank white
@@ -57,6 +59,38 @@ function DominoDrop(msg=""){
       score = 0;
       currentPiece = false;
       currentOccupyingSpaces = [];
+    }
+    // // Key Detection
+    function detectKeyPress(key){
+      key.preventDefault();
+      if (key.keyCode === 82) startGame();
+      else if (key.key === "ArrowLeft") moveLeft();
+      else if (key.key === "ArrowRight") moveRight();
+    }
+    // // Movement
+    function moveLeft(){
+      for (let i = currentOccupyingSpaces[0] % 6; 1 < i; i--){
+        var loc1 = numberConvert(currentOccupyingSpaces[0]);
+        var loc2 = numberConvert(currentOccupyingSpaces[1]);
+        if (gameBoard[loc1[0]][loc1[1] - 1] === 0 
+          && gameBoard[loc2[0]][loc2[1] - 1] === 0 ){
+          currentOccupyingSpaces = [currentOccupyingSpaces[0] - 1, currentOccupyingSpaces[1] - 1, currentOccupyingSpaces[2]];
+          printBoard();
+          return;
+        }
+      }
+    }
+    function moveRight(){
+      for (let i = currentOccupyingSpaces[0] % 6;  i < 5; i++){
+        var loc1 = numberConvert(currentOccupyingSpaces[0]);
+        var loc2 = numberConvert(currentOccupyingSpaces[1]);
+        if (gameBoard[loc1[0]][loc1[1] + 1] === 0 
+          && gameBoard[loc2[0]][loc2[1] + 1] === 0 ){
+          currentOccupyingSpaces = [currentOccupyingSpaces[0] + 1, currentOccupyingSpaces[1] + 1, currentOccupyingSpaces[2]];
+          printBoard();
+          return;
+        }
+      }
     }
     // // //Printers
     function printInitialContent(){
@@ -84,27 +118,27 @@ function DominoDrop(msg=""){
           else if (gameBoard[i][x] === 1 || 
             (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 1) || 
             (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 1)){
-            squares.push(<img className='tile' src={oneDice} key={i} id={'square' + i*6+x}></img>);
+            squares.push(<img className='tile' alt='one' src={oneDice} key={i} id={'square' + i*6+x}></img>);
           }else if (gameBoard[i][x] === 2 || 
             (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 2) || 
             (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 2)){
-              squares.push(<img className='tile' src={twoDice} key={i} id={'square' + i*6+x}></img>);
+              squares.push(<img className='tile' alt='two' src={twoDice} key={i} id={'square' + i*6+x}></img>);
           }else if (gameBoard[i][x] === 3 || 
             (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 3) || 
             (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 3)){
-              squares.push(<img className='tile' src={threeDice} key={i} id={'square' + i*6+x}></img>);
+              squares.push(<img className='tile' alt='three' src={threeDice} key={i} id={'square' + i*6+x}></img>);
           }else if (gameBoard[i][x] === 4 || 
             (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 4) || 
             (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 4)){
-              squares.push(<img className='tile' src={fourDice} key={i} id={'square' + i*6+x}></img>);
+              squares.push(<img className='tile' alt='four' src={fourDice} key={i} id={'square' + i*6+x}></img>);
           }else if (gameBoard[i][x] === 5 || 
             (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 5) || 
             (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 5)){
-              squares.push(<img className='tile' src={fiveDice} key={i} id={'square' + i*6+x}></img>);
+              squares.push(<img className='tile' alt='five' src={fiveDice} key={i} id={'square' + i*6+x}></img>);
           }else if (gameBoard[i][x] === 6 || 
             (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 6) || 
             (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 6)){
-              squares.push(<img className='tile' src={sixDice} key={i} id={'square' + i*6+x}></img>);
+              squares.push(<img className='tile' alt='six' src={sixDice} key={i} id={'square' + i*6+x}></img>);
           }else if (gameBoard[i][x] === 7 || 
             (currentOccupyingSpaces[0] === (i*6+x) && currentPiece[0] === 7) || 
             (currentOccupyingSpaces[1] === (i*6+x) && currentPiece[1] === 7)){
@@ -227,6 +261,9 @@ function DominoDrop(msg=""){
       //FIX THIS
     }
     //Other
+    function numberConvert(num){
+      return [Math.floor(num/6),num%6];
+    }
     function readInstructions(){
         $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
             <>
