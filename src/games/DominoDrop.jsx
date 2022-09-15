@@ -17,12 +17,17 @@ function DominoDrop(msg=""){
     var intervalID = ""; //unlikely to need
     var gameBoard = []; //size is 4 x 12
     var currentPiece = false;
+    var currentOccupyingSpaces = [];
 
     //Game Functions
     function startGame(){
-        setBoard();
-        printInitialContent();
-        printAllContent();
+      gameBoard = [];
+      score = 0;
+      currentPiece = false;
+      currentOccupyingSpaces = [];
+      setBoard();
+      printInitialContent();
+      printAllContent();
     }
     function generateDomino(){
         //yellow 1, orange 2, red 3, green 4, blue 5, black 6, blank white
@@ -36,17 +41,18 @@ function DominoDrop(msg=""){
     }
     // //Board Interactions
     function setBoard(){
-        gameBoard.push(['X','X','X','X','X','X']);
-        for (let i = 0; i < 12; i++) gameBoard.push(['X',0,0,0,0,'X']);
-        gameBoard.push(['X','X','X','X','X','X']);
-        score = 0;
-        currentPiece = false;
+      gameBoard.push(['X','X','X','X','X','X']);
+      for (let i = 0; i < 12; i++) gameBoard.push(['X',0,0,0,0,'X']);
+      gameBoard.push(['X','X','X','X','X','X']);
+      score = 0;
+      currentPiece = false;
+      currentOccupyingSpaces = [];
     }
     // // //Printers
     function printInitialContent(){
       var reactScript = (
         <>
-        <h2>Domino Drop</h2>
+        {/* <h2>Domino Drop</h2> */}
         <div className = 'ddScreen' id='ddScreen'>
           <div className='ddGameBoard' id='ddGameBoard'></div>
         </div>
@@ -57,8 +63,55 @@ function DominoDrop(msg=""){
     printAllContent();
     }
     function printAllContent(){
-      // var squares = [];
-      // for ()
+      printBoard();
+      printScoreBoard();
+    }
+    function printBoard(){
+      var squares = [];
+      for (let i = 0; i < gameBoard.length; i++){
+        for (let x = 0; x < gameBoard[i].length; x++){
+          if (gameBoard[i][x] === 'X'){
+            squares.push(<div className="borderTile" key={i} id={'square' + i*6+x}></div>)
+          }else if (gameBoard[i][x] === 0){
+            squares.push(<div className="blankTile" key={i} id={'square' + i*6+x}></div>)
+          }else if (gameBoard[i][x] === 1){
+
+          }else if (gameBoard[i][x] === 2){
+
+          }else if (gameBoard[i][x] === 3){
+
+          }else if (gameBoard[i][x] === 4){
+
+          }else if (gameBoard[i][x] === 5){
+
+          }else if (gameBoard[i][x] === 6){
+
+          }else if (gameBoard[i][x] === 7){
+
+          }
+        }
+      }
+      $('#ddGameBoard').html(ReactDOMServer.renderToStaticMarkup(
+        <div>
+        {squares}
+        </div>
+      ))
+    }
+    function printScoreBoard(end=false){
+      var mainMenuButton = (<Button id='mainMenuButton'>Main Menu</Button>);
+      var restartButton = (<Button id='restartButton'>Restart</Button>);
+      var submitButton = end ? (<Button id='submitButton'>Submit Scores</Button>) : (<div></div>)
+      $('#bulletinBoard').html(ReactDOMServer.renderToStaticMarkup(
+        <div>
+          {mainMenuButton}
+          Current Score: {score}
+          {restartButton}
+          {submitButton}
+        </div>
+      ));
+      $('#mainMenuButton').click(function(){getFrontPage()});
+      $('#restartButton').click(function(){startGame()});
+      if (end) $('#submitButton').click(function(){submitScore()});
     }
     //Scores
     function getScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
@@ -148,6 +201,9 @@ function DominoDrop(msg=""){
         if (cookies.get("id")) $("#personalScoresSwitch").click(function(){getScoresPage("","mybest")});
         $("#otherMetricButton").click(function(){getScoresPage("","recent")});
       }
+    }
+    function submitScore(){
+      //FIX THIS
     }
     //Other
     function readInstructions(){

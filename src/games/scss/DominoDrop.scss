@@ -6,11 +6,27 @@
     line-height: 0;
   }
   .ddGameBoard{
-    height: 602px;
-    width: 602px;
+    height: 685px;
+    width: 294.5px;
     grid-area: 1 / 2 / 2 / 3;
     display: inline-block;
     margin:0;
     border: solid 1px black;
     background-color: #AFFAA0;
+  }
+  .tile{
+    float: left;
+    width: 48.75px;
+    height: 48.75px;
+    border: solid 1px black;
+  }
+  .blankTile{
+    @extend .tile;
+    background-color: white;
+    border: solid 1px red;
+  }
+  .borderTile{
+    @extend .tile;
+    background-color: black;
+    border: solid 1px blue;
   }
