@@ -36,7 +36,7 @@ function DominoDrop(msg=""){
       setBoard();
       currentPiece = generateDomino();
       nextPiece = generateDomino();
-      currentOccupyingSpaces = currentPiece[2] === 0 ? [8,9] : [9,15] ;
+      slotIntoFreeSpace();
       printInitialContent();
       printAllContent();
       $('body').on('keydown',detectKeyPress);
@@ -66,6 +66,7 @@ function DominoDrop(msg=""){
       if (key.keyCode === 82) startGame();
       else if (key.key === "ArrowLeft") moveLeft();
       else if (key.key === "ArrowRight") moveRight();
+      else if (key.key === "ArrowDown") moveDown();
     }
     // // Movement
     function moveLeft(){
@@ -91,6 +92,72 @@ function DominoDrop(msg=""){
           return;
         }
       }
+    }
+    function moveDown(){
+      //briefly remove keypress? FIX THIS
+      var loc1 = numberConvert(currentOccupyingSpaces[0]);
+      var loc2 = numberConvert(currentOccupyingSpaces[1]);
+      while (
+        gameBoard[loc1[0] + 1][loc1[1]] === 0 
+     && gameBoard[loc2[0] + 1][loc2[1]] === 0 
+      ){
+        currentOccupyingSpaces = [currentOccupyingSpaces[0] + 6,currentOccupyingSpaces[1] + 6,currentOccupyingSpaces[2]];
+        loc1 = numberConvert(currentOccupyingSpaces[0]);
+        loc2 = numberConvert(currentOccupyingSpaces[1]);
+        printBoard();
+      }
+      gameBoard[loc1[0]][loc1[1]] = currentPiece[0]; 
+      gameBoard[loc2[0]][loc2[1]] = currentPiece[1];
+      printBoard();
+      clearBoardConnections();
+    }
+    function clearBoardConnections(){
+      //FIX THIS
+      detectLoss();
+    }
+    function detectLoss(){
+      //FIX THIS
+      currentPiece = nextPiece;
+      slotIntoFreeSpace();
+      nextPiece = generateDomino();
+      printBoard();
+    }
+    function slotIntoFreeSpace(){
+      //Needs Testing //FIX THIS
+      currentOccupyingSpaces = currentPiece[2] === 0 ? [8,9] : [9,15];
+      var loc1 = numberConvert(currentOccupyingSpaces[0]);
+      var loc2 = numberConvert(currentOccupyingSpaces[1]);
+      if (!(gameBoard[loc1[0]][loc1[1]] === 0) || !(gameBoard[loc2[0]][loc2[1]] === 0)){
+        if (currentOccupyingSpaces[2] === 0){
+          if (gameBoard[1][1] === 0 && gameBoard[1][2] === 0){
+            currentOccupyingSpaces = [7,8,0];
+            return true;
+          }else if (gameBoard[1][2] === 0 && gameBoard[1][3] === 0){
+            currentOccupyingSpaces = [8,9,0];
+            return true;
+          }else if (gameBoard[1][3] === 0 && gameBoard[1][4] === 0){
+            currentOccupyingSpaces = [9,10,0];
+            return true;
+          }
+          return false;
+        }else{
+          if (gameBoard[1][1] === 0 && gameBoard[2][1] === 0){
+            currentOccupyingSpaces = [7,13,1];
+            return true;
+          }else if (gameBoard[1][2] === 0 && gameBoard[2][2] === 0){
+            currentOccupyingSpaces = [8,14,1];
+            return true;
+          }else if (gameBoard[1][3] === 0 && gameBoard[2][3] === 0){
+            currentOccupyingSpaces = [9,15,1];
+            return true;
+          }else if (gameBoard[1][4] === 0 && gameBoard[2][4] === 0){
+            currentOccupyingSpaces = [10,16,1];
+            return true;
+          }
+          return false;
+        }
+      }
+      return true;
     }
     // // //Printers
     function printInitialContent(){
