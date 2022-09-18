@@ -118,9 +118,13 @@ function DominoDrop(msg=""){
     function detectLoss(){
       //FIX THIS
       currentPiece = nextPiece;
-      slotIntoFreeSpace();
-      nextPiece = generateDomino();
+      if (!slotIntoFreeSpace()) showLoss();  
+      else nextPiece = generateDomino();
       printBoard();
+    }
+    function showLoss(){
+      $('body').off('keydown',detectKeyPress);
+      printScoreBoard(true)
     }
     function slotIntoFreeSpace(){
       //Needs Testing //FIX THIS
@@ -128,7 +132,7 @@ function DominoDrop(msg=""){
       var loc1 = numberConvert(currentOccupyingSpaces[0]);
       var loc2 = numberConvert(currentOccupyingSpaces[1]);
       if (!(gameBoard[loc1[0]][loc1[1]] === 0) || !(gameBoard[loc2[0]][loc2[1]] === 0)){
-        if (currentOccupyingSpaces[2] === 0){
+        if (currentPiece[2] === 0){
           if (gameBoard[1][1] === 0 && gameBoard[1][2] === 0){
             currentOccupyingSpaces = [7,8,0];
             return true;
@@ -139,6 +143,7 @@ function DominoDrop(msg=""){
             currentOccupyingSpaces = [9,10,0];
             return true;
           }
+          currentOccupyingSpaces = [];
           return false;
         }else{
           if (gameBoard[1][1] === 0 && gameBoard[2][1] === 0){
@@ -154,6 +159,7 @@ function DominoDrop(msg=""){
             currentOccupyingSpaces = [10,16,1];
             return true;
           }
+          currentOccupyingSpaces = [];
           return false;
         }
       }
@@ -165,7 +171,10 @@ function DominoDrop(msg=""){
         <>
         {/* <h2>Domino Drop</h2> */}
         <div className = 'ddScreen' id='ddScreen'>
-          <div className='ddGameBoard' id='ddGameBoard'></div>
+          <div className='ddSideBySide'>
+            <div className='ddGameBoard' id='ddGameBoard'></div>
+            <div className='ddSideDisplay'></div>
+          </div>
         </div>
         <div className='bulletinBoard' id='bulletinBoard'></div>
         </>
@@ -222,7 +231,7 @@ function DominoDrop(msg=""){
     function printScoreBoard(end=false){
       var mainMenuButton = (<Button id='mainMenuButton'>Main Menu</Button>);
       var restartButton = (<Button id='restartButton'>Restart</Button>);
-      var submitButton = end ? (<Button id='submitButton'>Submit Scores</Button>) : (<div></div>)
+      var submitButton = end ? (<Button id='submitButton'>Submit Score</Button>) : (<div></div>)
       $('#bulletinBoard').html(ReactDOMServer.renderToStaticMarkup(
         <div>
           {mainMenuButton}
@@ -234,6 +243,10 @@ function DominoDrop(msg=""){
       $('#mainMenuButton').click(function(){getFrontPage()});
       $('#restartButton').click(function(){startGame()});
       if (end) $('#submitButton').click(function(){submitScore()});
+    }
+    function printSideDisplay(){
+      //take next piece and write into box
+      
     }
     //Scores
     function getScoresPage(message = "", rule = "", results = [], start = 0, end = 10){

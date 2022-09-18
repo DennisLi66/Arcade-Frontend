@@ -5,14 +5,30 @@
     // width 200px;
     line-height: 0;
   }
+  .ddSideBySide{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 0px;
+    width: 60%;
+    padding-left: 35% 
+  }
   .ddGameBoard{
     height: 685px;
     width: 294.5px;
-    grid-area: 1 / 2 / 2 / 3;
+    grid-area: 1 / 1 / 2 / 2;
     display: inline-block;
     margin:0;
     border: solid 1px black;
     background-color: #AFFAA0;
+  }
+  .ddSideDisplay{
+    float:right;
+    border: 1px solid black;
+    height: 250px;
+    width: 250px;
+    text-align: center;
+    margin: 0;
+    grid-area: 1 / 2 / 2 / 3;
   }
   .tile{
     float: left;
