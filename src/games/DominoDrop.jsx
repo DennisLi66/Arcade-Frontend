@@ -119,7 +119,10 @@ function DominoDrop(msg=""){
       //FIX THIS
       currentPiece = nextPiece;
       if (!slotIntoFreeSpace()) showLoss();  
-      else nextPiece = generateDomino();
+      else {
+        nextPiece = generateDomino();
+        printSideDisplay();
+      }
       printBoard();
     }
     function showLoss(){
@@ -173,7 +176,7 @@ function DominoDrop(msg=""){
         <div className = 'ddScreen' id='ddScreen'>
           <div className='ddSideBySide'>
             <div className='ddGameBoard' id='ddGameBoard'></div>
-            <div className='ddSideDisplay'></div>
+            <div className='ddSideDisplay' id='ddSideDisplay'></div>
           </div>
         </div>
         <div className='bulletinBoard' id='bulletinBoard'></div>
@@ -184,6 +187,7 @@ function DominoDrop(msg=""){
     }
     function printAllContent(){
       printBoard();
+      printSideDisplay();
       printScoreBoard();
     }
     function printBoard(){
@@ -246,7 +250,31 @@ function DominoDrop(msg=""){
     }
     function printSideDisplay(){
       //take next piece and write into box
-      
+      var blocks = [];
+      for (let i = 0; i < 16; i++){
+        blocks.push(<div key={i} className='ddSideBlock'></div>)
+      }
+      if (nextPiece[2] === 0){
+        if (nextPiece[0] === 7) blocks[9] = (<div key={9} className='ddSidePaleBlock'></div>)
+        else blocks[9] = (<img key={9} className='ddSideBlock' src={numToDice(nextPiece[0])}></img>);
+        if (nextPiece[1] === 7) blocks[10] = (<div key={10} className='ddSidePaleBlock'></div>)
+        else blocks[10] = (<img key={10} className='ddSideBlock' src={numToDice(nextPiece[1])}></img>);
+      }else{
+        if (nextPiece[0] === 7) blocks[5] = (<div key={9} className='ddSidePaleBlock'></div>)
+        else blocks[5] = (<img className='ddSideBlock' key={9} src={numToDice(nextPiece[0])}></img>);
+        if (nextPiece[1] === 7) blocks[9] = (<div key={10} className='ddSidePaleBlock'></div>)
+        else blocks[9] = (<img className='ddSideBlock' key={10} src={numToDice(nextPiece[1])}></img>);
+      }
+      console.log(blocks)
+      var text = (
+        <div>
+          <div className='ddSideTitle'><h4>Next Piece</h4></div>
+          <div className="ddSideBlockDisplay">
+            {blocks}
+          </div>
+        </div>
+        );
+      $('#ddSideDisplay').html(ReactDOMServer.renderToStaticMarkup(text));
     }
     //Scores
     function getScoresPage(message = "", rule = "", results = [], start = 0, end = 10){
@@ -344,6 +372,10 @@ function DominoDrop(msg=""){
     function numberConvert(num){
       return [Math.floor(num/6),num%6];
     }
+    function numToDice(num){
+      return ['zero',oneDice,twoDice,threeDice,fourDice,fiveDice,sixDice][num];
+    }
+
     function readInstructions(){
         $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
             <>

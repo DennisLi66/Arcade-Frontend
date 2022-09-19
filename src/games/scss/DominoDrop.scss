@@ -22,6 +22,7 @@
     background-color: #AFFAA0;
   }
   .ddSideDisplay{
+    display: grid;
     float:right;
     border: 1px solid black;
     height: 250px;
@@ -29,6 +30,39 @@
     text-align: center;
     margin: 0;
     grid-area: 1 / 2 / 2 / 3;
+    background-color: beige;
+  }
+  .ddSideTitle{
+    margin: 0;
+    text-align: center;
+    line-height: 0;
+  }
+  .ddSideBlockDisplay{
+    height: 200px;
+    width: 200px;
+    line-height: 0;
+    border: 1px solid black;
+    background-color:  white;
+    display: inline-block;
+    margin:0;
+  }
+  .ddSideBlock{
+    margin: 0;
+    padding: 0;
+    border: 1px solid black;
+    background-color: black;
+    float:left;
+    width: 49.5px;
+    height: 49.5px;
+  }
+  .ddSidePaleBlock{
+    margin: 0;
+    padding: 0;
+    border: 10px solid white;
+    background-color: white;
+    float:left;
+    width: 49.5px;
+    height: 49.5px;
   }
   .tile{
     float: left;
