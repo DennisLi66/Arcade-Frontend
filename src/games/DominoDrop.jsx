@@ -94,7 +94,7 @@ function DominoDrop(msg=""){
       }
     }
     function moveDown(){
-      //briefly remove keypress? FIX THIS
+      $('body').off('keydown',detectKeyPress);
       var loc1 = numberConvert(currentOccupyingSpaces[0]);
       var loc2 = numberConvert(currentOccupyingSpaces[1]);
       while (
@@ -109,17 +109,29 @@ function DominoDrop(msg=""){
       gameBoard[loc1[0]][loc1[1]] = currentPiece[0]; 
       gameBoard[loc2[0]][loc2[1]] = currentPiece[1];
       printBoard();
-      clearBoardConnections();
+      clearBoardConnections(loc1,loc2);
     }
-    function clearBoardConnections(){
+    function clearBoardConnections(loc1,loc2){
+      var toDelete = [...check8SquaresAround(loc1), ...check8SquaresAround(loc2)];
+      for (let i = 0; i < toDelete.length; i++){
+        //console.log(toDelete[i]); Can Delete Later
+        //FIX THIS: could wait a second here for better visual feedback.
+        //FIX THIS: add score increasing
+        gameBoard[toDelete[i][0]][toDelete[i][1]] = 0;
+        printBoard();
+      }
+      if (toDelete.length === 0) detectLoss();
+      else cascadeBlocks();
+    }
+    function cascadeBlocks(){ //recursively delete blocks
       //FIX THIS
       detectLoss();
     }
     function detectLoss(){
-      //FIX THIS
       currentPiece = nextPiece;
       if (!slotIntoFreeSpace()) showLoss();  
       else {
+        $('body').on('keydown',detectKeyPress);
         nextPiece = generateDomino();
         printSideDisplay();
       }
@@ -127,10 +139,9 @@ function DominoDrop(msg=""){
     }
     function showLoss(){
       $('body').off('keydown',detectKeyPress);
-      printScoreBoard(true)
+      printScoreBoard(true);
     }
     function slotIntoFreeSpace(){
-      //Needs Testing //FIX THIS
       currentOccupyingSpaces = currentPiece[2] === 0 ? [8,9] : [9,15];
       var loc1 = numberConvert(currentOccupyingSpaces[0]);
       var loc2 = numberConvert(currentOccupyingSpaces[1]);
@@ -265,7 +276,6 @@ function DominoDrop(msg=""){
         if (nextPiece[1] === 7) blocks[9] = (<div key={10} className='ddSidePaleBlock'></div>)
         else blocks[9] = (<img className='ddSideBlock' key={10} src={numToDice(nextPiece[1])}></img>);
       }
-      console.log(blocks)
       var text = (
         <div>
           <div className='ddSideTitle'><h4>Next Piece</h4></div>
@@ -369,6 +379,34 @@ function DominoDrop(msg=""){
       //FIX THIS
     }
     //Other
+    function checkWhiteBlocks(loc){
+      //FIX THIS
+    }
+    function check8SquaresAround(loc){
+      //check the 8 spaces around each domino
+      var list = [];
+      var domino = gameBoard[loc[0]][loc[1]];
+      if (domino === 7) return [];
+      //upwards
+      if (1 < loc[0] && gameBoard[loc[0] - 1][loc[1]] === domino) list.push([loc[0] - 1,loc[1]]);
+      //leftwards
+      if (1 < loc[1] && gameBoard[loc[0]][loc[1] - 1] === domino) list.push([loc[0], loc[1] - 1]);
+      //rightwards
+      if (loc[1] < 4 && gameBoard[loc[0]][loc[1] + 1] === domino) list.push([loc[0],loc[1] + 1]);
+      //downwards
+      if (loc[0] < 12 && gameBoard[loc[0] + 1][loc[1]] === domino) list.push([loc[0] + 1,loc[1]]);
+      //upleft
+      if (1 < loc[1] && 1 < loc[0] && gameBoard[loc[0] - 1][loc[1] - 1] === domino) list.push([loc[0] - 1,loc[1] - 1]);
+      //upright
+      if (loc[1] < 4 && 1 < loc[0] && gameBoard[loc[0] - 1][loc[1] + 1] === domino) list.push([loc[0] - 1,loc[1] + 1]);
+      //downleft
+      if (1 < loc[1] && loc[0] < 12 && gameBoard[loc[0] + 1][loc[1] - 1] === domino) list.push([loc[0] + 1,loc[1] - 1]);
+      //downright
+      if (loc[1] < 4 && loc[0] < 12 && gameBoard[loc[0] + 1][loc[1] + 1] === domino) list.push([loc[0] + 1,loc[1] + 1]);
+      //original domino
+      if (list.length > 0) list.push(loc);
+      return list;
+    }
     function numberConvert(num){
       return [Math.floor(num/6),num%6];
     }
@@ -401,7 +439,6 @@ function DominoDrop(msg=""){
         $("#instructionsButton").click(function(){readInstructions()});
         $("#scoresButton").click(function(){getScoresPage()});
     }
-
 
     return (
         <div className='gameScreen' id='gameScreen'>
