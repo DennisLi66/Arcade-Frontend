@@ -376,7 +376,25 @@ function DominoDrop(msg=""){
       }
     }
     function submitScore(){
-      //FIX THIS
+      //FIX THIS - Needs Checking Later
+      if (cookies.get("id")){
+        const requestSetup = {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({userID:cookies.get("id"),gameID: 7, score: score,
+          sessionID:cookies.get("sessionID")}) //FIX THIS: IF I ADD DIFFICULTY, CHANGE GAMEIDS
+        }
+        fetch(process.env.REACT_APP_SERVERLOCATION + '/scores',requestSetup)
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            if (data.status === -1){
+              printScoreBoard(end,data.message);
+            }else{
+              getScoresPage("Your score has been submitted.")
+            }
+          })
+      }else cookieSetter({gameID: 7, score: score === 0 ? "0" : score});  
     }
     //Other
     function checkWhiteBlocks(loc){
