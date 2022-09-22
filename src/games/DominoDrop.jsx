@@ -112,7 +112,7 @@ function DominoDrop(msg=""){
       clearBoardConnections(loc1,loc2);
     }
     function clearBoardConnections(loc1,loc2){
-      var toDelete = [...check8SquaresAround(loc1), ...check8SquaresAround(loc2)];
+      var toDelete = [...check8SquaresAround(loc1), ...check8SquaresAround(loc2),...checkWhiteBlocks(loc1),...checkWhiteBlocks(loc2)];
       for (let i = 0; i < toDelete.length; i++){
         //console.log(toDelete[i]); Can Delete Later
         //FIX THIS: could wait a second here for better visual feedback.
@@ -397,8 +397,23 @@ function DominoDrop(msg=""){
       }else cookieSetter({gameID: 7, score: score === 0 ? "0" : score});  
     }
     //Other
-    function checkWhiteBlocks(loc){
-      //FIX THIS
+    function checkWhiteBlocks(loc, start = true){       //check 4 directions around and return a list of at least four blocks
+      //FIX THIS -- need to check after cascading is added
+      var domino = gameBoard[loc[0]][loc[1]];
+      if (domino !== 7) return [];
+      else{
+        //if less than 4 results return empty list
+        //else return list
+        var dominos = [];
+        if (1 < loc[0] && gameBoard[loc[0] - 1][loc[1]] === domino) dominos.push( ...checkWhiteBlocks([loc[0] - 1,loc[1]],false));
+        if (loc[0] < 12 && gameBoard[loc[0] + 1][loc[1]] === domino) dominos.push(...checkWhiteBlocks([loc[0] + 1,loc[1]],false));
+        if (1 < loc[1] && gameBoard[loc[0]][loc[1] - 1] === domino) dominos.push(...checkWhiteBlocks([loc[0], loc[1] - 1]),false);
+        if (loc[1] < 4 && gameBoard[loc[0]][loc[1] + 1] === domino) dominos.push(...checkWhiteBlocks([loc[0],loc[1] + 1]),false);
+        if (!start) return dominos;
+        else{
+          if (dominos.length >= 4) return dominos;
+          return [];
+        }
     }
     function check8SquaresAround(loc){
       //check the 8 spaces around each domino
