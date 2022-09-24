@@ -113,10 +113,16 @@ function DominoDrop(msg=""){
     }
     function clearBoardConnections(loc1,loc2){
       var toDelete = [...check8SquaresAround(loc1), ...check8SquaresAround(loc2),...checkWhiteBlocks(loc1),...checkWhiteBlocks(loc2)];
+      var multiplier = 1; //increase after every two blocks?
+      var counter = 0;
       for (let i = 0; i < toDelete.length; i++){
         //console.log(toDelete[i]); Can Delete Later
         //FIX THIS: could wait a second here for better visual feedback.
-        //FIX THIS: add score increasing
+        if (gameBoard[toDelete[i][0]][toDelete[i][1]] !== 0){
+          score += multiplier;
+          counter++;
+          if (counter >= (multiplier*2)) multiplier++;
+        }
         gameBoard[toDelete[i][0]][toDelete[i][1]] = 0;
         printBoard();
       }
@@ -126,6 +132,7 @@ function DominoDrop(msg=""){
     function cascadeBlocks(){ //recursively delete blocks
       //FIX THIS
       detectLoss();
+      //send everything downwards, then check all the blocks
     }
     function detectLoss(){
       currentPiece = nextPiece;
@@ -375,7 +382,7 @@ function DominoDrop(msg=""){
         $("#otherMetricButton").click(function(){getScoresPage("","recent")});
       }
     }
-    function submitScore(){
+    function submitScore(end){
       //FIX THIS - Needs Checking Later
       if (cookies.get("id")){
         const requestSetup = {
@@ -399,6 +406,7 @@ function DominoDrop(msg=""){
     //Other
     function checkWhiteBlocks(loc, start = true){       //check 4 directions around and return a list of at least four blocks
       //FIX THIS -- need to check after cascading is added
+      //CAUSES ENDLESS LOOP, need to prevent checking blocks already checked
       var domino = gameBoard[loc[0]][loc[1]];
       if (domino !== 7) return [];
       else{
@@ -414,6 +422,7 @@ function DominoDrop(msg=""){
           if (dominos.length >= 4) return dominos;
           return [];
         }
+      }
     }
     function check8SquaresAround(loc){
       //check the 8 spaces around each domino
