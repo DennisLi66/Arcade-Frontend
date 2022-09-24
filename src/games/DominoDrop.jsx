@@ -112,27 +112,63 @@ function DominoDrop(msg=""){
       clearBoardConnections(loc1,loc2);
     }
     function clearBoardConnections(loc1,loc2){
-      var toDelete = [...check8SquaresAround(loc1), ...check8SquaresAround(loc2),...checkWhiteBlocks(loc1),...checkWhiteBlocks(loc2)];
+      var toDelete = [...check4SquaresAround(loc1), ...check4SquaresAround(loc2)
+       // ,...checkWhiteBlocks(loc1),...checkWhiteBlocks(loc2)
+      ];
       var multiplier = 1; //increase after every two blocks?
       var counter = 0;
+      var rowDict = {};
+      console.log(toDelete);
       for (let i = 0; i < toDelete.length; i++){
-        //console.log(toDelete[i]); Can Delete Later
         //FIX THIS: could wait a second here for better visual feedback.
         if (gameBoard[toDelete[i][0]][toDelete[i][1]] !== 0){
           score += multiplier;
           counter++;
+          if (!(toDelete[i][1] in rowDict) || rowDict[toDelete[i][1]] < toDelete[i][0]) rowDict[toDelete[i][1]] = toDelete[i][0];
           if (counter >= (multiplier*2)) multiplier++;
         }
         gameBoard[toDelete[i][0]][toDelete[i][1]] = 0;
         printBoard();
       }
       if (toDelete.length === 0) detectLoss();
-      else cascadeBlocks();
+      else{
+        var loc1Copy = [...loc1];
+        var loc2Copy = [...loc2];
+        while (gameBoard[loc1Copy[0] + 1][loc1Copy[1]] === 0){
+          gameBoard[loc1Copy[0] + 1][loc1Copy[1]] = gameBoard[loc1Copy[0]][loc1Copy[1]]
+          gameBoard[loc1Copy[0]][loc1Copy[1]] = 0
+          loc1Copy[0]++;
+        }
+        while (gameBoard[loc2Copy[0] + 1][loc2Copy[1]] === 0){
+          gameBoard[loc2Copy[0] + 1][loc2Copy[1]] = gameBoard[loc2Copy[0]][loc2Copy[1]]
+          gameBoard[loc2Copy[0]][loc2Copy[1]] = 0
+          loc2Copy[0]++;
+        }
+        cascadeBlocks(rowDict);
+      }
     }
-    function cascadeBlocks(){ //recursively delete blocks
-      //FIX THIS
+    function cascadeBlocks(rowDict){ //recursively delete blocks
+      //FIX THIS-- any blocks unblocked on left right and bottom should shift down search whole board
+      //FIX THIS -- need to add combo matching --search whole board
+      console.log(rowDict);
+      for (let key in rowDict){
+        //console.log(key, rowDict[key])
+        for (let i = rowDict[key] + 1; 1 < i ; i--){
+          if (gameBoard[i][key] === 0){
+            for (let x = i - 1; 0 < x; x--){
+              if (x === 1 && gameBoard[x][key] === 0){
+                x = 0;
+                break;
+              }else if (gameBoard[x][key] !== 0){
+                gameBoard[i][key] = gameBoard[x][key]; 
+                gameBoard[x][key] = 0;
+              }
+            }
+          }
+          else continue;
+        }
+      }
       detectLoss();
-      //send everything downwards, then check all the blocks
     }
     function detectLoss(){
       currentPiece = nextPiece;
@@ -274,14 +310,14 @@ function DominoDrop(msg=""){
       }
       if (nextPiece[2] === 0){
         if (nextPiece[0] === 7) blocks[9] = (<div key={9} className='ddSidePaleBlock'></div>)
-        else blocks[9] = (<img key={9} className='ddSideBlock' src={numToDice(nextPiece[0])}></img>);
+        else blocks[9] = (<img key={9} alt='9' className='ddSideBlock' src={numToDice(nextPiece[0])}></img>);
         if (nextPiece[1] === 7) blocks[10] = (<div key={10} className='ddSidePaleBlock'></div>)
-        else blocks[10] = (<img key={10} className='ddSideBlock' src={numToDice(nextPiece[1])}></img>);
+        else blocks[10] = (<img key={10} alt='10' className='ddSideBlock' src={numToDice(nextPiece[1])}></img>);
       }else{
         if (nextPiece[0] === 7) blocks[5] = (<div key={9} className='ddSidePaleBlock'></div>)
-        else blocks[5] = (<img className='ddSideBlock' key={9} src={numToDice(nextPiece[0])}></img>);
+        else blocks[5] = (<img alt='9' className='ddSideBlock' key={9} src={numToDice(nextPiece[0])}></img>);
         if (nextPiece[1] === 7) blocks[9] = (<div key={10} className='ddSidePaleBlock'></div>)
-        else blocks[9] = (<img className='ddSideBlock' key={10} src={numToDice(nextPiece[1])}></img>);
+        else blocks[9] = (<img alt='10' className='ddSideBlock' key={10} src={numToDice(nextPiece[1])}></img>);
       }
       var text = (
         <div>
@@ -424,7 +460,7 @@ function DominoDrop(msg=""){
         }
       }
     }
-    function check8SquaresAround(loc){
+    function check4SquaresAround(loc){
       //check the 8 spaces around each domino
       var list = [];
       var domino = gameBoard[loc[0]][loc[1]];
@@ -437,15 +473,7 @@ function DominoDrop(msg=""){
       if (loc[1] < 4 && gameBoard[loc[0]][loc[1] + 1] === domino) list.push([loc[0],loc[1] + 1]);
       //downwards
       if (loc[0] < 12 && gameBoard[loc[0] + 1][loc[1]] === domino) list.push([loc[0] + 1,loc[1]]);
-      //upleft
-      if (1 < loc[1] && 1 < loc[0] && gameBoard[loc[0] - 1][loc[1] - 1] === domino) list.push([loc[0] - 1,loc[1] - 1]);
-      //upright
-      if (loc[1] < 4 && 1 < loc[0] && gameBoard[loc[0] - 1][loc[1] + 1] === domino) list.push([loc[0] - 1,loc[1] + 1]);
-      //downleft
-      if (1 < loc[1] && loc[0] < 12 && gameBoard[loc[0] + 1][loc[1] - 1] === domino) list.push([loc[0] + 1,loc[1] - 1]);
-      //downright
-      if (loc[1] < 4 && loc[0] < 12 && gameBoard[loc[0] + 1][loc[1] + 1] === domino) list.push([loc[0] + 1,loc[1] + 1]);
-      //original domino
+       //original domino
       if (list.length > 0) list.push(loc);
       return list;
     }
