@@ -26,6 +26,8 @@ function DominoDrop(msg=""){
     var currentPiece = false;
     var currentOccupyingSpaces = [];
     var nextPiece = false;
+    var multiplier = 1; //increase after every two blocks?
+    var counter = 0;
 
     //Game Functions
     function startGame(){
@@ -57,6 +59,8 @@ function DominoDrop(msg=""){
       for (let i = 0; i < 12; i++) gameBoard.push(['X',0,0,0,0,'X']);
       gameBoard.push(['X','X','X','X','X','X']);
       score = 0;
+      counter = 0;
+      multiplier = 1;
       currentPiece = false;
       currentOccupyingSpaces = [];
     }
@@ -111,14 +115,16 @@ function DominoDrop(msg=""){
       printBoard();
       clearBoardConnections(loc1,loc2);
     }
-    function clearBoardConnections(loc1,loc2){
-      var toDelete = [...check4SquaresAround(loc1), ...check4SquaresAround(loc2)
-       // ,...checkWhiteBlocks(loc1),...checkWhiteBlocks(loc2)
-      ];
-      var multiplier = 1; //increase after every two blocks?
-      var counter = 0;
+    function clearBoardConnections(loc1,loc2,list = []){
+      var toDelete = [];
+      if (loc1 && loc2){
+        multiplier = 1; //increase after every two blocks?
+        counter = 0;
+        toDelete = [...check4SquaresAround(loc1), ...check4SquaresAround(loc2)
+        // ,...checkWhiteBlocks(loc1),...checkWhiteBlocks(loc2)
+        ];
+      }else toDelete = list;
       var rowDict = {};
-      console.log(toDelete);
       for (let i = 0; i < toDelete.length; i++){
         //FIX THIS: could wait a second here for better visual feedback.
         if (gameBoard[toDelete[i][0]][toDelete[i][1]] !== 0){
@@ -132,17 +138,19 @@ function DominoDrop(msg=""){
       }
       if (toDelete.length === 0) detectLoss();
       else{
-        var loc1Copy = [...loc1];
-        var loc2Copy = [...loc2];
-        while (gameBoard[loc1Copy[0] + 1][loc1Copy[1]] === 0){
-          gameBoard[loc1Copy[0] + 1][loc1Copy[1]] = gameBoard[loc1Copy[0]][loc1Copy[1]]
-          gameBoard[loc1Copy[0]][loc1Copy[1]] = 0
-          loc1Copy[0]++;
-        }
-        while (gameBoard[loc2Copy[0] + 1][loc2Copy[1]] === 0){
-          gameBoard[loc2Copy[0] + 1][loc2Copy[1]] = gameBoard[loc2Copy[0]][loc2Copy[1]]
-          gameBoard[loc2Copy[0]][loc2Copy[1]] = 0
-          loc2Copy[0]++;
+        if (loc1 && loc2){
+          var loc1Copy = [...loc1];
+          var loc2Copy = [...loc2];
+          while (gameBoard[loc1Copy[0] + 1][loc1Copy[1]] === 0){
+            gameBoard[loc1Copy[0] + 1][loc1Copy[1]] = gameBoard[loc1Copy[0]][loc1Copy[1]]
+            gameBoard[loc1Copy[0]][loc1Copy[1]] = 0
+            loc1Copy[0]++;
+          }
+          while (gameBoard[loc2Copy[0] + 1][loc2Copy[1]] === 0){
+            gameBoard[loc2Copy[0] + 1][loc2Copy[1]] = gameBoard[loc2Copy[0]][loc2Copy[1]]
+            gameBoard[loc2Copy[0]][loc2Copy[1]] = 0
+            loc2Copy[0]++;
+          }
         }
         cascadeBlocks(rowDict);
       }
@@ -150,7 +158,7 @@ function DominoDrop(msg=""){
     function cascadeBlocks(rowDict){ //recursively delete blocks
       //FIX THIS-- any blocks unblocked on left right and bottom should shift down search whole board
       //FIX THIS -- need to add combo matching --search whole board
-      console.log(rowDict);
+      // console.log(rowDict);
       for (let key in rowDict){
         //console.log(key, rowDict[key])
         for (let i = rowDict[key] + 1; 1 < i ; i--){
@@ -168,7 +176,25 @@ function DominoDrop(msg=""){
           else continue;
         }
       }
-      detectLoss();
+      //also drop any blocks that have no neighbor FIX THIS
+      findMatches();
+    }
+    function findMatches(){
+      //search all the gameboard for matches, and return a list for it
+      var matches = [];
+      for (let i = 1; i <= 12; i++){
+        for (let x = 1; x <= 4; x++){
+          if (gameBoard[i][x] !== 0 && gameBoard[i][x] === gameBoard[i+1][x]){
+            matches.push([i,x]);
+            matches.push([i+1,x]);
+          }else if (gameBoard[i][x] !== 0 && gameBoard[i][x] === gameBoard[i][x + 1]){
+            matches.push([i,x]);
+            matches.push([i,x+1]);
+          }
+        }
+      }
+      if (matches.length === 0) detectLoss();
+      else clearBoardConnections(null,null,matches)  
     }
     function detectLoss(){
       currentPiece = nextPiece;
