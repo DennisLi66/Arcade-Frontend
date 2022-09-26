@@ -156,9 +156,8 @@ function DominoDrop(msg=""){
       }
     }
     function cascadeBlocks(rowDict){ //recursively delete blocks
-      //FIX THIS-- any blocks unblocked on left right and bottom should shift down search whole board
+      //FIX THIS-- any blocks unblocked on left right and bottom should shift down search whole board TEST THIS
       //FIX THIS -- need to add combo matching --search whole board
-      // console.log(rowDict);
       for (let key in rowDict){
         //console.log(key, rowDict[key])
         for (let i = rowDict[key] + 1; 1 < i ; i--){
@@ -176,7 +175,20 @@ function DominoDrop(msg=""){
           else continue;
         }
       }
-      //also drop any blocks that have no neighbor FIX THIS
+      for (let i = 1; i <= 4; i++){ //left to right
+        //bottom to top
+        for (let x = 12; x <= 1; x--){
+          if (gameBoard[x+1][i] === 0
+          && (gameBoard[x][i-1] === 0 || gameBoard[x][i-1] === 'X')
+          && (gameBoard[x][i+1] === 0 || gameBoard[x][i+1] === 'X')){
+            //scan downwards until the block below current position is a wall or block
+            var c = x + 1;
+            while (c <= 12 && (gameBoard[c+1][i] === 0 || gameBoard[c+1][i] === 'X') ) c++;
+            gameBoard[c][i] = gameBoard[x][i];
+            gameBoard[x][i] = 0;
+          }
+        }
+      }
       findMatches();
     }
     function findMatches(){
