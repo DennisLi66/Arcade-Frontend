@@ -15,6 +15,9 @@ import fiveDice from './dominoDropImages/five.png';
 import sixDice from './dominoDropImages/six.png';
 
 //show block detonation?
+//test scores
+//fix white blocks
+//fix cascading
 
 require('dotenv').config();
 
@@ -157,7 +160,6 @@ function DominoDrop(msg=""){
     }
     function cascadeBlocks(rowDict){ //recursively delete blocks
       //FIX THIS-- any blocks unblocked on left right and bottom should shift down search whole board TEST THIS
-      //FIX THIS -- need to add combo matching --search whole board
       for (let key in rowDict){
         //console.log(key, rowDict[key])
         for (let i = rowDict[key] + 1; 1 < i ; i--){
@@ -181,7 +183,6 @@ function DominoDrop(msg=""){
           if (gameBoard[x+1][i] === 0
           && (gameBoard[x][i-1] === 0 || gameBoard[x][i-1] === 'X')
           && (gameBoard[x][i+1] === 0 || gameBoard[x][i+1] === 'X')){
-            //scan downwards until the block below current position is a wall or block
             var c = x + 1;
             while (c <= 12 && (gameBoard[c+1][i] === 0 || gameBoard[c+1][i] === 'X') ) c++;
             gameBoard[c][i] = gameBoard[x][i];
@@ -478,16 +479,18 @@ function DominoDrop(msg=""){
       }else cookieSetter({gameID: 7, score: score === 0 ? "0" : score});  
     }
     //Other
-    function checkWhiteBlocks(loc, start = true){       //check 4 directions around and return a list of at least four blocks
-      //FIX THIS -- need to check after cascading is added
-      //CAUSES ENDLESS LOOP, need to prevent checking blocks already checked
+    function checkWhiteBlocks(loc, start = true, dict = {}){       //check 4 directions around and return a list of at least four blocks
+      //FIX THIS             CAUSES ENDLESS LOOP, need to prevent checking blocks already checked
       var domino = gameBoard[loc[0]][loc[1]];
       if (domino !== 7) return [];
       else{
         //if less than 4 results return empty list
         //else return list
         var dominos = [];
-        if (1 < loc[0] && gameBoard[loc[0] - 1][loc[1]] === domino) dominos.push( ...checkWhiteBlocks([loc[0] - 1,loc[1]],false));
+        if (1 < loc[0] && gameBoard[loc[0] - 1][loc[1]] === domino) {
+          //FIX THIS: If not in dict, add into dict and recursively continue, else do nothing
+          dominos.push( ...checkWhiteBlocks([loc[0] - 1,loc[1]],false));
+        }
         if (loc[0] < 12 && gameBoard[loc[0] + 1][loc[1]] === domino) dominos.push(...checkWhiteBlocks([loc[0] + 1,loc[1]],false));
         if (1 < loc[1] && gameBoard[loc[0]][loc[1] - 1] === domino) dominos.push(...checkWhiteBlocks([loc[0], loc[1] - 1]),false);
         if (loc[1] < 4 && gameBoard[loc[0]][loc[1] + 1] === domino) dominos.push(...checkWhiteBlocks([loc[0],loc[1] + 1]),false);
