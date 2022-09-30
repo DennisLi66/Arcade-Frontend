@@ -488,7 +488,8 @@ function DominoDrop(msg=""){
         //else return list
         var dominos = [];
         if (1 < loc[0] && gameBoard[loc[0] - 1][loc[1]] === domino) {
-          //FIX THIS: If not in dict, add into dict and recursively continue, else do nothing
+          //FIX THIS: If not in dict, add into dict and continue, else do nothing
+          //use a while loop
           dominos.push( ...checkWhiteBlocks([loc[0] - 1,loc[1]],false));
         }
         if (loc[0] < 12 && gameBoard[loc[0] + 1][loc[1]] === domino) dominos.push(...checkWhiteBlocks([loc[0] + 1,loc[1]],false));
