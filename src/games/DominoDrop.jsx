@@ -124,7 +124,7 @@ function DominoDrop(msg=""){
         multiplier = 1; //increase after every two blocks?
         counter = 0;
         toDelete = [...check4SquaresAround(loc1), ...check4SquaresAround(loc2)
-        // ,...checkWhiteBlocks(loc1),...checkWhiteBlocks(loc2)
+        ,...checkWhiteBlocks(loc1,loc2)
         ];
       }else toDelete = list;
       var rowDict = {};
@@ -479,28 +479,52 @@ function DominoDrop(msg=""){
       }else cookieSetter({gameID: 7, score: score === 0 ? "0" : score});  
     }
     //Other
-    function checkWhiteBlocks(loc, start = true, dict = {}){       //check 4 directions around and return a list of at least four blocks
-      //FIX THIS             CAUSES ENDLESS LOOP, need to prevent checking blocks already checked
-      var domino = gameBoard[loc[0]][loc[1]];
-      if (domino !== 7) return [];
+    function checkWhiteBlocks(loc1, loc2){       //check 4 directions around and return a list of at least four blocks
+      //FIX THIS             CAUSES ENDLESS LOOP, need to prevent checking blocks already checked //Needs testing
+      var domino1 = gameBoard[loc1[0]][loc1[1]];
+      var domino2 = gameBoard[loc2[0]][loc2[1]];
+      var nodes = [];
+      var alreadyTraveled = {};
+      if (!(domino1 === 7) && !(domino2 === 7)) return [];
       else{
-        //if less than 4 results return empty list
-        //else return list
-        var dominos = [];
-        if (1 < loc[0] && gameBoard[loc[0] - 1][loc[1]] === domino) {
-          //FIX THIS: If not in dict, add into dict and continue, else do nothing
-          //use a while loop
-          dominos.push( ...checkWhiteBlocks([loc[0] - 1,loc[1]],false));
+        if (domino1 === 7){
+          nodes.push(loc1);
+          alreadyTraveled[locConvert(loc1)] = loc1;
         }
-        if (loc[0] < 12 && gameBoard[loc[0] + 1][loc[1]] === domino) dominos.push(...checkWhiteBlocks([loc[0] + 1,loc[1]],false));
-        if (1 < loc[1] && gameBoard[loc[0]][loc[1] - 1] === domino) dominos.push(...checkWhiteBlocks([loc[0], loc[1] - 1]),false);
-        if (loc[1] < 4 && gameBoard[loc[0]][loc[1] + 1] === domino) dominos.push(...checkWhiteBlocks([loc[0],loc[1] + 1]),false);
-        if (!start) return dominos;
-        else{
-          if (dominos.length >= 4) return dominos;
-          return [];
+        if (domino2 === 7){
+          nodes.push(loc2);
+          alreadyTraveled[locConvert(loc2)] = loc2;
         }
       }
+      var placeholder = [];
+      while (nodes.length > 0){
+        placeholder = [];
+        for (let i = 0; i < nodes.length; i++){
+          //check 4 nodes around, if white square add into already traveled and nodes if not already traveled //FIX THIS
+          var node = nodes[i];
+          if (gameBoard[node[0] - 1][node[1]] === 7 && !(locConvert([node[0] - 1,node[1]]) in alreadyTraveled)){ //upwards
+            alreadyTraveled[locConvert([node[0] - 1,node[1]])] = node;
+            placeholder.push([node[0] - 1,node[1]])
+          }
+          if (gameBoard[node[0] + 1][node[1]] === 7 && !(locConvert([node[0] + 1,node[1]]) in alreadyTraveled)){ //downwards
+            alreadyTraveled[locConvert([node[0] + 1,node[1]])] = node;
+            placeholder.push([node[0] + 1,node[1]])
+          }
+          if (gameBoard[node[0]][node[1] - 1] === 7 && !(locConvert([node[0],node[1] - 1]) in alreadyTraveled)){ //leftwards
+            alreadyTraveled[locConvert([node[0],node[1] - 1])] = node;
+            placeholder.push([node[0],node[1] - 1])
+          }
+          if (gameBoard[node[0]][node[1] + 1] === 7 && !(locConvert([node[0],node[1] + 1]) in alreadyTraveled)){ //rightwards
+            alreadyTraveled[locConvert([node[0],node[1] + 1])] = node;
+            placeholder.push([node[0],node[1] + 1])
+          }
+        }
+        nodes = placeholder;
+      }
+      var toReturn = [];
+      for (key in alreadyTraveled) toReturn.push(alreadyTraveled[key]);
+      if (toReturn.length >= 4) return toReturn;
+      return [];
     }
     function check4SquaresAround(loc){
       //check the 8 spaces around each domino
@@ -521,6 +545,9 @@ function DominoDrop(msg=""){
     }
     function numberConvert(num){
       return [Math.floor(num/6),num%6];
+    }
+    function locConvert(loc){
+      return loc[0] * 6 + loc[1];
     }
     function numToDice(num){
       return ['zero',oneDice,twoDice,threeDice,fourDice,fiveDice,sixDice][num];
