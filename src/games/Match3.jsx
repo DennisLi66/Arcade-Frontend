@@ -16,11 +16,15 @@ function Match3(msg=""){
     var gameBoard = []; //size is ??? FIX THIS
     var multiplier = 1;
     var timer = 0;
+    var markedPiece = null;
 
     function startGame(){
       $('body').off('keydown',detectKeyPress);
       gameBoard = [];
       score = 0;
+      timer = 0;
+      multiplier = 0;
+      markedPiece = null;
       setBoard();
       printInitialContent();
       printAllContent();
@@ -35,7 +39,12 @@ function Match3(msg=""){
     }
     //Detection
     function detectKeyPress(){
+      if (markedPiece){
 
+      }
+    }
+    function markPiece(id){
+      markedPiece = id;
     }
     //Score Submission
     function submitScore(end){
