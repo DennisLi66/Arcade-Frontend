@@ -14,12 +14,25 @@ require('dotenv').config();
 //Google Arcade Stacking Tower Game
 
 function Towers(msg=""){
+    const cookies = new Cookies();
+    var score = 0;
+    var intervalID = ""; //unlikely to need
+    var gameBoard = []; //size is ??? FIX THIS
 
     function startGame(){
 
     }
     function readInstructions(){
-
+    $('#gameScreen').html(ReactDOMServer.renderToStaticMarkup(
+        <>
+            <Button id='backButton'>Back</Button><br></br>
+            <h1> Instructions </h1>
+            <div>
+                FIX THIS
+            </div>
+        </>
+        ));
+        $("#backButton").click(function(){getFrontPage()});
     }
     function getScoresPage(){
         
