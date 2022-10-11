@@ -7,6 +7,8 @@ import './games/scss/Frogger.scss'
 import './games/scss/DominoDrop.scss'
 import './games/scss/2048.scss'
 import $ from 'jquery';
+import isAnEmail from "../helpers/isAnEmail.ts";
+import isValidPassword from './helpers/isValidPassword';
 import React from "react";
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
@@ -75,19 +77,20 @@ function App() {
       }
       function registrationCheckAllTextFilled(){
         //if anything is blank or invalid shut it down
-        //FIX THIS: Add invalid check too
         //FIX THIS: prevent user from using enter key to submit
         if (document.getElementById('userEmail').val.length > 0 && document.getElementById('username').val.length > 0
-        && document.getElementById('password').val.length > 0 && document.getElementById('confPass').val.length > 0){
+        && document.getElementById('password').val.length > 0 && document.getElementById('confPass').val.length > 0
+        && document.getElementById('password').val === document.getElementById('confPass').val &&
+        isValidPassword(document.getElementById("password").val)){
           document.getElementById("registrationCheckButton").style.visibility = 'visible';
         }
         else document.getElementById("registrationCheckButton").style.visibility = 'hidden';
       }
       function loginCheckAllTextFilled(){
         //if anything is blank or invalid shut it down
-        //FIX THIS: Add invalid check too
         //FIX THIS: prevent user from using enter key to submit
-        if (document.getElementById('userEmail').val.length > 0 && document.getElementById('password').val.length){
+        if (document.getElementById('userEmail').val.length > 0 && document.getElementById('password').val.length
+        && isAnEmail(document.getElementById("userEmail").val)){
           document.getElementById("loginFormButton").style.visibility = 'visible';
         }
         else document.getElementById("loginFormButton").style.visibility = 'hidden';
