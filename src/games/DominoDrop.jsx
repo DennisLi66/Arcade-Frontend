@@ -522,7 +522,7 @@ function DominoDrop(msg=""){
         nodes = placeholder;
       }
       var toReturn = [];
-      for (key in alreadyTraveled) toReturn.push(alreadyTraveled[key]);
+      for (let key in alreadyTraveled) toReturn.push(alreadyTraveled[key]);
       if (toReturn.length >= 4) return toReturn;
       return [];
     }

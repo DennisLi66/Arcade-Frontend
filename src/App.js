@@ -35,6 +35,7 @@ require('dotenv').config();
 //should redirect to game scores instead of game homepage
 //FIX THIS: Does not auto log people out
 //Create More Space Between Buttons
+//update loginfunctionality with new design features
 
 function App() {
   const [navBar,changeNavbar] = React.useState(
@@ -71,6 +72,25 @@ function App() {
         $("#froggerWords").css('visibility','hidden');
         $("#two048Words").css('visibility','hidden');
         $("#dominoWords").css('visibility','hidden');
+      }
+      function registrationCheckAllTextFilled(){
+        //if anything is blank or invalid shut it down
+        //FIX THIS: Add invalid check too
+        //FIX THIS: prevent user from using enter key to submit
+        if (document.getElementById('userEmail').val.length > 0 && document.getElementById('username').val.length > 0
+        && document.getElementById('password').val.length > 0 && document.getElementById('confPass').val.length > 0){
+          document.getElementById("registrationCheckButton").style.visibility = 'visible';
+        }
+        else document.getElementById("registrationCheckButton").style.visibility = 'hidden';
+      }
+      function loginCheckAllTextFilled(){
+        //if anything is blank or invalid shut it down
+        //FIX THIS: Add invalid check too
+        //FIX THIS: prevent user from using enter key to submit
+        if (document.getElementById('userEmail').val.length > 0 && document.getElementById('password').val.length){
+          document.getElementById("loginFormButton").style.visibility = 'visible';
+        }
+        else document.getElementById("loginFormButton").style.visibility = 'hidden';
       }
       //Nav Changers
       function changeNavbarToLoggedIn(){
@@ -132,7 +152,7 @@ function App() {
               <input type='password' name='confPass' id='confPass' autoComplete="off" minLength='8' required></input><br></br><br></br>
               <Button type='submit'>Register</Button>
             </form>
-            <Button onClick={()=>{getLoginPage()}}>Already Have An Account?</Button>
+            <Button id='registrationCheckButton' onClick={()=>{getLoginPage()}}>Already Have An Account?</Button>
           </div>
         ))
       }
@@ -185,7 +205,7 @@ function App() {
               <span className="slider round"></span>
               </label>
               <br></br><br></br>
-              <Button type='submit'>Login</Button>
+              <Button type='submit' id='loginFormButton'>Login</Button>
             </form>
             <Button onClick={()=>{getRegisterPage()}}>Don't Already Have An Account?</Button><br></br>
             <Button onClick={()=>{getForgotPasswordPage()}}>Forgot Your Password?</Button>
